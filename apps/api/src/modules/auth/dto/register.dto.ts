@@ -7,11 +7,11 @@ export class RegisterDto {
   @MinLength(3)
   @MaxLength(32)
   @Matches(/^[a-zA-Z0-9_-]+$/, { message: 'Username: letters, numbers, _ and - only' })
-  username: string
+  username!: string
 
   @ApiProperty({ example: 'john@example.com' })
   @IsEmail()
-  email: string
+  email!: string
 
   @ApiProperty({ example: 'SecurePass1' })
   @IsString()
@@ -19,5 +19,5 @@ export class RegisterDto {
   @MaxLength(128)
   @Matches(/[A-Z]/, { message: 'Password needs at least one uppercase letter' })
   @Matches(/[0-9]/, { message: 'Password needs at least one number' })
-  password: string
+  password!: string
 }

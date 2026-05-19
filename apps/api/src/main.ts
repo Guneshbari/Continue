@@ -5,7 +5,8 @@ import {
 } from '@nestjs/platform-fastify'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import { ValidationPipe, VersioningType } from '@nestjs/common'
-import helmet from 'helmet'
+import fastifyHelmet from '@fastify/helmet'
+import fastifyCors from '@fastify/cors'
 import { AppModule } from './app.module'
 
 async function bootstrap() {
@@ -14,13 +15,16 @@ async function bootstrap() {
     new FastifyAdapter({ logger: true }),
   )
 
-  // Security
-  await app.register(helmet)
-
-  // CORS
-  app.enableCors({
-    origin: process.env.CORS_ORIGINS?.split(',') ?? ['http://localhost:3000'],
+  // CORS — must be registered as a Fastify plugin (enableCors is Express-only)
+  await app.register(fastifyCors, {
+    origin: true,
     credentials: true,
+  })
+
+  // Security — after CORS so helmet doesn't block preflight
+  await app.register(fastifyHelmet, {
+    crossOriginResourcePolicy: false,
+    contentSecurityPolicy: false,
   })
 
   // Global prefix + versioning
@@ -51,8 +55,8 @@ async function bootstrap() {
 
   const port = process.env.API_PORT ?? 3001
   await app.listen(port, '0.0.0.0')
-  console.log(`API running on: http://localhost:${port}`)
-  console.log(`Swagger: http://localhost:${port}/api/docs`)
+  console.log(`\n✅ API running on: http://localhost:${port}`)
+  console.log(`📖 Swagger:        http://localhost:${port}/api/docs\n`)
 }
 
 void bootstrap()

@@ -14,7 +14,12 @@ import { GamesModule } from './modules/games/games.module'
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true, cache: true }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      cache: true,
+      // Check API-local .env first, then fall back to monorepo root .env
+      envFilePath: ['.env', '../../.env'],
+    }),
     ThrottlerModule.forRoot([
       { name: 'short', ttl: 1000, limit: 20 },
       { name: 'medium', ttl: 10000, limit: 100 },

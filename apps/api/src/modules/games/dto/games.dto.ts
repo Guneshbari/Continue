@@ -14,11 +14,11 @@ import { Type } from 'class-transformer'
 export class CreateGameDto {
   @ApiProperty()
   @IsString()
-  slug: string
+  slug!: string
 
   @ApiProperty()
   @IsString()
-  title: string
+  title!: string
 
   @ApiPropertyOptional()
   @IsOptional()
