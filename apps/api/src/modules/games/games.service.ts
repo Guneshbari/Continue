@@ -1,0 +1,108 @@
+import { Injectable, NotFoundException } from '@nestjs/common'
+import { PrismaService } from '../../common/prisma/prisma.service'
+import type { CreateGameDto, GamesQueryDto } from './dto/games.dto'
+
+// Shared select shape — used everywhere for consistency
+const GAME_SUMMARY_SELECT = {
+  id: true,
+  slug: true,
+  title: true,
+  coverUrl: true,
+  releaseDate: true,
+  avgRating: true,
+  ratingCount: true,
+  genres: { select: { genre: { select: { id: true, slug: true, name: true } } } },
+  platforms: { select: { platform: { select: { id: true, slug: true, name: true } } } },
+} as const
+
+const GAME_DETAIL_SELECT = {
+  ...GAME_SUMMARY_SELECT,
+  description: true,
+  bannerUrl: true,
+  developer: true,
+  publisher: true,
+  tags: { select: { tag: { select: { id: true, slug: true, name: true } } } },
+} as const
+
+@Injectable()
+export class GamesService {
+  constructor(private readonly prisma: PrismaService) {}
+
+  async findAll(query: GamesQueryDto) {
+    const { q, genre, platform, sort, cursor, limit } = query
+
+    const where = {
+      deletedAt: null,
+      ...(q && {
+        OR: [
+          { title: { contains: q, mode: 'insensitive' as const } },
+          { developer: { contains: q, mode: 'insensitive' as const } },
+        ],
+      }),
+      ...(genre && { genres: { some: { genre: { slug: genre } } } }),
+      ...(platform && { platforms: { some: { platform: { slug: platform } } } }),
+    }
+
+    const orderBy = this.resolveOrderBy(sort)
+
+    const items = await this.prisma.game.findMany({
+      where,
+      orderBy,
+      take: limit + 1,
+      ...(cursor && { cursor: { id: cursor }, skip: 1 }),
+      select: GAME_SUMMARY_SELECT,
+    })
+
+    const hasMore = items.length > limit
+    const data = hasMore ? items.slice(0, limit) : items
+    const nextCursor = hasMore ? (data[data.length - 1]?.id ?? null) : null
+
+    return {
+      data: data.map(this.mapGameSummary),
+      meta: { nextCursor, total: undefined },
+    }
+  }
+
+  async findBySlug(idOrSlug: string) {
+    const game = await this.prisma.game.findFirst({
+      where: {
+        deletedAt: null,
+        OR: [{ id: idOrSlug }, { slug: idOrSlug }],
+      },
+      select: GAME_DETAIL_SELECT,
+    })
+    if (!game) throw new NotFoundException('Game not found')
+    return this.mapGameDetail(game)
+  }
+
+  async create(dto: CreateGameDto) {
+    return this.prisma.game.create({ data: { ...dto }, select: GAME_DETAIL_SELECT })
+  }
+
+  // ─── Private helpers ──────────────────────────────────────────────────────
+
+  private resolveOrderBy(sort?: string) {
+    switch (sort) {
+      case 'top-rated': return { avgRating: 'desc' as const }
+      case 'new':       return { releaseDate: 'desc' as const }
+      case 'upcoming':  return { releaseDate: 'asc' as const }
+      default:          return { ratingCount: 'desc' as const } // trending
+    }
+  }
+
+  private mapGameSummary(game: any) {
+    return {
+      ...game,
+      genres: game.genres.map((g: any) => g.genre),
+      platforms: game.platforms.map((p: any) => p.platform),
+      releaseDate: game.releaseDate?.toISOString() ?? null,
+    }
+  }
+
+  private mapGameDetail(game: any) {
+    return {
+      ...this.mapGameSummary(game),
+      tags: game.tags.map((t: any) => t.tag),
+    }
+  }
+}

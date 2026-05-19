@@ -32,6 +32,7 @@ export interface ApiMeta {
 export interface UserPublic {
   id: string
   username: string
+  email: string
   displayName: string | null
   bio: string | null
   avatarUrl: string | null
