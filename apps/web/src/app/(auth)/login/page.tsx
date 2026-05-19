@@ -9,10 +9,12 @@ import { Eye, EyeOff, Loader2 } from 'lucide-react'
 import { loginSchema, type LoginInput } from '@continue/validation'
 import { authApi } from '@/lib/api/auth'
 import { ApiClientError } from '@/lib/api/client'
+import { useAuth } from '@/lib/auth/AuthContext'
 import { cn } from '@/lib/utils'
 
 export default function LoginPage() {
   const router = useRouter()
+  const { login } = useAuth()
   const [showPassword, setShowPassword] = useState(false)
   const [serverError, setServerError] = useState<string | null>(null)
 
@@ -26,8 +28,7 @@ export default function LoginPage() {
     setServerError(null)
     try {
       const result = await authApi.login(data)
-      // TODO Phase 4: store tokens in auth context
-      localStorage.setItem('access_token', result.accessToken)
+      login(result)
       router.push('/')
     } catch (err) {
       if (err instanceof ApiClientError) {

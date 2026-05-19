@@ -1,0 +1,80 @@
+import { Injectable, NotFoundException } from '@nestjs/common'
+import { PrismaService } from '../../common/prisma/prisma.service'
+
+@Injectable()
+export class UsersService {
+  constructor(private readonly prisma: PrismaService) {}
+
+  async findByUsername(username: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { username, deletedAt: null },
+      select: {
+        id: true,
+        username: true,
+        displayName: true,
+        bio: true,
+        avatarUrl: true,
+        role: true,
+        createdAt: true,
+        _count: { select: { reviews: true, ratings: true, lists: true } },
+      },
+    })
+    if (!user) throw new NotFoundException('User not found')
+    return {
+      id: user.id,
+      username: user.username,
+      displayName: user.displayName,
+      bio: user.bio,
+      avatarUrl: user.avatarUrl,
+      role: user.role,
+      createdAt: user.createdAt,
+      reviewCount: user._count.reviews,
+      ratingCount: user._count.ratings,
+      listCount: user._count.lists,
+    }
+  }
+
+  async findReviews(username: string, limit = 10, cursor?: string) {
+    const user = await this.findByUsername(username)
+    const reviews = await this.prisma.review.findMany({
+      where: { userId: user.id, deletedAt: null, status: 'PUBLISHED' },
+      take: limit + 1,
+      ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
+      orderBy: { createdAt: 'desc' },
+      include: {
+        game: { select: { id: true, slug: true, title: true, coverUrl: true } },
+      },
+    })
+    const hasNext = reviews.length > limit
+    const data = hasNext ? reviews.slice(0, limit) : reviews
+    return { data, nextCursor: hasNext ? data[data.length - 1].id : null }
+  }
+
+  async findRatings(username: string, limit = 20, cursor?: string) {
+    const user = await this.findByUsername(username)
+    const ratings = await this.prisma.rating.findMany({
+      where: { userId: user.id },
+      take: limit + 1,
+      ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
+      orderBy: { updatedAt: 'desc' },
+      include: {
+        game: { select: { id: true, slug: true, title: true, coverUrl: true } },
+      },
+    })
+    const hasNext = ratings.length > limit
+    const data = hasNext ? ratings.slice(0, limit) : ratings
+    return { data, nextCursor: hasNext ? data[data.length - 1].id : null }
+  }
+
+  async findLists(username: string) {
+    const user = await this.findByUsername(username)
+    return this.prisma.list.findMany({
+      where: { userId: user.id, visibility: 'PUBLIC' },
+      orderBy: { updatedAt: 'desc' },
+      select: {
+        id: true, slug: true, title: true, description: true, visibility: true,
+        _count: { select: { items: true } },
+      },
+    })
+  }
+}

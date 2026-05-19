@@ -1,26 +1,31 @@
 import { apiClient } from './client'
-import type { ApiResponse, GameSummary, GameDetail } from '@continue/types'
+import type { GameSummary, GameDetail } from '@continue/types'
 
-export interface GamesQuery {
-  q?: string
+interface GamesListParams {
+  sort?: 'trending' | 'top-rated' | 'new' | 'upcoming'
   genre?: string
   platform?: string
-  sort?: 'trending' | 'top-rated' | 'new' | 'upcoming'
+  q?: string
   cursor?: string
   limit?: number
 }
 
+interface GamesListResponse {
+  data: GameSummary[]
+  nextCursor: string | null
+}
+
 export const gamesApi = {
-  list(query?: GamesQuery): Promise<ApiResponse<GameSummary[]>> {
-    const params = new URLSearchParams()
-    if (query?.q)        params.set('q', query.q)
-    if (query?.genre)    params.set('genre', query.genre)
-    if (query?.platform) params.set('platform', query.platform)
-    if (query?.sort)     params.set('sort', query.sort)
-    if (query?.cursor)   params.set('cursor', query.cursor)
-    if (query?.limit)    params.set('limit', String(query.limit))
-    const qs = params.toString()
-    return apiClient.get(`/games${qs ? `?${qs}` : ''}`)
+  list(params: GamesListParams = {}): Promise<GamesListResponse> {
+    const qs = new URLSearchParams()
+    if (params.sort) qs.set('sort', params.sort)
+    if (params.genre) qs.set('genre', params.genre)
+    if (params.platform) qs.set('platform', params.platform)
+    if (params.q) qs.set('q', params.q)
+    if (params.cursor) qs.set('cursor', params.cursor)
+    if (params.limit) qs.set('limit', String(params.limit))
+    const query = qs.toString()
+    return apiClient.get(`/games${query ? `?${query}` : ''}`)
   },
 
   get(idOrSlug: string): Promise<GameDetail> {

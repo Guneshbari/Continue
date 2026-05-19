@@ -11,7 +11,7 @@ interface GameCardProps {
 }
 
 export function GameCard({ game, variant = 'discovery', className }: GameCardProps) {
-  const href = `/games/${game.id}/${game.slug}`
+  const href = `/games/${game.slug}`
 
   return (
     <Link

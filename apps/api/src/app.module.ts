@@ -4,20 +4,15 @@ import { ThrottlerModule } from '@nestjs/throttler'
 import { PrismaModule } from './common/prisma/prisma.module'
 import { AuthModule } from './modules/auth/auth.module'
 import { GamesModule } from './modules/games/games.module'
-// Phase 3+ modules (uncomment when implemented):
-// import { UsersModule } from './modules/users/users.module'
-// import { ReviewsModule } from './modules/reviews/reviews.module'
-// import { RatingsModule } from './modules/ratings/ratings.module'
-// import { SearchModule } from './modules/search/search.module'
-// import { ListsModule } from './modules/lists/lists.module'
-// import { AdminModule } from './modules/admin/admin.module'
+import { RatingsModule } from './modules/ratings/ratings.module'
+import { ReviewsModule } from './modules/reviews/reviews.module'
+import { UsersModule } from './modules/users/users.module'
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       cache: true,
-      // Check API-local .env first, then fall back to monorepo root .env
       envFilePath: ['.env', '../../.env'],
     }),
     ThrottlerModule.forRoot([
@@ -28,7 +23,9 @@ import { GamesModule } from './modules/games/games.module'
     PrismaModule,
     AuthModule,
     GamesModule,
+    RatingsModule,
+    ReviewsModule,
+    UsersModule,
   ],
 })
 export class AppModule {}
-

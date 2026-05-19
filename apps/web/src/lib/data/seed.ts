@@ -87,3 +87,16 @@ export const NEW_RELEASES: GameSummary[] = [
 export const TOP_RATED: GameSummary[] = [...TRENDING_GAMES].sort(
   (a, b) => (b.avgRating ?? 0) - (a.avgRating ?? 0),
 )
+
+/** All seed games with full GameDetail shape — keyed by slug */
+const ALL_SEED_DETAILS: Record<string, GameDetail> = Object.fromEntries(
+  FEATURED_GAMES.map((g) => [g.slug, g]),
+)
+
+/** Find a seed game by slug or id (for detail page fallback) */
+export function findSeedGame(slugOrId: string): GameDetail | undefined {
+  return (
+    ALL_SEED_DETAILS[slugOrId] ??
+    FEATURED_GAMES.find((g) => g.id === slugOrId)
+  )
+}
