@@ -7,6 +7,7 @@ import { GamesModule } from './modules/games/games.module'
 import { RatingsModule } from './modules/ratings/ratings.module'
 import { ReviewsModule } from './modules/reviews/reviews.module'
 import { UsersModule } from './modules/users/users.module'
+import { SearchModule } from './modules/search/search.module'
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { UsersModule } from './modules/users/users.module'
     RatingsModule,
     ReviewsModule,
     UsersModule,
+    SearchModule,
   ],
 })
 export class AppModule {}

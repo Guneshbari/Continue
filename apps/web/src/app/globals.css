@@ -1390,3 +1390,196 @@
     font-family: var(--font-ui);
   }
 }
+
+/* ─── Search Page ────────────────────────────────────────────────────── */
+@layer components {
+  .search-page {
+    padding-top: 3rem;
+    padding-bottom: 4rem;
+    min-height: 80dvh;
+  }
+
+  .search-page__hero {
+    max-width: 680px;
+    margin: 0 auto 2.5rem;
+    text-align: center;
+  }
+
+  .search-page__heading {
+    font-family: var(--font-display);
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    letter-spacing: 0.03em;
+    color: var(--color-text-primary);
+    margin: 0 0 1.5rem;
+  }
+
+  .search-bar {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .search-bar__icon {
+    position: absolute;
+    left: 1rem;
+    color: var(--color-text-muted);
+    pointer-events: none;
+    flex-shrink: 0;
+  }
+
+  .search-bar__input {
+    width: 100%;
+    padding: 0.9rem 3rem 0.9rem 3rem;
+    background-color: var(--color-surface-raised);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    font-size: 1rem;
+    font-family: var(--font-ui);
+    color: var(--color-text-primary);
+    outline: none;
+    transition: border-color 150ms, box-shadow 150ms;
+  }
+  .search-bar__input::placeholder { color: var(--color-text-muted); }
+  .search-bar__input:focus {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px var(--color-accent-subtle);
+  }
+  .search-bar__input::-webkit-search-cancel-button { display: none; }
+
+  .search-bar__clear {
+    position: absolute;
+    right: 2.5rem;
+    background: none;
+    border: none;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    padding: 0.25rem;
+    display: flex;
+    align-items: center;
+    transition: color 150ms;
+  }
+  .search-bar__clear:hover { color: var(--color-text-primary); }
+
+  .search-bar__spinner {
+    position: absolute;
+    right: 0.75rem;
+    color: var(--color-accent);
+    animation: search-spin 0.8s linear infinite;
+  }
+  @keyframes search-spin { to { transform: rotate(360deg); } }
+
+  .search-page__hint {
+    text-align: center;
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    margin-top: 2rem;
+  }
+
+  .search-page__count {
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--color-text-muted);
+    margin: 0 0 1rem;
+  }
+
+  .search-page__empty {
+    text-align: center;
+    padding: 3rem 1rem;
+  }
+
+  .search-page__empty-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    margin: 0 0 0.5rem;
+  }
+
+  .search-page__empty-sub {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+
+  .search-results-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .search-result-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 1rem;
+    background-color: var(--color-surface-raised);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: 10px;
+    text-decoration: none;
+    transition: background-color 150ms, border-color 150ms, transform 100ms;
+  }
+  .search-result-card:hover {
+    background-color: var(--color-surface-overlay);
+    border-color: var(--color-border);
+    transform: translateX(3px);
+  }
+
+  .search-result-card__cover {
+    position: relative;
+    width: 48px;
+    height: 64px;
+    border-radius: 6px;
+    overflow: hidden;
+    flex-shrink: 0;
+    background-color: var(--color-surface-sunken);
+  }
+
+  .search-result-card__img { object-fit: cover; }
+
+  .search-result-card__cover-placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--color-surface-overlay), var(--color-surface-sunken));
+  }
+
+  .search-result-card__info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .search-result-card__title {
+    display: block;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .search-result-card__meta {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 0.2rem;
+  }
+
+  .search-result-card__genres,
+  .search-result-card__year {
+    font-size: 0.78rem;
+    color: var(--color-text-muted);
+  }
+
+  .search-result-card__rating {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: oklch(75% 0.18 70);
+    flex-shrink: 0;
+  }
+}
