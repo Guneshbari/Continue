@@ -5,7 +5,7 @@ import { SearchService } from './search.service'
 @ApiTags('search')
 @Controller('search')
 export class SearchController {
-  constructor(private readonly search: SearchService) {}
+  constructor(private readonly searchService: SearchService) {}
 
   @Get()
   @ApiOperation({ summary: 'Search games by title, developer, or slug' })
@@ -15,7 +15,7 @@ export class SearchController {
     @Query('q') q: string,
     @Query('limit') limit?: string,
   ) {
-    const results = await this.search.search(q, limit ? parseInt(limit, 10) : 20)
+    const results = await this.searchService.search(q, limit ? parseInt(limit, 10) : 20)
     return { data: results }
   }
 }

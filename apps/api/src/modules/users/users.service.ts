@@ -47,7 +47,7 @@ export class UsersService {
     })
     const hasNext = reviews.length > limit
     const data = hasNext ? reviews.slice(0, limit) : reviews
-    return { data, nextCursor: hasNext ? data[data.length - 1].id : null }
+    return { data, nextCursor: hasNext ? (data[data.length - 1]?.id ?? null) : null }
   }
 
   async findRatings(username: string, limit = 20, cursor?: string) {
@@ -63,7 +63,7 @@ export class UsersService {
     })
     const hasNext = ratings.length > limit
     const data = hasNext ? ratings.slice(0, limit) : ratings
-    return { data, nextCursor: hasNext ? data[data.length - 1].id : null }
+    return { data, nextCursor: hasNext ? (data[data.length - 1]?.id ?? null) : null }
   }
 
   async findLists(username: string) {

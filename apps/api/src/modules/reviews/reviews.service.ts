@@ -33,9 +33,13 @@ export class ReviewsService {
 
     const hasNext = reviews.length > limit
     const data = hasNext ? reviews.slice(0, limit) : reviews
+    
+    // Satisfy TS strict mode bounds checking
+    const lastItem = data[data.length - 1]
+    
     return {
       data,
-      nextCursor: hasNext ? data[data.length - 1].id : null,
+      nextCursor: hasNext && lastItem ? lastItem.id : null,
     }
   }
 
