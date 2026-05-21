@@ -25,7 +25,7 @@ export function Navbar() {
     <header className="navbar">
       <div className="navbar__inner">
         {/* Logo */}
-        <Link href="/" className="navbar__logo" aria-label="Continue — home">
+        <Link href="/" className="navbar__logo" aria-label="Continue - home">
           <span className="navbar__logo-text">Continue</span>
         </Link>
 

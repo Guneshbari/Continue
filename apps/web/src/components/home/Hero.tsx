@@ -85,14 +85,14 @@ export function Hero({ featured }: HeroProps) {
           {active.description && (
             <p className="hero__description">
               {active.description.slice(0, 180)}
-              {active.description.length > 180 ? '…' : ''}
+              {active.description.length > 180 ? '...' : ''}
             </p>
           )}
 
           {/* CTAs */}
           <div className="hero__ctas">
             <Link
-              href={`/games/${active.id}/${active.slug}`}
+              href={`/games/${active.slug}`}
               className="hero__cta-primary"
             >
               <Play size={16} aria-hidden="true" fill="currentColor" />

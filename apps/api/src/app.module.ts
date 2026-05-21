@@ -1,14 +1,18 @@
 import { Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
+import { APP_GUARD } from '@nestjs/core'
 import { ThrottlerModule } from '@nestjs/throttler'
 import { PrismaModule } from './common/prisma/prisma.module'
 import { AuthModule } from './modules/auth/auth.module'
+import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard'
+import { RolesGuard } from './modules/auth/guards/roles.guard'
 import { GamesModule } from './modules/games/games.module'
 import { RatingsModule } from './modules/ratings/ratings.module'
 import { ReviewsModule } from './modules/reviews/reviews.module'
 import { UsersModule } from './modules/users/users.module'
 import { SearchModule } from './modules/search/search.module'
 import { ListsModule } from './modules/lists/lists.module'
+import { validateEnv } from './common/config/env.validation'
 
 @Module({
   imports: [
@@ -16,6 +20,7 @@ import { ListsModule } from './modules/lists/lists.module'
       isGlobal: true,
       cache: true,
       envFilePath: ['.env', '../../.env'],
+      validate: validateEnv,
     }),
     ThrottlerModule.forRoot([
       { name: 'short', ttl: 1000, limit: 20 },
@@ -30,6 +35,16 @@ import { ListsModule } from './modules/lists/lists.module'
     UsersModule,
     SearchModule,
     ListsModule,
+  ],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
   ],
 })
 export class AppModule {}

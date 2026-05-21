@@ -24,7 +24,7 @@ export function ReviewsSection({ gameId }: { gameId: string }) {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    reviewsApi.list(gameId, 10).then((res: { data: Review[] }) => {
+    reviewsApi.list<Review>(gameId, 10).then((res) => {
       setReviews(res.data)
       setLoading(false)
     }).catch(() => setLoading(false))
@@ -36,7 +36,11 @@ export function ReviewsSection({ gameId }: { gameId: string }) {
     setSubmitting(true)
     setError(null)
     try {
-      const review = await reviewsApi.create(gameId, { title: title || undefined, body }, accessToken) as Review
+      const payload = {
+        body,
+        ...(title.trim() ? { title: title.trim() } : {}),
+      }
+      const review = await reviewsApi.create<Review>(gameId, payload, accessToken)
       setReviews((prev) => [review, ...prev])
       setShowForm(false)
       setBody('')

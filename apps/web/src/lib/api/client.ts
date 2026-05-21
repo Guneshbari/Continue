@@ -1,5 +1,5 @@
 import { env } from '@/lib/env'
-import type { ApiResponse, ApiError } from '@continue/types'
+import type { ApiError } from '@continue/types'
 
 class ApiClientError extends Error {
   constructor(
@@ -13,7 +13,7 @@ class ApiClientError extends Error {
 
 async function apiFetch<T>(
   path: string,
-  options?: RequestInit & { token?: string },
+  options?: RequestInit & { token?: string | undefined },
 ): Promise<T> {
   const { token, ...fetchOptions } = options ?? {}
 
@@ -45,14 +45,14 @@ async function apiFetch<T>(
 
 export const apiClient = {
   get<T>(path: string, token?: string) {
-    return apiFetch<T>(path, { method: 'GET', token })
+    return apiFetch<T>(path, { method: 'GET', ...(token ? { token } : {}) })
   },
 
   post<T>(path: string, body: unknown, token?: string) {
     return apiFetch<T>(path, {
       method: 'POST',
       body: JSON.stringify(body),
-      token,
+      ...(token ? { token } : {}),
     })
   },
 
@@ -60,12 +60,12 @@ export const apiClient = {
     return apiFetch<T>(path, {
       method: 'PATCH',
       body: JSON.stringify(body),
-      token,
+      ...(token ? { token } : {}),
     })
   },
 
   delete<T>(path: string, token?: string) {
-    return apiFetch<T>(path, { method: 'DELETE', token })
+    return apiFetch<T>(path, { method: 'DELETE', ...(token ? { token } : {}) })
   },
 }
 

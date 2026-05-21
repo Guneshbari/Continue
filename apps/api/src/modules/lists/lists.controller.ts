@@ -1,17 +1,15 @@
 import {
   Controller, Get, Post, Patch, Delete,
-  Param, Body, UseGuards, Request, HttpCode, HttpStatus,
+  Param, Body, Request, HttpCode, HttpStatus,
 } from '@nestjs/common'
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger'
-import { ListsService } from './lists.service'
-import { CreateListDto, UpdateListDto, AddListItemDto } from './dto/list.dto'
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard'
+import type { ListsService } from './lists.service'
+import type { CreateListDto, UpdateListDto, AddListItemDto } from './dto/list.dto'
 import { CurrentUser, type AuthUser } from '../auth/decorators/current-user.decorator'
 import { Public } from '../auth/decorators/public.decorator'
 
 @ApiTags('lists')
-@UseGuards(JwtAuthGuard)
-@Controller()
+@Controller({ version: '1' })
 export class ListsController {
   constructor(private readonly listsService: ListsService) {}
 

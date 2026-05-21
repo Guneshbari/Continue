@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { PrismaService } from '../../common/prisma/prisma.service'
+import type { PrismaService } from '../../common/prisma/prisma.service'
 
 export interface SearchResult {
   id: string
@@ -11,6 +11,17 @@ export interface SearchResult {
   releaseDate: string | null
   genres: { id: string; slug: string; name: string }[]
   type: 'game'
+}
+
+interface SearchGameRow {
+  id: string
+  slug: string
+  title: string
+  coverUrl: string | null
+  avgRating: number | null
+  ratingCount: number
+  releaseDate: Date | null
+  genres: { genre: { id: string; slug: string; name: string } }[]
 }
 
 @Injectable()
@@ -50,7 +61,7 @@ export class SearchService {
       },
     })
 
-    return games.map((g) => ({
+    return (games as SearchGameRow[]).map((g) => ({
       id: g.id,
       slug: g.slug,
       title: g.title,

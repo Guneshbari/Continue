@@ -40,7 +40,7 @@ export function UserListsManager({ initialLists, username }: Props) {
     try {
       const newList = await listsApi.create(token, {
         title: title.trim(),
-        description: description.trim() || undefined,
+        ...(description.trim() ? { description: description.trim() } : {}),
         visibility,
       })
       setLists((prev) => [newList, ...prev])
@@ -48,8 +48,8 @@ export function UserListsManager({ initialLists, username }: Props) {
       setDescription('')
       setVisibility('PUBLIC')
       setOpen(false)
-    } catch (err: any) {
-      setError(err.message || 'Failed to create list')
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Failed to create list')
     } finally {
       setLoading(false)
     }
@@ -120,11 +120,13 @@ export function UserListsManager({ initialLists, username }: Props) {
                 <select
                   id="list-vis"
                   value={visibility}
-                  onChange={(e) => setVisibility(e.target.value as any)}
+                  onChange={(e) => {
+                    setVisibility(e.target.value as 'PUBLIC' | 'PRIVATE' | 'UNLISTED')
+                  }}
                 >
-                  <option value="PUBLIC">Public — visible to anyone</option>
-                  <option value="UNLISTED">Unlisted — link holders only</option>
-                  <option value="PRIVATE">Private — only visible to you</option>
+                  <option value="PUBLIC">Public - visible to anyone</option>
+                  <option value="UNLISTED">Unlisted - link holders only</option>
+                  <option value="PRIVATE">Private - only visible to you</option>
                 </select>
               </div>
 

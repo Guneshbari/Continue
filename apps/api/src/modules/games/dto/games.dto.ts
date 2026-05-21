@@ -3,7 +3,6 @@ import {
   IsOptional,
   IsUrl,
   IsDateString,
-  IsNumber,
   Min,
   Max,
   IsInt,
@@ -83,5 +82,5 @@ export class GamesQueryDto {
   @IsInt()
   @Min(1)
   @Max(50)
-  limit: number = 20
+  limit = 20
 }

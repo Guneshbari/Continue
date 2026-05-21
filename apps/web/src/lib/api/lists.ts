@@ -54,7 +54,11 @@ export const listsApi = {
     return apiClient.delete(`/lists/${id}`, token)
   },
   addItem(listId: string, token: string, gameId: string, note?: string): Promise<ListItem> {
-    return apiClient.post(`/lists/${listId}/items`, { gameId, note }, token)
+    return apiClient.post(
+      `/lists/${listId}/items`,
+      { gameId, ...(note ? { note } : {}) },
+      token,
+    )
   },
   removeItem(listId: string, gameId: string, token: string): Promise<void> {
     return apiClient.delete(`/lists/${listId}/items/${gameId}`, token)

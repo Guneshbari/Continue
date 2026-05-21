@@ -22,14 +22,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function ListDetailPage({ params }: PageProps) {
   const { username, slug } = await params
 
-  let list
+  let list: Awaited<ReturnType<typeof listsApi.getOne>>
   try {
     list = await listsApi.getOne(username, slug)
   } catch {
     notFound()
   }
 
-  const l = list!
+  const l = list
 
   return (
     <main className="site-container list-detail-page">

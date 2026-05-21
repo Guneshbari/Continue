@@ -1,9 +1,9 @@
 import { Controller, Post, Body, HttpCode, HttpStatus, UseGuards } from '@nestjs/common'
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger'
 import { Throttle } from '@nestjs/throttler'
-import { AuthService } from './auth.service'
-import { RegisterDto } from './dto/register.dto'
-import { LoginDto } from './dto/login.dto'
+import type { AuthService } from './auth.service'
+import type { RegisterDto } from './dto/register.dto'
+import type { LoginDto } from './dto/login.dto'
 import { Public } from './decorators/public.decorator'
 import { JwtAuthGuard } from './guards/jwt-auth.guard'
 import { CurrentUser, type AuthUser } from './decorators/current-user.decorator'
@@ -44,6 +44,6 @@ export class AuthController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Logout (client discards tokens)' })
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
+   
   logout() {}
 }

@@ -1,12 +1,14 @@
 import { Controller, Get, Query } from '@nestjs/common'
 import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger'
-import { SearchService } from './search.service'
+import type { SearchService } from './search.service'
+import { Public } from '../auth/decorators/public.decorator'
 
 @ApiTags('search')
-@Controller('search')
+@Controller({ path: 'search', version: '1' })
 export class SearchController {
   constructor(private readonly searchService: SearchService) {}
 
+  @Public()
   @Get()
   @ApiOperation({ summary: 'Search games by title, developer, or slug' })
   @ApiQuery({ name: 'q', required: true, description: 'Search query (min 2 chars)' })

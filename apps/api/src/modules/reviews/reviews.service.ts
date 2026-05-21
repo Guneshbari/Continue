@@ -1,8 +1,8 @@
 import {
   Injectable, NotFoundException, ForbiddenException, ConflictException,
 } from '@nestjs/common'
-import { PrismaService } from '../../common/prisma/prisma.service'
-import { CreateReviewDto, UpdateReviewDto } from './dto/review.dto'
+import type { PrismaService } from '../../common/prisma/prisma.service'
+import type { CreateReviewDto, UpdateReviewDto } from './dto/review.dto'
 
 @Injectable()
 export class ReviewsService {
@@ -68,7 +68,7 @@ export class ReviewsService {
   }
 
   private async assertGameExists(gameId: string) {
-    const game = await this.prisma.game.findUnique({
+    const game = await this.prisma.game.findFirst({
       where: { id: gameId, deletedAt: null }, select: { id: true },
     })
     if (!game) throw new NotFoundException('Game not found')

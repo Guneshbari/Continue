@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
-import { PrismaService } from '../../common/prisma/prisma.service'
+import type { PrismaService } from '../../common/prisma/prisma.service'
 import type { CreateGameDto, GamesQueryDto } from './dto/games.dto'
 
 // Shared select shape — used everywhere for consistency
@@ -23,6 +23,32 @@ const GAME_DETAIL_SELECT = {
   publisher: true,
   tags: { select: { tag: { select: { id: true, slug: true, name: true } } } },
 } as const
+
+interface GameTaxonomyRow {
+  genre?: { id: string; slug: string; name: string }
+  platform?: { id: string; slug: string; name: string }
+  tag?: { id: string; slug: string; name: string }
+}
+
+interface GameSummaryRow {
+  id: string
+  slug: string
+  title: string
+  coverUrl: string | null
+  releaseDate: Date | null
+  avgRating: number | null
+  ratingCount: number
+  genres: GameTaxonomyRow[]
+  platforms: GameTaxonomyRow[]
+}
+
+interface GameDetailRow extends GameSummaryRow {
+  description: string | null
+  bannerUrl: string | null
+  developer: string | null
+  publisher: string | null
+  tags: GameTaxonomyRow[]
+}
 
 @Injectable()
 export class GamesService {
@@ -90,19 +116,19 @@ export class GamesService {
     }
   }
 
-  private mapGameSummary(game: any) {
+  private mapGameSummary(game: GameSummaryRow) {
     return {
       ...game,
-      genres: game.genres.map((g: any) => g.genre),
-      platforms: game.platforms.map((p: any) => p.platform),
+      genres: game.genres.map((g) => g.genre),
+      platforms: game.platforms.map((p) => p.platform),
       releaseDate: game.releaseDate?.toISOString() ?? null,
     }
   }
 
-  private mapGameDetail(game: any) {
+  private mapGameDetail(game: GameDetailRow) {
     return {
       ...this.mapGameSummary(game),
-      tags: game.tags.map((t: any) => t.tag),
+      tags: game.tags.map((t) => t.tag),
     }
   }
 }

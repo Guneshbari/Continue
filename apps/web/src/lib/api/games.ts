@@ -1,7 +1,7 @@
 import { apiClient } from './client'
 import type { GameSummary, GameDetail } from '@continue/types'
 
-interface GamesListParams {
+export interface GamesListParams {
   sort?: 'trending' | 'top-rated' | 'new' | 'upcoming'
   genre?: string
   platform?: string

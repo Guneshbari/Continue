@@ -1,6 +1,7 @@
 import { Suspense } from 'react'
 import type { Metadata } from 'next'
 import { gamesApi } from '@/lib/api/games'
+import type { GamesListParams } from '@/lib/api/games'
 import { GameCard, GameCardSkeleton } from '@/components/game/GameCard'
 import { TRENDING_GAMES } from '@/lib/data/seed'
 import type { GameSummary } from '@continue/types'
@@ -19,11 +20,14 @@ async function GameGrid({ sort, genre, platform, q }: {
 }) {
   let games: GameSummary[] = []
   try {
+    const typedSort = SORT_OPTIONS.some((opt) => opt.value === sort)
+      ? (sort as GamesListParams['sort'])
+      : undefined
     const res = await gamesApi.list({
-      sort: sort as 'trending' | 'top-rated' | 'new' | 'upcoming' | undefined,
-      genre,
-      platform,
-      q,
+      ...(typedSort ? { sort: typedSort } : {}),
+      ...(genre ? { genre } : {}),
+      ...(platform ? { platform } : {}),
+      ...(q ? { q } : {}),
       limit: 24,
     })
     games = res.data.length > 0 ? res.data : TRENDING_GAMES
@@ -81,7 +85,12 @@ export default async function GamesPage({ searchParams }: PageProps) {
           ))}
         </ul>
       }>
-        <GameGrid sort={sort} genre={params.genre} platform={params.platform} q={params.q} />
+        <GameGrid
+          sort={sort}
+          {...(params.genre ? { genre: params.genre } : {})}
+          {...(params.platform ? { platform: params.platform } : {})}
+          {...(params.q ? { q: params.q } : {})}
+        />
       </Suspense>
     </main>
   )

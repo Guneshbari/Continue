@@ -50,6 +50,8 @@ model User {
   ratings Rating[]
   lists   List[]
 
+  @@index([deletedAt])
+  @@index([role])
   @@map("users")
 }
 
@@ -80,6 +82,11 @@ model Game {
   avgRating   Float? @map("avg_rating")
   ratingCount Int    @default(0) @map("rating_count")
 
+  @@index([deletedAt])
+  @@index([title])
+  @@index([releaseDate])
+  @@index([ratingCount])
+  @@index([avgRating])
   @@map("games")
 }
 
@@ -101,6 +108,7 @@ model GamePlatform {
   platform   Platform @relation(fields: [platformId], references: [id])
 
   @@id([gameId, platformId])
+  @@index([platformId])
   @@map("game_platforms")
 }
 
@@ -122,6 +130,7 @@ model GameGenre {
   genre   Genre @relation(fields: [genreId], references: [id])
 
   @@id([gameId, genreId])
+  @@index([genreId])
   @@map("game_genres")
 }
 
@@ -135,6 +144,7 @@ model Tag {
   createdAt DateTime  @default(now()) @map("created_at")
   games     GameTag[]
 
+  @@index([approved])
   @@map("tags")
 }
 
@@ -145,6 +155,7 @@ model GameTag {
   tag    Tag  @relation(fields: [tagId], references: [id])
 
   @@id([gameId, tagId])
+  @@index([tagId])
   @@map("game_tags")
 }
 
@@ -167,6 +178,9 @@ model Review {
 
   // One primary review per user per game
   @@unique([userId, gameId, isPrimary])
+  @@index([deletedAt])
+  @@index([gameId, status])
+  @@index([userId, status])
   @@map("reviews")
 }
 
@@ -185,6 +199,8 @@ model Rating {
 
   // One rating per user per game
   @@unique([userId, gameId])
+  @@index([gameId])
+  @@index([score])
   @@map("ratings")
 }
 
@@ -197,6 +213,7 @@ model List {
   title       String
   description String?
   visibility  ListVisibility @default(PUBLIC)
+  deletedAt   DateTime?      @map("deleted_at")
   createdAt   DateTime       @default(now()) @map("created_at")
   updatedAt   DateTime       @updatedAt @map("updated_at")
 
@@ -204,6 +221,8 @@ model List {
   items ListItem[]
 
   @@unique([userId, slug])
+  @@index([deletedAt])
+  @@index([userId, visibility])
   @@map("lists")
 }
 
@@ -219,5 +238,7 @@ model ListItem {
   game Game @relation(fields: [gameId], references: [id])
 
   @@unique([listId, gameId])
+  @@index([gameId])
+  @@index([listId, position])
   @@map("list_items")
 }

@@ -23,13 +23,13 @@ export const ratingsApi = {
 }
 
 export const reviewsApi = {
-  list(gameId: string, limit = 20, cursor?: string) {
+  list<TReview>(gameId: string, limit = 20, cursor?: string): Promise<{ data: TReview[] }> {
     const qs = new URLSearchParams({ limit: String(limit) })
     if (cursor) qs.set('cursor', cursor)
     return apiClient.get(`/games/${gameId}/reviews?${qs}`)
   },
 
-  create(gameId: string, data: { title?: string; body: string }, token: string) {
+  create<TReview>(gameId: string, data: { title?: string; body: string }, token: string): Promise<TReview> {
     return apiClient.post(`/games/${gameId}/reviews`, data, token)
   },
 

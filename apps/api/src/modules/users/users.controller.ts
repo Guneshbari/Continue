@@ -1,10 +1,10 @@
 import { Controller, Get, Param, Query, ParseIntPipe, DefaultValuePipe } from '@nestjs/common'
 import { ApiTags, ApiOperation, ApiQuery } from '@nestjs/swagger'
-import { UsersService } from './users.service'
+import type { UsersService } from './users.service'
 import { Public } from '../auth/decorators/public.decorator'
 
 @ApiTags('users')
-@Controller('users')
+@Controller({ path: 'users', version: '1' })
 export class UsersController {
   constructor(private readonly svc: UsersService) {}
 

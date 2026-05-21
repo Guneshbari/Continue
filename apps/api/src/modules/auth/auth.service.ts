@@ -3,10 +3,10 @@ import {
   ConflictException,
   UnauthorizedException,
 } from '@nestjs/common'
-import { JwtService } from '@nestjs/jwt'
-import { ConfigService } from '@nestjs/config'
+import type { JwtService } from '@nestjs/jwt'
+import type { ConfigService } from '@nestjs/config'
 import * as bcrypt from 'bcryptjs'
-import { PrismaService } from '../../common/prisma/prisma.service'
+import type { PrismaService } from '../../common/prisma/prisma.service'
 import type { RegisterDto } from './dto/register.dto'
 import type { LoginDto } from './dto/login.dto'
 
@@ -44,7 +44,7 @@ export class AuthService {
   }
 
   async login(dto: LoginDto) {
-    const user = await this.prisma.user.findUnique({
+    const user = await this.prisma.user.findFirst({
       where: { email: dto.email, deletedAt: null },
       select: { id: true, username: true, email: true, role: true, passwordHash: true },
     })
@@ -54,12 +54,17 @@ export class AuthService {
     const valid = await bcrypt.compare(dto.password, user.passwordHash)
     if (!valid) throw new UnauthorizedException('Invalid credentials')
 
-    const { passwordHash: _, ...safeUser } = user
+    const safeUser = {
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      role: user.role,
+    }
     return this.issueTokens(safeUser)
   }
 
   async refresh(userId: string) {
-    const user = await this.prisma.user.findUnique({
+    const user = await this.prisma.user.findFirst({
       where: { id: userId, deletedAt: null },
       select: { id: true, username: true, email: true, role: true },
     })

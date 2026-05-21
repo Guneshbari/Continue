@@ -39,9 +39,10 @@ export default async function GameDetailPage({ params }: PageProps) {
     game = findSeedGame(slug)
   }
 
-  if (!game) notFound()
-  // TS narrowing: notFound() throws, so game is defined from here
-  const g = game!
+  if (!game) {
+    notFound()
+  }
+  const g = game
 
   const releaseYear = g.releaseDate
     ? new Date(g.releaseDate).getFullYear()

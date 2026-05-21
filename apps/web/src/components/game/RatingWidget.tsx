@@ -36,7 +36,7 @@ export function RatingWidget({ gameId, avgRating, ratingCount }: Props) {
       <div className="rating-widget__avg">
         <Star size={16} className="rating-widget__star-icon" aria-hidden="true" />
         <span className="rating-widget__score">
-          {avgRating ? avgRating.toFixed(1) : '—'}
+          {avgRating ? avgRating.toFixed(1) : '-'}
         </span>
         <span className="rating-widget__count">
           {ratingCount > 0 ? `${ratingCount} ratings` : 'No ratings yet'}

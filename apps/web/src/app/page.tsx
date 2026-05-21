@@ -1,4 +1,4 @@
-// SSR homepage — server component, no client JS needed for initial paint
+// SSR homepage - server component, no client JS needed for initial paint
 
 import { Hero } from '@/components/home/Hero'
 import { DiscoverySection } from '@/components/game/DiscoverySection'
@@ -8,7 +8,7 @@ import type { Metadata } from 'next'
 import type { GameDetail, GameSummary } from '@continue/types'
 
 export const metadata: Metadata = {
-  title: 'Continue — Discover Your Next Game',
+  title: 'Continue - Discover Your Next Game',
   description: 'Discover, rate, and collect games. A cinematic game discovery platform for players who care about quality.',
 }
 
@@ -33,7 +33,7 @@ async function getHomeData() {
       topRated: hasliveData ? topData : TOP_RATED,
     }
   } catch {
-    // API not yet running — use static seed data
+    // API not yet running - use static seed data
     return {
       featured: FEATURED_GAMES,
       trending: TRENDING_GAMES,

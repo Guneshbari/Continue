@@ -1,7 +1,7 @@
 import {
   Injectable, NotFoundException, ForbiddenException, ConflictException,
 } from '@nestjs/common'
-import { PrismaService } from '../../common/prisma/prisma.service'
+import type { PrismaService } from '../../common/prisma/prisma.service'
 import type { CreateListDto, UpdateListDto, AddListItemDto } from './dto/list.dto'
 
 function slugify(title: string): string {
@@ -44,7 +44,7 @@ export class ListsService {
     const base = slugify(dto.title)
     // Ensure unique slug per user by appending a short suffix if needed
     const existing = await this.prisma.list.findMany({
-      where: { userId, slug: { startsWith: base } },
+      where: { userId, deletedAt: null, slug: { startsWith: base } },
       select: { slug: true },
     })
     const slug = existing.length === 0 ? base : `${base}-${existing.length}`
@@ -62,7 +62,7 @@ export class ListsService {
   }
 
   async findByUser(username: string, requesterId?: string) {
-    const user = await this.prisma.user.findUnique({
+    const user = await this.prisma.user.findFirst({
       where: { username, deletedAt: null },
       select: { id: true },
     })
@@ -74,21 +74,21 @@ export class ListsService {
       : { visibility: 'PUBLIC' as const }
 
     return this.prisma.list.findMany({
-      where: { userId: user.id, ...visibilityFilter },
+      where: { userId: user.id, deletedAt: null, ...visibilityFilter },
       orderBy: { updatedAt: 'desc' },
       select: LIST_SELECT,
     })
   }
 
   async findOne(username: string, slug: string, requesterId?: string) {
-    const user = await this.prisma.user.findUnique({
+    const user = await this.prisma.user.findFirst({
       where: { username, deletedAt: null },
       select: { id: true },
     })
     if (!user) throw new NotFoundException('User not found')
 
-    const list = await this.prisma.list.findUnique({
-      where: { userId_slug: { userId: user.id, slug } },
+    const list = await this.prisma.list.findFirst({
+      where: { userId: user.id, slug, deletedAt: null },
       include: {
         user: { select: { id: true, username: true, displayName: true, avatarUrl: true } },
         items: {
@@ -128,7 +128,10 @@ export class ListsService {
 
   async remove(id: string, userId: string) {
     await this.assertOwner(id, userId)
-    await this.prisma.list.delete({ where: { id } })
+    await this.prisma.list.update({
+      where: { id },
+      data: { deletedAt: new Date() },
+    })
   }
 
   // ─── List items ─────────────────────────────────────────────────────────────
@@ -137,7 +140,7 @@ export class ListsService {
     await this.assertOwner(listId, userId)
 
     // Check game exists
-    const game = await this.prisma.game.findUnique({
+    const game = await this.prisma.game.findFirst({
       where: { id: dto.gameId, deletedAt: null },
       select: { id: true },
     })
@@ -175,8 +178,8 @@ export class ListsService {
   // ─── Helper ─────────────────────────────────────────────────────────────────
 
   private async assertOwner(listId: string, userId: string) {
-    const list = await this.prisma.list.findUnique({
-      where: { id: listId },
+    const list = await this.prisma.list.findFirst({
+      where: { id: listId, deletedAt: null },
       select: { userId: true },
     })
     if (!list) throw new NotFoundException('List not found')

@@ -21,14 +21,14 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? 'https://continue.app'),
-  title: { default: 'Continue — Discover Your Next Game', template: '%s | Continue' },
+  title: { default: 'Continue - Discover Your Next Game', template: '%s | Continue' },
   description: 'Discover, rate, and collect games. A cinematic game discovery platform.',
   keywords: ['games', 'game discovery', 'game reviews', 'game ratings'],
   openGraph: {
     type: 'website',
     locale: 'en_US',
     siteName: 'Continue',
-    title: 'Continue — Discover Your Next Game',
+    title: 'Continue - Discover Your Next Game',
     description: 'Discover, rate, and collect games.',
   },
   twitter: { card: 'summary_large_image' },

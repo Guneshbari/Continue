@@ -2,14 +2,14 @@ import {
   Controller, Put, Delete, Get, Param, Body, HttpCode, HttpStatus,
 } from '@nestjs/common'
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger'
-import { RatingsService } from './ratings.service'
-import { UpsertRatingDto } from './dto/rating.dto'
+import type { RatingsService } from './ratings.service'
+import type { UpsertRatingDto } from './dto/rating.dto'
 import { CurrentUser } from '../auth/decorators/current-user.decorator'
 import { Public } from '../auth/decorators/public.decorator'
 
 @ApiTags('ratings')
 @ApiBearerAuth()
-@Controller('games/:gameId/ratings')
+@Controller({ path: 'games/:gameId/ratings', version: '1' })
 export class RatingsController {
   constructor(private readonly svc: RatingsService) {}
 
