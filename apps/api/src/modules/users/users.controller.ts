@@ -40,11 +40,4 @@ export class UsersController {
   ) {
     return this.svc.findRatings(username, limit, cursor)
   }
-
-  @Get(':username/lists')
-  @Public()
-  @ApiOperation({ summary: 'Get public lists for a user' })
-  lists(@Param('username') username: string) {
-    return this.svc.findLists(username)
-  }
 }

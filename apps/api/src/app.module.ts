@@ -8,6 +8,7 @@ import { RatingsModule } from './modules/ratings/ratings.module'
 import { ReviewsModule } from './modules/reviews/reviews.module'
 import { UsersModule } from './modules/users/users.module'
 import { SearchModule } from './modules/search/search.module'
+import { ListsModule } from './modules/lists/lists.module'
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { SearchModule } from './modules/search/search.module'
     ReviewsModule,
     UsersModule,
     SearchModule,
+    ListsModule,
   ],
 })
 export class AppModule {}

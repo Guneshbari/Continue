@@ -5,6 +5,7 @@ import { gamesApi } from '@/lib/api/games'
 import { findSeedGame } from '@/lib/data/seed'
 import { ReviewsSection } from '@/components/game/ReviewsSection'
 import { RatingWidget } from '@/components/game/RatingWidget'
+import { AddToListButton } from '@/components/lists/AddToListButton'
 import { Star, Calendar, Building2, Tag } from 'lucide-react'
 import type { GameDetail } from '@continue/types'
 
@@ -82,6 +83,9 @@ export default async function GameDetailPage({ params }: PageProps) {
 
             {/* Rating widget — client component */}
             <RatingWidget gameId={g.id} avgRating={g.avgRating} ratingCount={g.ratingCount} />
+
+            {/* Add to list — client component */}
+            <AddToListButton gameId={g.id} gameTitle={g.title} />
           </aside>
 
           {/* Main info */}
