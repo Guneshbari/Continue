@@ -1,4 +1,4 @@
-import { Controller, Post, Body, HttpCode, HttpStatus, UseGuards } from '@nestjs/common'
+import { Controller, Post, Body, HttpCode, HttpStatus, UseGuards, Headers } from '@nestjs/common'
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger'
 import { Throttle } from '@nestjs/throttler'
 import type { AuthService } from './auth.service'
@@ -30,20 +30,32 @@ export class AuthController {
     return this.authService.login(dto)
   }
 
-  @UseGuards(JwtAuthGuard)
+  /**
+   * Expects the raw refresh token in Authorization header as Bearer.
+   * Returns a new token pair. Old token is invalidated (rotation).
+   */
+  @Public()
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
-  @ApiBearerAuth()
-  @ApiOperation({ summary: 'Refresh access token' })
-  refresh(@CurrentUser() user: AuthUser) {
-    return this.authService.refresh(user.id)
+  @ApiOperation({ summary: 'Rotate refresh token and issue new access token' })
+  refresh(@Headers('authorization') authHeader: string) {
+    const rawToken = authHeader?.replace(/^Bearer\s+/i, '')
+    if (!rawToken) {
+      throw new Error('Missing refresh token')
+    }
+    return this.authService.refresh(rawToken)
   }
 
+  /**
+   * Revokes all refresh tokens for the current user.
+   * Client must discard access token locally (it remains valid until expiry).
+   */
   @UseGuards(JwtAuthGuard)
   @Post('logout')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Logout (client discards tokens)' })
-   
-  logout() {}
+  @ApiOperation({ summary: 'Logout — revokes all refresh tokens for the user' })
+  async logout(@CurrentUser() user: AuthUser) {
+    await this.authService.revokeAllTokens(user.id)
+  }
 }

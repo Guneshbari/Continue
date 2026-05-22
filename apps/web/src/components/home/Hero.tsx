@@ -7,9 +7,9 @@ import { ChevronLeft, ChevronRight, Play } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { GameDetail } from '@continue/types'
 
-interface HeroProps {
+type HeroProps = Readonly<{
   featured: GameDetail[]
-}
+}>
 
 const AUTO_ROTATE_MS = 6000
 
@@ -71,7 +71,7 @@ export function Hero({ featured }: HeroProps) {
         <div className="hero__meta" aria-live="polite" aria-atomic="true">
           {/* Genres */}
           {active.genres.length > 0 && (
-            <ul className="hero__genres" role="list" aria-label="Genres">
+            <ul className="hero__genres" aria-label="Genres">
               {active.genres.slice(0, 3).map((g) => (
                 <li key={g.id} className="hero__genre-tag">{g.name}</li>
               ))}

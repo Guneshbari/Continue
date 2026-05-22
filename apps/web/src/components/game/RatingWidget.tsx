@@ -5,6 +5,8 @@ import { Star } from 'lucide-react'
 import { useAuth } from '@/lib/auth/AuthContext'
 import { ratingsApi } from '@/lib/api/interactions'
 
+const STAR_VALUES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] as const
+
 interface Props {
   gameId: string
   avgRating: number | null
@@ -48,7 +50,7 @@ export function RatingWidget({ gameId, avgRating, ratingCount }: Props) {
         <div className="rating-widget__picker" aria-label="Rate this game">
           <p className="rating-widget__label">Your rating</p>
           <div className="rating-widget__stars" role="group">
-            {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
+            {STAR_VALUES.map((n) => (
               <button
                 key={n}
                 disabled={saving}

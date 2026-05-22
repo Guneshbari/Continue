@@ -6,10 +6,10 @@ import { Plus, X, Globe, Eye, Lock, Loader2, List } from 'lucide-react'
 import { useAuth } from '@/lib/auth/AuthContext'
 import { listsApi, type ListSummary } from '@/lib/api/lists'
 
-interface Props {
+type Props = Readonly<{
   initialLists: ListSummary[]
   username: string
-}
+}>
 
 const visibilityIcon = {
   PUBLIC: <Globe size={12} aria-label="Public" />,
@@ -31,7 +31,7 @@ export function UserListsManager({ initialLists, username }: Props) {
 
   const isOwner = user?.username === username
 
-  const handleCreate = async (e: React.FormEvent) => {
+  const handleCreate = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (!token || !title.trim()) return
     setLoading(true)
@@ -77,8 +77,8 @@ export function UserListsManager({ initialLists, username }: Props) {
 
       {/* Modal */}
       {open && (
-        <div className="list-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-          <div className="list-modal__backdrop" onClick={() => setOpen(false)} />
+        <dialog className="list-modal" open aria-labelledby="modal-title">
+          <button type="button" className="list-modal__backdrop" onClick={() => setOpen(false)} aria-label="Close modal" />
           <div className="list-modal__content">
             <div className="list-modal__header">
               <h2 id="modal-title">Create a new list</h2>
@@ -140,7 +140,7 @@ export function UserListsManager({ initialLists, username }: Props) {
               </div>
             </form>
           </div>
-        </div>
+        </dialog>
       )}
 
       {/* Grid */}
@@ -149,7 +149,7 @@ export function UserListsManager({ initialLists, username }: Props) {
           <p>No lists yet.</p>
         </div>
       ) : (
-        <ul className="lists-grid" role="list">
+        <ul className="lists-grid">
           {lists.map((list) => (
             <li key={list.id}>
               <Link href={`/users/${username}/lists/${list.slug}`} className="list-card">
@@ -165,7 +165,7 @@ export function UserListsManager({ initialLists, username }: Props) {
                   </div>
                   {list.description && <p className="list-card__desc">{list.description}</p>}
                   <span className="list-card__count">
-                    {list._count.items} game{list._count.items !== 1 ? 's' : ''}
+                    {list._count.items} {list._count.items === 1 ? 'game' : 'games'}
                   </span>
                 </div>
               </Link>

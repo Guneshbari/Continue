@@ -5,6 +5,7 @@ import type { GamesListParams } from '@/lib/api/games'
 import { GameCard, GameCardSkeleton } from '@/components/game/GameCard'
 import { TRENDING_GAMES } from '@/lib/data/seed'
 import type { GameSummary } from '@continue/types'
+import { getSkeletonKeys } from '@/lib/skeletonKeys'
 
 export const metadata: Metadata = {
   title: 'Discover Games',
@@ -36,7 +37,7 @@ async function GameGrid({ sort, genre, platform, q }: {
   }
 
   return (
-    <ul className="games-grid" role="list">
+    <ul className="games-grid">
       {games.map((game) => (
         <li key={game.id}>
           <GameCard game={game} />
@@ -77,9 +78,9 @@ export default async function GamesPage({ searchParams }: PageProps) {
       </div>
 
       <Suspense fallback={
-        <ul className="games-grid" role="list">
-          {Array.from({ length: 12 }).map((_, i) => (
-            <li key={i}>
+        <ul className="games-grid">
+          {getSkeletonKeys(12).map((skeletonKey) => (
+            <li key={skeletonKey}>
               <GameCardSkeleton />
             </li>
           ))}

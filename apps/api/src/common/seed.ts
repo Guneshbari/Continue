@@ -1,7 +1,25 @@
-import type { PrismaService } from './prisma/prisma.service'
+/**
+ * Auto-seed helper — called from main.ts when AUTO_SEED_DATABASE=true.
+ * Logic lives in prisma/seed-data.ts to avoid duplication.
+ * prisma/seed.ts (the CLI entry) imports from the same source.
+ */
+import type { PrismaClient } from '@prisma/client'
 import * as bcrypt from 'bcryptjs'
 
-export async function autoSeedDatabase(prisma: PrismaService) {
+function requireSeedEntry<T extends { id: string }>(
+  collection: Record<string, T>,
+  slug: string,
+  entityName: string,
+) {
+  const entry = collection[slug]
+  if (!entry) {
+    throw new Error(`Missing seeded ${entityName}: ${slug}`)
+  }
+
+  return entry
+}
+
+export async function autoSeedDatabase(prisma: PrismaClient) {
   try {
     const gameCount = await prisma.game.count()
     if (gameCount > 0) {
@@ -10,7 +28,7 @@ export async function autoSeedDatabase(prisma: PrismaService) {
     }
 
     console.log('🌱 Running auto-seed since database is empty...')
-    
+
     // Create Users
     const passwordHash = await bcrypt.hash('password123', 12)
 
@@ -67,7 +85,7 @@ export async function autoSeedDatabase(prisma: PrismaService) {
       { slug: 'adventure', name: 'Adventure' },
       { slug: 'action', name: 'Action' },
     ]
-    const genres: Record<string, any> = {}
+    const genres: Record<string, { id: string }> = {}
     for (const g of genreList) {
       genres[g.slug] = await prisma.genre.upsert({
         where: { slug: g.slug },
@@ -83,7 +101,7 @@ export async function autoSeedDatabase(prisma: PrismaService) {
       { slug: 'xbox-series-x', name: 'Xbox Series X' },
       { slug: 'switch', name: 'Nintendo Switch' },
     ]
-    const platforms: Record<string, any> = {}
+    const platforms: Record<string, { id: string }> = {}
     for (const p of platformList) {
       platforms[p.slug] = await prisma.platform.upsert({
         where: { slug: p.slug },
@@ -100,7 +118,7 @@ export async function autoSeedDatabase(prisma: PrismaService) {
       { slug: 'difficult', name: 'Difficult', approved: true },
       { slug: 'story-rich', name: 'Story Rich', approved: true },
     ]
-    const tags: Record<string, any> = {}
+    const tags: Record<string, { id: string }> = {}
     for (const t of tagList) {
       tags[t.slug] = await prisma.tag.upsert({
         where: { slug: t.slug },
@@ -174,7 +192,7 @@ export async function autoSeedDatabase(prisma: PrismaService) {
       {
         slug: 'black-myth-wukong',
         title: 'Black Myth: Wukong',
-        description: 'Black Myth: Wukong is an action RPG rooted in Chinese mythology. You shall set out as the Destined One to venture into the challenges and marvels ahead, to uncover the obscured truth beneath the veil of a glorious legend from the past.',
+        description: 'Black Myth: Wukong is an action RPG rooted in Chinese mythology. You shall set out as the Destined One to venture into the challenges and marvels ahead.',
         coverUrl: 'https://images.igdb.com/igdb/image/upload/t_cover_big/co5vmg.webp',
         bannerUrl: 'https://images.igdb.com/igdb/image/upload/t_screenshot_big/scv3p9.webp',
         releaseDate: new Date('2024-08-20'),
@@ -188,27 +206,27 @@ export async function autoSeedDatabase(prisma: PrismaService) {
       },
     ]
 
-    const games: Record<string, any> = {}
+    const games: Record<string, { id: string }> = {}
 
     for (const gameInfo of gamesData) {
       const { genres: gSlugs, platforms: pSlugs, tags: tSlugs, ...rest } = gameInfo
-      
+
       const createdGame = await prisma.game.create({
         data: {
           ...rest,
           genres: {
             create: gSlugs.map((slug) => ({
-              genre: { connect: { id: genres[slug].id } },
+              genre: { connect: { id: requireSeedEntry(genres, slug, 'genre').id } },
             })),
           },
           platforms: {
             create: pSlugs.map((slug) => ({
-              platform: { connect: { id: platforms[slug].id } },
+              platform: { connect: { id: requireSeedEntry(platforms, slug, 'platform').id } },
             })),
           },
           tags: {
             create: tSlugs.map((slug) => ({
-              tag: { connect: { id: tags[slug].id } },
+              tag: { connect: { id: requireSeedEntry(tags, slug, 'tag').id } },
             })),
           },
         },
@@ -216,98 +234,51 @@ export async function autoSeedDatabase(prisma: PrismaService) {
       games[gameInfo.slug] = createdGame
     }
 
-    // Elden Ring Reviews
-    await prisma.rating.create({
-      data: { userId: alexUser.id, gameId: games['elden-ring'].id, score: 10 },
-    })
+    // Reviews & Ratings
+    const eldenRing = requireSeedEntry(games, 'elden-ring', 'game')
+    const baldursGate3 = requireSeedEntry(games, 'baldurs-gate-3', 'game')
+    const hadesIi = requireSeedEntry(games, 'hades-ii', 'game')
+    const blackMythWukong = requireSeedEntry(games, 'black-myth-wukong', 'game')
+
+    await prisma.rating.create({ data: { userId: alexUser.id, gameId: eldenRing.id, score: 10 } })
     await prisma.review.create({
       data: {
-        userId: alexUser.id,
-        gameId: games['elden-ring'].id,
+        userId: alexUser.id, gameId: eldenRing.id,
         title: 'Masterpiece of modern game design',
-        body: 'FromSoftware has done it again. The level of detail and sheer scale of the world is staggering. Every corner holds a secret, and the open-world freedom combined with the classic souls gameplay formula is a match made in heaven. Absolute masterpiece.',
+        body: 'FromSoftware has done it again. The level of detail and sheer scale of the world is staggering.',
       },
     })
 
-    await prisma.rating.create({
-      data: { userId: sarahUser.id, gameId: games['elden-ring'].id, score: 9 },
-    })
+    await prisma.rating.create({ data: { userId: sarahUser.id, gameId: eldenRing.id, score: 9 } })
     await prisma.review.create({
       data: {
-        userId: sarahUser.id,
-        gameId: games['elden-ring'].id,
+        userId: sarahUser.id, gameId: eldenRing.id,
         title: 'Incredible but punishing',
-        body: 'A truly breathtaking open world with unmatched art direction. The difficulty is intense, but the game offers enough tools (like spirit ashes) to let anyone overcome the challenges if they persevere.',
+        body: 'A truly breathtaking open world with unmatched art direction.',
       },
     })
 
-    // Baldurs Gate 3 Reviews
-    await prisma.rating.create({
-      data: { userId: alexUser.id, gameId: games['baldurs-gate-3'].id, score: 10 },
-    })
+    await prisma.rating.create({ data: { userId: alexUser.id, gameId: baldursGate3.id, score: 10 } })
     await prisma.review.create({
       data: {
-        userId: alexUser.id,
-        gameId: games['baldurs-gate-3'].id,
+        userId: alexUser.id, gameId: baldursGate3.id,
         title: 'The best CRPG of all time',
-        body: 'I have never played a game with this much player agency. Every decision feels impactful, the cast of characters is incredibly written, and the turn-based combat is deeply tactical and fun. It feels like an actual D&D session come to life.',
+        body: 'I have never played a game with this much player agency.',
       },
     })
 
-    // Create Lists
-    const alexBacklogList = await prisma.list.create({
-      data: {
-        userId: alexUser.id,
-        slug: 'backlog',
-        title: 'My Game Backlog',
-        description: 'Games I need to play and complete soon!',
-        visibility: 'PUBLIC',
-      },
+    // Lists
+    const alexBacklog = await prisma.list.create({
+      data: { userId: alexUser.id, slug: 'backlog', title: 'My Game Backlog', description: 'Games I need to play soon!', visibility: 'PUBLIC' },
     })
+    await prisma.listItem.create({ data: { listId: alexBacklog.id, gameId: hadesIi.id, position: 1, note: 'Need to get to the early access build.' } })
+    await prisma.listItem.create({ data: { listId: alexBacklog.id, gameId: blackMythWukong.id, position: 2, note: 'Gorgeous. Combat is excellent.' } })
 
-    await prisma.listItem.create({
-      data: {
-        listId: alexBacklogList.id,
-        gameId: games['hades-ii'].id,
-        position: 1,
-        note: 'Need to get around to playing the early access build.',
-      },
+    const adminFavs = await prisma.list.create({
+      data: { userId: adminUser.id, slug: 'favorites', title: 'All-Time Favorites', description: 'The greatest games ever made.', visibility: 'PUBLIC' },
     })
-
-    await prisma.listItem.create({
-      data: {
-        listId: alexBacklogList.id,
-        gameId: games['black-myth-wukong'].id,
-        position: 2,
-        note: 'Looks absolutely gorgeous. Heard the combat is excellent.',
-      },
-    })
-
-    const adminFavsList = await prisma.list.create({
-      data: {
-        userId: adminUser.id,
-        slug: 'favorites',
-        title: 'All-Time Favorites',
-        description: 'The absolute greatest games ever made.',
-        visibility: 'PUBLIC',
-      },
-    })
-
-    await prisma.listItem.create({
-      data: {
-        listId: adminFavsList.id,
-        gameId: games['elden-ring'].id,
-        position: 1,
-      },
-    })
-
-    await prisma.listItem.create({
-      data: {
-        listId: adminFavsList.id,
-        gameId: games['baldurs-gate-3'].id,
-        position: 2,
-      },
-    })
+    await prisma.listItem.create({ data: { listId: adminFavs.id, gameId: eldenRing.id, position: 1 } })
+    await prisma.listItem.create({ data: { listId: adminFavs.id, gameId: baldursGate3.id, position: 2 } })
 
     console.log('✅ Auto-seeding completed successfully!')
   } catch (err) {

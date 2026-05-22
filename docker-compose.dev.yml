@@ -1,11 +1,15 @@
+# ─── Continue — Development Docker Compose ──────────────────────────────────
+# INTENTIONAL: hardcoded credentials below are DEV-ONLY. Never use in staging/prod.
+# Production credentials must be set via secrets management (see docker-compose.yml).
+# ─────────────────────────────────────────────────────────────────────────────
 services:
   postgres:
     image: postgres:16-alpine
     container_name: continue_postgres
     restart: unless-stopped
     environment:
-      POSTGRES_USER: continue
-      POSTGRES_PASSWORD: continue
+      POSTGRES_USER: continue       # dev only — not a secret
+      POSTGRES_PASSWORD: continue   # dev only — not a secret
       POSTGRES_DB: continue_dev
     ports:
       - "5432:5432"

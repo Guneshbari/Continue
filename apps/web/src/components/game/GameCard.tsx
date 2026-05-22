@@ -4,20 +4,23 @@ import Image from 'next/image'
 import { Star } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
-interface GameCardProps {
+type GameCardProps = Readonly<{
   game: GameSummary
   variant?: 'discovery' | 'compact' | 'hero'
   className?: string
-}
+}>
 
 export function GameCard({ game, variant = 'discovery', className }: GameCardProps) {
   const href = `/games/${game.slug}`
+  const ariaLabel = game.avgRating
+    ? `${game.title}, rated ${game.avgRating.toFixed(1)} out of 10`
+    : game.title
 
   return (
     <Link
       href={href}
       className={cn('game-card', `game-card--${variant}`, className)}
-      aria-label={`${game.title}${game.avgRating ? `, rated ${game.avgRating.toFixed(1)} out of 10` : ''}`}
+      aria-label={ariaLabel}
     >
       {/* Cover image */}
       <div className="game-card__cover">
@@ -52,7 +55,7 @@ export function GameCard({ game, variant = 'discovery', className }: GameCardPro
         <h3 className="game-card__title">{game.title}</h3>
 
         {variant !== 'compact' && game.genres.length > 0 && (
-          <ul className="game-card__genres" role="list" aria-label="Genres">
+          <ul className="game-card__genres" aria-label="Genres">
             {game.genres.slice(0, 2).map((g) => (
               <li key={g.id} className="game-card__genre-tag">
                 {g.name}
@@ -75,7 +78,7 @@ export function GameCard({ game, variant = 'discovery', className }: GameCardPro
 }
 
 /** Skeleton placeholder — same dimensions as GameCard */
-export function GameCardSkeleton({ variant = 'discovery' }: { variant?: GameCardProps['variant'] }) {
+export function GameCardSkeleton({ variant = 'discovery' }: Readonly<{ variant?: GameCardProps['variant'] }>) {
   return (
     <div
       className={cn('game-card', `game-card--${variant}`, 'game-card--skeleton')}

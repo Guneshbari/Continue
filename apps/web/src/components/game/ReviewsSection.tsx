@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, type ReactNode, type SyntheticEvent } from 'react'
 import { useAuth } from '@/lib/auth/AuthContext'
 import { reviewsApi } from '@/lib/api/interactions'
 import { Loader2 } from 'lucide-react'
@@ -13,7 +13,11 @@ interface Review {
   user: { id: string; username: string; displayName: string | null; avatarUrl: string | null }
 }
 
-export function ReviewsSection({ gameId }: { gameId: string }) {
+type ReviewsSectionProps = Readonly<{
+  gameId: string
+}>
+
+export function ReviewsSection({ gameId }: ReviewsSectionProps) {
   const { user, accessToken } = useAuth()
   const [reviews, setReviews] = useState<Review[]>([])
   const [loading, setLoading] = useState(true)
@@ -30,7 +34,7 @@ export function ReviewsSection({ gameId }: { gameId: string }) {
     }).catch(() => setLoading(false))
   }, [gameId])
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (!accessToken) return
     setSubmitting(true)
@@ -51,6 +55,34 @@ export function ReviewsSection({ gameId }: { gameId: string }) {
     } finally {
       setSubmitting(false)
     }
+  }
+
+  let reviewsContent: ReactNode
+  if (loading) {
+    reviewsContent = <p className="reviews-section__empty">Loading reviews…</p>
+  } else if (reviews.length === 0) {
+    reviewsContent = <p className="reviews-section__empty">No reviews yet. Be the first!</p>
+  } else {
+    reviewsContent = (
+      <ul className="reviews-list">
+        {reviews.map((r) => (
+          <li key={r.id} className="review-card">
+            <div className="review-card__meta">
+              <span className="review-card__author">
+                <a href={`/users/${r.user.username}`} className="review-card__author-link">
+                  {r.user.displayName ?? r.user.username}
+                </a>
+              </span>
+              <time className="review-card__date" dateTime={r.createdAt}>
+                {new Date(r.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
+              </time>
+            </div>
+            {r.title && <h3 className="review-card__title">{r.title}</h3>}
+            <p className="review-card__body">{r.body}</p>
+          </li>
+        ))}
+      </ul>
+    )
   }
 
   return (
@@ -110,30 +142,7 @@ export function ReviewsSection({ gameId }: { gameId: string }) {
       )}
 
       {/* List */}
-      {loading ? (
-        <p className="reviews-section__empty">Loading reviews…</p>
-      ) : reviews.length === 0 ? (
-        <p className="reviews-section__empty">No reviews yet. Be the first!</p>
-      ) : (
-        <ul className="reviews-list" role="list">
-          {reviews.map((r) => (
-            <li key={r.id} className="review-card">
-              <div className="review-card__meta">
-                <span className="review-card__author">
-                  <a href={`/users/${r.user.username}`} className="review-card__author-link">
-                    {r.user.displayName ?? r.user.username}
-                  </a>
-                </span>
-                <time className="review-card__date" dateTime={r.createdAt}>
-                  {new Date(r.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
-                </time>
-              </div>
-              {r.title && <h3 className="review-card__title">{r.title}</h3>}
-              <p className="review-card__body">{r.body}</p>
-            </li>
-          ))}
-        </ul>
-      )}
+      {reviewsContent}
     </section>
   )
 }

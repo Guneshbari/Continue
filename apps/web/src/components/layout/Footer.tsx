@@ -13,7 +13,7 @@ export function Footer() {
       <div className="footer__inner">
         <p className="footer__brand">Continue</p>
         <nav aria-label="Footer navigation">
-          <ul className="footer__links" role="list">
+          <ul className="footer__links">
             {FOOTER_LINKS.map((link) => (
               <li key={link.href}>
                 <Link href={link.href} className="footer__link">

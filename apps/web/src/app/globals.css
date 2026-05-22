@@ -47,37 +47,8 @@
   --section-gap:   clamp(3rem, 8vw, 6rem);
 }
 
-:root {
-  /* Typography */
-  --font-display: 'Bebas Neue', 'Impact', ui-sans-serif;
-  --font-ui: 'Inter', ui-sans-serif, system-ui, sans-serif;
-
-  /* Cinematic dark surfaces */
-  --color-surface-base:    oklch(8% 0.01 260);
-  --color-surface-raised:  oklch(12% 0.015 260);
-  --color-surface-overlay: oklch(16% 0.018 260);
-  --color-surface-sunken:  oklch(5% 0.008 260);
-
-  /* Brand — electric violet */
-  --color-accent:         oklch(65% 0.25 290);
-  --color-accent-muted:   oklch(50% 0.18 290);
-  --color-accent-subtle:  oklch(30% 0.10 290);
-  --color-accent-glow:    oklch(65% 0.25 290 / 0.25);
-
-  /* Text */
-  --color-text-primary:   oklch(96% 0.005 260);
-  --color-text-secondary: oklch(70% 0.01  260);
-  --color-text-muted:     oklch(45% 0.01  260);
-
-  /* Borders */
-  --color-border:         oklch(22% 0.015 260);
-  --color-border-subtle:  oklch(18% 0.01  260);
-
-  /* Status */
-  --color-success: oklch(70% 0.18 145);
-  --color-warning: oklch(75% 0.18 70);
-  --color-error:   oklch(65% 0.22 25);
-}
+/* NOTE: Tokens above are defined in @theme and are available as CSS custom properties
+   automatically by Tailwind v4. No :root re-declaration needed. */
 
 /* ─── Base ───────────────────────────────────────────────────────────── */
 @layer base {
@@ -1681,7 +1652,7 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.06em;
-    color: #71717a !important;
+    color: rgba(255, 255, 255, 0.72) !important;
     border-bottom: 1px solid #27272a !important;
   }
 
@@ -1689,7 +1660,7 @@
     background: none;
     border: none;
     cursor: pointer;
-    color: #71717a !important;
+    color: rgba(255, 255, 255, 0.72) !important;
     padding: 0.2rem;
     display: flex;
     align-items: center;
@@ -1702,7 +1673,7 @@
   .add-to-list__empty {
     padding: 1rem;
     font-size: 0.85rem;
-    color: #71717a !important;
+    color: rgba(255, 255, 255, 0.72) !important;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1732,7 +1703,7 @@
     background-color: #18181b !important;
   }
   .add-to-list__item--added {
-    color: #71717a !important;
+    color: rgba(255, 255, 255, 0.72) !important;
     cursor: default;
   }
 
@@ -1746,7 +1717,7 @@
 
   .add-to-list__item-count {
     font-size: 0.75rem;
-    color: #71717a !important;
+    color: rgba(255, 255, 255, 0.72) !important;
   }
 
   .add-to-list__check {
@@ -1766,7 +1737,7 @@
     font-family: var(--font-ui);
     font-size: 0.875rem;
     font-weight: 600;
-    color: #a855f7 !important;
+    color: #f5f3ff !important;
     cursor: pointer;
     transition: background-color 120ms, color 120ms;
   }
@@ -1814,24 +1785,24 @@
 
   .add-to-list__new-save {
     padding: 0.35rem 0.75rem;
-    background-color: #a855f7 !important;
+    background-color: #7c3aed !important;
     border: none;
     border-radius: 6px;
     font-size: 0.8rem;
     font-weight: 700;
     font-family: var(--font-ui);
-    color: #fff !important;
+    color: #ffffff !important;
     cursor: pointer;
     transition: opacity 150ms, background-color 150ms;
   }
-  .add-to-list__new-save:hover { background-color: #c084fc !important; }
+  .add-to-list__new-save:hover { background-color: #8b5cf6 !important; }
   .add-to-list__new-save:disabled { opacity: 0.5; cursor: default; }
 
   .add-to-list__new-cancel {
     background: none;
     border: none;
     cursor: pointer;
-    color: #71717a !important;
+    color: rgba(255, 255, 255, 0.72) !important;
     padding: 0.35rem 0.6rem;
     font-size: 0.8rem;
     font-family: var(--font-ui);
@@ -2145,6 +2116,9 @@
     align-items: center;
     justify-content: center;
     padding: 1rem;
+    border: none;
+    background: transparent;
+    overflow: hidden;
   }
 
   .list-modal__backdrop {
@@ -2152,6 +2126,10 @@
     inset: 0;
     background-color: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(4px);
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    appearance: none;
   }
 
   .list-modal__content {

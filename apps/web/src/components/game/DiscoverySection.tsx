@@ -1,15 +1,17 @@
+import Link from 'next/link'
 import type { GameSummary } from '@continue/types'
 import { GameCard, GameCardSkeleton } from '@/components/game/GameCard'
 import { cn } from '@/lib/utils'
+import { getSkeletonKeys } from '@/lib/skeletonKeys'
 
-interface DiscoverySectionProps {
+type DiscoverySectionProps = Readonly<{
   title: string
   games: GameSummary[]
   loading?: boolean
   skeletonCount?: number
   viewAllHref?: string
   className?: string
-}
+}>
 
 export function DiscoverySection({
   title,
@@ -19,37 +21,37 @@ export function DiscoverySection({
   viewAllHref,
   className,
 }: DiscoverySectionProps) {
+  const sectionId = `section-${title.toLowerCase().replace(/\s+/g, '-')}`
+  const skeletonItems = loading
+    ? getSkeletonKeys(skeletonCount).map((skeletonKey) => (
+        <li key={skeletonKey}>
+          <GameCardSkeleton variant="discovery" />
+        </li>
+      ))
+    : games.map((game) => (
+        <li key={game.id}>
+          <GameCard game={game} variant="discovery" />
+        </li>
+      ))
+
   return (
-    <section className={cn('discovery-section', className)} aria-labelledby={`section-${title.toLowerCase().replace(/\s+/g, '-')}`}>
+    <section className={cn('discovery-section', className)} aria-labelledby={sectionId}>
       {/* Header */}
       <div className="discovery-section__header">
         <h2
           className="discovery-section__title"
-          id={`section-${title.toLowerCase().replace(/\s+/g, '-')}`}
+          id={sectionId}
         >
           {title}
         </h2>
         {viewAllHref && (
-          <a href={viewAllHref} className="discovery-section__view-all">
+          <Link href={viewAllHref} className="discovery-section__view-all">
             View all
-          </a>
+          </Link>
         )}
       </div>
 
-      {/* Grid */}
-      <ul className="discovery-section__grid" role="list">
-        {loading
-          ? Array.from({ length: skeletonCount }).map((_, i) => (
-              <li key={i}>
-                <GameCardSkeleton variant="discovery" />
-              </li>
-            ))
-          : games.map((game) => (
-              <li key={game.id}>
-                <GameCard game={game} variant="discovery" />
-              </li>
-            ))}
-      </ul>
+      <ul className="discovery-section__grid">{skeletonItems}</ul>
     </section>
   )
 }

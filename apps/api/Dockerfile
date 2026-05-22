@@ -37,6 +37,10 @@ COPY --from=builder /app/apps/api/dist ./dist
 COPY --from=builder /app/apps/api/node_modules ./node_modules
 COPY --from=builder /app/apps/api/package.json ./
 COPY --from=builder /app/apps/api/prisma ./prisma
+COPY --from=builder /app/apps/api/entrypoint.sh ./entrypoint.sh
+
+RUN chmod +x ./entrypoint.sh
 
 EXPOSE 3001
-CMD ["node", "dist/main"]
+# Runs migrations then starts server — never starts with stale schema
+ENTRYPOINT ["./entrypoint.sh"]

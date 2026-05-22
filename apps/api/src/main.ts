@@ -32,8 +32,20 @@ async function bootstrap() {
   })
 
   await app.register(fastifyHelmet, {
-    crossOriginResourcePolicy: false,
-    contentSecurityPolicy: false,
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'"],
+        styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
+        fontSrc: ["'self'", 'https://fonts.gstatic.com'],
+        imgSrc: ["'self'", 'data:', 'https://images.igdb.com', 'https:'],
+        connectSrc: ["'self'"],
+        frameSrc: ["'none'"],
+        objectSrc: ["'none'"],
+        upgradeInsecureRequests: [],
+      },
+    },
   })
 
   app.setGlobalPrefix('api')
@@ -69,8 +81,8 @@ async function bootstrap() {
 
   if (configService.get<string>('AUTO_SEED_DATABASE') === 'true') {
     try {
-      const { PrismaService } = await import('./common/prisma/prisma.service')
-      const { autoSeedDatabase } = await import('./common/seed')
+      const { PrismaService } = await import('./common/prisma/prisma.service.js')
+      const { autoSeedDatabase } = await import('./common/seed.js')
       const prisma = app.get(PrismaService)
       await autoSeedDatabase(prisma)
     } catch (err) {

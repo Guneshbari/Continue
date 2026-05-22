@@ -25,6 +25,9 @@
       ],
       "@continue/validation": [
         "../../packages/validation/src"
+      ],
+      "@continue/ui": [
+        "../../packages/ui/src"
       ]
     },
     "noEmit": true,

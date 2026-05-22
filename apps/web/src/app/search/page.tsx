@@ -117,9 +117,9 @@ export default function SearchPage() {
         {results.length > 0 && (
           <>
             <p className="search-page__count">
-              {results.length} result{results.length !== 1 ? 's' : ''}
+              {results.length} {results.length === 1 ? 'result' : 'results'}
             </p>
-            <ul className="search-results-list" role="list">
+            <ul className="search-results-list">
               {results.map((game) => (
                 <li key={game.id}>
                   <Link href={`/games/${game.slug}`} className="search-result-card">
