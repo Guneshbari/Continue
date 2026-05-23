@@ -92,17 +92,17 @@ export function Hero({ featured }: HeroProps) {
           {/* CTAs */}
           <div className="hero__ctas">
             <Link
-              href={`/games/${active.slug}`}
+              href="/games"
               className="hero__cta-primary"
             >
               <Play size={16} aria-hidden="true" fill="currentColor" />
-              Explore game
+              Discover Games
             </Link>
             <Link
-              href="/games"
+              href={`/games/${active.slug}`}
               className="hero__cta-secondary"
             >
-              Browse all
+              Browse Reviews
             </Link>
           </div>
         </div>

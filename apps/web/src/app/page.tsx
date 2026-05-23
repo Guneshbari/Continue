@@ -1,8 +1,18 @@
-// SSR homepage - server component, no client JS needed for initial paint
+// SSR homepage — server component, no client JS needed for initial paint
 
 import { Hero } from '@/components/home/Hero'
 import { DiscoverySection } from '@/components/game/DiscoverySection'
-import { FEATURED_GAMES, TRENDING_GAMES, NEW_RELEASES, TOP_RATED } from '@/lib/data/seed'
+import { FeaturedReviewsSection } from '@/components/home/FeaturedReviewsSection'
+import { CommunityCollectionsSection } from '@/components/home/CommunityCollectionsSection'
+import { AnimatedSection } from '@/components/ui/AnimatedSection'
+import {
+  FEATURED_GAMES,
+  TRENDING_GAMES,
+  NEW_RELEASES,
+  TOP_RATED,
+  FEATURED_REVIEWS,
+  COMMUNITY_COLLECTIONS,
+} from '@/lib/data/seed'
 import { gamesApi } from '@/lib/api/games'
 import type { Metadata } from 'next'
 import type { GameDetail, GameSummary } from '@continue/types'
@@ -25,15 +35,15 @@ async function getHomeData() {
     const topData = topRated.data as GameSummary[]
 
     // Use API data if populated, else fall back to seed
-    const hasliveData = trendingData.length > 0
+    const hasLiveData = trendingData.length > 0
     return {
-      featured: hasliveData ? (trendingData.slice(0, 3) as unknown as GameDetail[]) : FEATURED_GAMES,
-      trending: hasliveData ? trendingData : TRENDING_GAMES,
-      newReleases: hasliveData ? newData : NEW_RELEASES,
-      topRated: hasliveData ? topData : TOP_RATED,
+      featured: hasLiveData ? (trendingData.slice(0, 3) as unknown as GameDetail[]) : FEATURED_GAMES,
+      trending: hasLiveData ? trendingData : TRENDING_GAMES,
+      newReleases: hasLiveData ? newData : NEW_RELEASES,
+      topRated: hasLiveData ? topData : TOP_RATED,
     }
   } catch {
-    // API not yet running - use static seed data
+    // API not yet running — use static seed data
     return {
       featured: FEATURED_GAMES,
       trending: TRENDING_GAMES,
@@ -48,32 +58,45 @@ export default async function HomePage() {
 
   return (
     <main id="main-content">
-      <a href="#main-content" className="sr-only focus:not-sr-only">
+      <a href="#main-content" className="skip-link">
         Skip to main content
       </a>
 
       <Hero featured={featured} />
 
-      <div className="site-container" style={{ paddingTop: '3rem' }}>
-        <DiscoverySection
-          title="Trending Now"
-          games={trending}
-          viewAllHref="/games?sort=trending"
-        />
+      <div className="homepage-sections">
+        <AnimatedSection delay={0}>
+          <DiscoverySection
+            title="Trending Now"
+            games={trending}
+            viewAllHref="/games?sort=trending"
+          />
+        </AnimatedSection>
 
-        <DiscoverySection
-          title="New Releases"
-          games={newReleases}
-          viewAllHref="/games?sort=new"
-        />
+        <AnimatedSection delay={0.05}>
+          <DiscoverySection
+            title="New Releases"
+            games={newReleases}
+            viewAllHref="/games?sort=new"
+          />
+        </AnimatedSection>
 
-        <DiscoverySection
-          title="Top Rated"
-          games={topRated}
-          viewAllHref="/games?sort=top-rated"
-        />
+        <AnimatedSection delay={0.05}>
+          <DiscoverySection
+            title="Top Rated"
+            games={topRated}
+            viewAllHref="/games?sort=top-rated"
+          />
+        </AnimatedSection>
+
+        <AnimatedSection delay={0.05}>
+          <FeaturedReviewsSection reviews={FEATURED_REVIEWS} />
+        </AnimatedSection>
+
+        <AnimatedSection delay={0.05}>
+          <CommunityCollectionsSection collections={COMMUNITY_COLLECTIONS} />
+        </AnimatedSection>
       </div>
     </main>
   )
 }
-
