@@ -1,4 +1,5 @@
 import { apiClient } from './client'
+import type { DiscoveryCollection } from '@continue/types'
 
 export interface ListSummary {
   id: string
@@ -38,6 +39,9 @@ export interface CreateListPayload {
 }
 
 export const listsApi = {
+  discoveryCollections(limit = 3): Promise<DiscoveryCollection[]> {
+    return apiClient.get(`/lists/discovery?limit=${limit}`)
+  },
   create(token: string, payload: CreateListPayload): Promise<ListSummary> {
     return apiClient.post('/lists', payload, token)
   },

@@ -1,8 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
-import type { PrismaService } from '../../common/prisma/prisma.service'
+import { PrismaService } from '../../common/prisma/prisma.service'
 import type { CreateGameDto, GamesQueryDto } from './dto/games.dto'
 
-// Shared select shape — used everywhere for consistency
+// ─── Shared Prisma select shapes ──────────────────────────────────────────────
+
 const GAME_SUMMARY_SELECT = {
   id: true,
   slug: true,
@@ -24,7 +25,9 @@ const GAME_DETAIL_SELECT = {
   tags: { select: { tag: { select: { id: true, slug: true, name: true } } } },
 } as const
 
-interface GameTaxonomyRow {
+// ─── Internal row types (Prisma output shapes) ────────────────────────────────
+
+interface TaxonomyRow {
   genre?: { id: string; slug: string; name: string }
   platform?: { id: string; slug: string; name: string }
   tag?: { id: string; slug: string; name: string }
@@ -38,8 +41,8 @@ interface GameSummaryRow {
   releaseDate: Date | null
   avgRating: number | null
   ratingCount: number
-  genres: GameTaxonomyRow[]
-  platforms: GameTaxonomyRow[]
+  genres: TaxonomyRow[]
+  platforms: TaxonomyRow[]
 }
 
 interface GameDetailRow extends GameSummaryRow {
@@ -47,12 +50,50 @@ interface GameDetailRow extends GameSummaryRow {
   bannerUrl: string | null
   developer: string | null
   publisher: string | null
-  tags: GameTaxonomyRow[]
+  tags: TaxonomyRow[]
 }
 
 @Injectable()
 export class GamesService {
   constructor(private readonly prisma: PrismaService) {}
+
+  // ─── Discovery ───────────────────────────────────────────────────────────────
+
+  /**
+   * Curated discovery queries — used by dedicated homepage endpoints.
+   * Returns a flat array (no cursor pagination) for SSR speed.
+   */
+  async findDiscovery(
+    section: 'trending' | 'new-releases' | 'top-rated',
+    limit: number,
+  ) {
+    const now = new Date()
+
+    const where =
+      section === 'new-releases'
+        ? { deletedAt: null, releaseDate: { lte: now } }
+        : section === 'top-rated'
+          ? { deletedAt: null, avgRating: { not: null }, ratingCount: { gte: 1 } }
+          : { deletedAt: null } // trending — all games
+
+    const orderBy =
+      section === 'new-releases'
+        ? { releaseDate: 'desc' as const }
+        : section === 'top-rated'
+          ? { avgRating: 'desc' as const }
+          : { ratingCount: 'desc' as const } // trending
+
+    const items = await this.prisma.game.findMany({
+      where,
+      orderBy,
+      take: limit,
+      select: GAME_SUMMARY_SELECT,
+    })
+
+    return (items as GameSummaryRow[]).map(this.mapGameSummary)
+  }
+
+  // ─── Generic list (cursor-paginated) ─────────────────────────────────────────
 
   async findAll(query: GamesQueryDto) {
     const { q, genre, platform, sort, cursor, limit } = query
@@ -84,10 +125,12 @@ export class GamesService {
     const nextCursor = hasMore ? (data[data.length - 1]?.id ?? null) : null
 
     return {
-      data: data.map(this.mapGameSummary),
+      data: (data as GameSummaryRow[]).map(this.mapGameSummary),
       meta: { nextCursor, total: undefined },
     }
   }
+
+  // ─── Single game ─────────────────────────────────────────────────────────────
 
   async findBySlug(idOrSlug: string) {
     const game = await this.prisma.game.findFirst({
@@ -98,37 +141,33 @@ export class GamesService {
       select: GAME_DETAIL_SELECT,
     })
     if (!game) throw new NotFoundException('Game not found')
-    return this.mapGameDetail(game)
+    return this.mapGameDetail(game as GameDetailRow)
   }
 
   async create(dto: CreateGameDto) {
     return this.prisma.game.create({ data: { ...dto }, select: GAME_DETAIL_SELECT })
   }
 
-  // ─── Private helpers ──────────────────────────────────────────────────────
+  // ─── Private mappers ─────────────────────────────────────────────────────────
+
+  private mapGameSummary = (game: GameSummaryRow) => ({
+    ...game,
+    genres: game.genres.map((g) => g.genre).filter(Boolean),
+    platforms: game.platforms.map((p) => p.platform).filter(Boolean),
+    releaseDate: game.releaseDate?.toISOString() ?? null,
+  })
+
+  private mapGameDetail = (game: GameDetailRow) => ({
+    ...this.mapGameSummary(game),
+    tags: game.tags.map((t) => t.tag).filter(Boolean),
+  })
 
   private resolveOrderBy(sort?: string) {
     switch (sort) {
       case 'top-rated': return { avgRating: 'desc' as const }
       case 'new':       return { releaseDate: 'desc' as const }
       case 'upcoming':  return { releaseDate: 'asc' as const }
-      default:          return { ratingCount: 'desc' as const } // trending
-    }
-  }
-
-  private mapGameSummary(game: GameSummaryRow) {
-    return {
-      ...game,
-      genres: game.genres.map((g) => g.genre),
-      platforms: game.platforms.map((p) => p.platform),
-      releaseDate: game.releaseDate?.toISOString() ?? null,
-    }
-  }
-
-  private mapGameDetail(game: GameDetailRow) {
-    return {
-      ...this.mapGameSummary(game),
-      tags: game.tags.map((t) => t.tag),
+      default:          return { ratingCount: 'desc' as const }
     }
   }
 }

@@ -14,6 +14,7 @@ import { SearchModule } from './modules/search/search.module'
 import { ListsModule } from './modules/lists/lists.module'
 import { validateEnv } from './common/config/env.validation'
 import { TransformInterceptor } from './common/interceptors/transform.interceptor'
+import { LoggingInterceptor } from './common/interceptors/logging.interceptor'
 
 @Module({
   imports: [
@@ -38,6 +39,11 @@ import { TransformInterceptor } from './common/interceptors/transform.intercepto
     ListsModule,
   ],
   providers: [
+    // LoggingInterceptor runs first — wraps the full pipeline
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: LoggingInterceptor,
+    },
     {
       provide: APP_INTERCEPTOR,
       useClass: TransformInterceptor,

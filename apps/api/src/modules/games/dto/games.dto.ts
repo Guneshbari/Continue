@@ -6,9 +6,13 @@ import {
   Min,
   Max,
   IsInt,
+  IsIn,
 } from 'class-validator'
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { Type } from 'class-transformer'
+
+const SORT_VALUES = ['trending', 'top-rated', 'new', 'upcoming'] as const
+export type GameSortValue = typeof SORT_VALUES[number]
 
 export class CreateGameDto {
   @ApiProperty()
@@ -66,10 +70,10 @@ export class GamesQueryDto {
   @IsString()
   platform?: string
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ enum: SORT_VALUES })
   @IsOptional()
-  @IsString()
-  sort?: 'trending' | 'top-rated' | 'new' | 'upcoming'
+  @IsIn(SORT_VALUES)
+  sort?: GameSortValue
 
   @ApiPropertyOptional()
   @IsOptional()

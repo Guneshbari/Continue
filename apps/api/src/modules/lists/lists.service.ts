@@ -1,7 +1,7 @@
 import {
   Injectable, NotFoundException, ForbiddenException, ConflictException,
 } from '@nestjs/common'
-import type { PrismaService } from '../../common/prisma/prisma.service'
+import { PrismaService } from '../../common/prisma/prisma.service'
 import type { CreateListDto, UpdateListDto, AddListItemDto } from './dto/list.dto'
 
 function slugify(title: string): string {
@@ -37,6 +37,48 @@ const LIST_ITEM_GAME_SELECT = {
 @Injectable()
 export class ListsService {
   constructor(private readonly prisma: PrismaService) {}
+
+  // ─── Public discovery (homepage) ──────────────────────────────────────────────
+
+  /**
+   * Public list discovery — top public lists by item count.
+   * Returns shaped data for the homepage collection mosaic cards.
+   */
+  async findPublicDiscovery(limit = 3) {
+    const lists = await this.prisma.list.findMany({
+      where: { visibility: 'PUBLIC', deletedAt: null },
+      orderBy: { items: { _count: 'desc' } },
+      take: limit,
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        _count: { select: { items: true } },
+        user: { select: { username: true, displayName: true } },
+        items: {
+          take: 3,
+          orderBy: { position: 'asc' },
+          select: {
+            game: { select: { coverUrl: true } },
+          },
+        },
+      },
+    })
+
+    return lists.map((list) => ({
+      id: list.id,
+      title: list.title,
+      description: list.description,
+      gameCount: list._count.items,
+      curator: {
+        username: list.user.username,
+        displayName: list.user.displayName ?? list.user.username,
+      },
+      covers: list.items
+        .map((item) => item.game.coverUrl)
+        .filter((url): url is string => url !== null),
+    }))
+  }
 
   // ─── List CRUD ──────────────────────────────────────────────────────────────
 

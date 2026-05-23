@@ -1,5 +1,5 @@
 import { apiClient } from './client'
-import type { GameSummary, GameDetail } from '@continue/types'
+import type { GameSummary, GameDetail, GamesListResponse } from '@continue/types'
 
 export interface GamesListParams {
   sort?: 'trending' | 'top-rated' | 'new' | 'upcoming'
@@ -10,12 +10,8 @@ export interface GamesListParams {
   limit?: number
 }
 
-interface GamesListResponse {
-  data: GameSummary[]
-  nextCursor: string | null
-}
-
 export const gamesApi = {
+  // ─── Generic paginated list ─────────────────────────────────────────────────
   list(params: GamesListParams = {}): Promise<GamesListResponse> {
     const qs = new URLSearchParams()
     if (params.sort) qs.set('sort', params.sort)
@@ -28,6 +24,20 @@ export const gamesApi = {
     return apiClient.get(`/games${query ? `?${query}` : ''}`)
   },
 
+  // ─── Discovery endpoints — dedicated SSR-optimised routes ──────────────────
+  trending(limit = 6): Promise<GameSummary[]> {
+    return apiClient.get(`/games/trending?limit=${limit}`)
+  },
+
+  newReleases(limit = 6): Promise<GameSummary[]> {
+    return apiClient.get(`/games/new-releases?limit=${limit}`)
+  },
+
+  topRated(limit = 6): Promise<GameSummary[]> {
+    return apiClient.get(`/games/top-rated?limit=${limit}`)
+  },
+
+  // ─── Single game ────────────────────────────────────────────────────────────
   get(idOrSlug: string): Promise<GameDetail> {
     return apiClient.get(`/games/${idOrSlug}`)
   },

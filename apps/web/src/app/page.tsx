@@ -1,4 +1,5 @@
 // SSR homepage — server component, no client JS needed for initial paint
+// Phase 2: parallel discovery fetches with ISR revalidation + graceful fallback
 
 import { Hero } from '@/components/home/Hero'
 import { DiscoverySection } from '@/components/game/DiscoverySection'
@@ -12,49 +13,111 @@ import {
   TOP_RATED,
   FEATURED_REVIEWS,
   COMMUNITY_COLLECTIONS,
+  type SeedReview,
+  type SeedCollection,
 } from '@/lib/data/seed'
-import { gamesApi } from '@/lib/api/games'
+import { env } from '@/lib/env'
 import type { Metadata } from 'next'
-import type { GameDetail, GameSummary } from '@continue/types'
+import type { GameSummary, GameDetail, FeaturedReview, DiscoveryCollection } from '@continue/types'
 
 export const metadata: Metadata = {
-  title: 'Continue - Discover Your Next Game',
-  description: 'Discover, rate, and collect games. A cinematic game discovery platform for players who care about quality.',
+  title: 'Continue — Discover Your Next Game',
+  description:
+    'Discover, rate, and collect games. A cinematic game discovery platform for players who care about quality.',
 }
 
-async function getHomeData() {
+// 5-minute ISR — discovery content is semi-static, avoids per-request SSR pressure
+export const revalidate = 300
+
+// ─── Server-side discovery fetch helpers ─────────────────────────────────────
+// Uses internal API URL to avoid external networking overhead in Docker.
+
+async function fetchDiscovery<T>(path: string): Promise<T | null> {
   try {
-    const [trending, newReleases, topRated] = await Promise.all([
-      gamesApi.list({ sort: 'trending', limit: 6 }),
-      gamesApi.list({ sort: 'new', limit: 6 }),
-      gamesApi.list({ sort: 'top-rated', limit: 6 }),
-    ])
-
-    const trendingData = trending.data as GameSummary[]
-    const newData = newReleases.data as GameSummary[]
-    const topData = topRated.data as GameSummary[]
-
-    // Use API data if populated, else fall back to seed
-    const hasLiveData = trendingData.length > 0
-    return {
-      featured: hasLiveData ? (trendingData.slice(0, 3) as unknown as GameDetail[]) : FEATURED_GAMES,
-      trending: hasLiveData ? trendingData : TRENDING_GAMES,
-      newReleases: hasLiveData ? newData : NEW_RELEASES,
-      topRated: hasLiveData ? topData : TOP_RATED,
-    }
+    const url = `${env.internalApiUrl}${path}`
+    const res = await fetch(url, {
+      // Next.js cache tag for future on-demand revalidation
+      next: { revalidate: 300, tags: ['discovery'] },
+    })
+    if (!res.ok) return null
+    return res.json() as Promise<T>
   } catch {
-    // API not yet running — use static seed data
-    return {
-      featured: FEATURED_GAMES,
-      trending: TRENDING_GAMES,
-      newReleases: NEW_RELEASES,
-      topRated: TOP_RATED,
-    }
+    return null
   }
 }
 
+// ─── Shape adapters — bridge API types ↔ component prop types ────────────────
+
+function adaptFeaturedReviews(apiReviews: FeaturedReview[]): SeedReview[] {
+  return apiReviews.map((r) => ({
+    id: r.id,
+    body: r.body,
+    rating: 0, // no rating on review model; use 0 as sentinel — UI shows stars only when > 0
+    game: {
+      title: r.game.title,
+      slug: r.game.slug,
+      coverUrl: r.game.coverUrl,
+    },
+    user: {
+      username: r.user.username,
+      displayName: r.user.displayName ?? r.user.username,
+    },
+  }))
+}
+
+function adaptCollections(apiCollections: DiscoveryCollection[]): SeedCollection[] {
+  return apiCollections.map((c) => ({
+    id: c.id,
+    title: c.title,
+    description: c.description ?? '',
+    curator: c.curator,
+    gameCount: c.gameCount,
+    covers: c.covers,
+  }))
+}
+
+// ─── Main data loader — all fetches run in parallel ──────────────────────────
+
+async function getHomeData() {
+  const [trending, newReleases, topRated, featuredReviews, collections] =
+    await Promise.all([
+      fetchDiscovery<GameSummary[]>('/games/trending?limit=6'),
+      fetchDiscovery<GameSummary[]>('/games/new-releases?limit=6'),
+      fetchDiscovery<GameSummary[]>('/games/top-rated?limit=6'),
+      fetchDiscovery<FeaturedReview[]>('/reviews/featured?limit=3'),
+      fetchDiscovery<DiscoveryCollection[]>('/lists/discovery?limit=3'),
+    ])
+
+  const hasLiveGames = (trending?.length ?? 0) > 0
+  const liveGames = trending ?? []
+
+  return {
+    // Hero takes GameDetail[] — cast from GameSummary if live data available
+    featured: hasLiveGames
+      ? (liveGames.slice(0, 3) as unknown as GameDetail[])
+      : FEATURED_GAMES,
+
+    trending: hasLiveGames ? liveGames : TRENDING_GAMES,
+    newReleases: (newReleases?.length ?? 0) > 0 ? (newReleases ?? []) : NEW_RELEASES,
+    topRated: (topRated?.length ?? 0) > 0 ? (topRated ?? []) : TOP_RATED,
+
+    reviews:
+      (featuredReviews?.length ?? 0) > 0
+        ? adaptFeaturedReviews(featuredReviews ?? [])
+        : FEATURED_REVIEWS,
+
+    collections:
+      (collections?.length ?? 0) > 0
+        ? adaptCollections(collections ?? [])
+        : COMMUNITY_COLLECTIONS,
+  }
+}
+
+// ─── Page ─────────────────────────────────────────────────────────────────────
+
 export default async function HomePage() {
-  const { featured, trending, newReleases, topRated } = await getHomeData()
+  const { featured, trending, newReleases, topRated, reviews, collections } =
+    await getHomeData()
 
   return (
     <main id="main-content">
@@ -90,11 +153,11 @@ export default async function HomePage() {
         </AnimatedSection>
 
         <AnimatedSection delay={0.05}>
-          <FeaturedReviewsSection reviews={FEATURED_REVIEWS} />
+          <FeaturedReviewsSection reviews={reviews} />
         </AnimatedSection>
 
         <AnimatedSection delay={0.05}>
-          <CommunityCollectionsSection collections={COMMUNITY_COLLECTIONS} />
+          <CommunityCollectionsSection collections={collections} />
         </AnimatedSection>
       </div>
     </main>

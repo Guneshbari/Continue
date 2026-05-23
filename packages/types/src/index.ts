@@ -102,6 +102,27 @@ export interface ReviewSummary {
   user: Pick<UserPublic, 'id' | 'username' | 'displayName' | 'avatarUrl'>
 }
 
+/**
+ * Featured review shape — returned by GET /reviews/featured.
+ * Includes denormalized game data for homepage display.
+ */
+export interface FeaturedReview {
+  id: string
+  body: string
+  createdAt: string
+  user: {
+    id: string
+    username: string
+    displayName: string | null
+  }
+  game: {
+    id: string
+    slug: string
+    title: string
+    coverUrl: string | null
+  }
+}
+
 // ─── Rating ──────────────────────────────────────────────────────────────────
 
 export interface RatingSummary {
@@ -122,4 +143,30 @@ export interface ListSummary {
   visibility: ListVisibility
   itemCount: number
   user: Pick<UserPublic, 'id' | 'username' | 'displayName'>
+}
+
+/**
+ * Community collection shape — returned by GET /lists/discovery.
+ * Shaped for homepage mosaic card display.
+ */
+export interface DiscoveryCollection {
+  id: string
+  title: string
+  description: string | null
+  gameCount: number
+  curator: {
+    username: string
+    displayName: string
+  }
+  covers: string[] // up to 3 game cover URLs
+}
+
+// ─── Paginated response shapes ────────────────────────────────────────────────
+
+export interface GamesListResponse {
+  data: GameSummary[]
+  meta: {
+    nextCursor: string | null
+    total?: number
+  }
 }

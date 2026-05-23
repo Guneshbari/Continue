@@ -1,12 +1,33 @@
 import {
   Injectable, NotFoundException, ForbiddenException, ConflictException,
 } from '@nestjs/common'
-import type { PrismaService } from '../../common/prisma/prisma.service'
+import { PrismaService } from '../../common/prisma/prisma.service'
 import type { CreateReviewDto, UpdateReviewDto } from './dto/review.dto'
 
 @Injectable()
 export class ReviewsService {
   constructor(private readonly prisma: PrismaService) {}
+
+  /**
+   * Featured reviews for homepage — most recent PUBLISHED reviews
+   * with user and game includes.
+   */
+  async findFeatured(limit = 3) {
+    const reviews = await this.prisma.review.findMany({
+      where: { deletedAt: null, status: 'PUBLISHED' },
+      take: limit,
+      orderBy: [{ createdAt: 'desc' }],
+      select: {
+        id: true,
+        body: true,
+        createdAt: true,
+        user: { select: { id: true, username: true, displayName: true } },
+        game: { select: { id: true, slug: true, title: true, coverUrl: true } },
+        // Pull rating from the ratings table via a join trick — not directly on review
+      },
+    })
+    return reviews
+  }
 
   async create(userId: string, gameId: string, dto: CreateReviewDto) {
     await this.assertGameExists(gameId)
@@ -33,13 +54,11 @@ export class ReviewsService {
 
     const hasNext = reviews.length > limit
     const data = hasNext ? reviews.slice(0, limit) : reviews
-    
-    // Satisfy TS strict mode bounds checking
     const lastItem = data[data.length - 1]
-    
+
     return {
       data,
-      nextCursor: hasNext && lastItem ? lastItem.id : null,
+      meta: { nextCursor: hasNext && lastItem ? lastItem.id : null },
     }
   }
 
