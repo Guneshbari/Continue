@@ -1,4 +1,4 @@
-import { IsString, IsOptional, IsEnum, MinLength, MaxLength } from 'class-validator'
+import { IsString, IsOptional, IsEnum, MinLength, MaxLength, IsArray } from 'class-validator'
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 
 export class CreateListDto {
@@ -51,3 +51,11 @@ export class AddListItemDto {
   @MaxLength(200)
   note?: string
 }
+
+export class ReorderListItemsDto {
+  @ApiProperty({ type: [String], description: 'Ordered list of game IDs representing the new positions' })
+  @IsArray()
+  @IsString({ each: true })
+  gameIds!: string[]
+}
+

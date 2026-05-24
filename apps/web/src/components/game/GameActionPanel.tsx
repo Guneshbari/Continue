@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Star, CheckCircle, Flame, Plus, Heart, Eye } from 'lucide-react'
+import { Star, CheckCircle, Flame, Heart } from 'lucide-react'
 import { useAuth } from '@/lib/auth/AuthContext'
 import { RatingSelector } from './RatingSelector'
 import { AddToListButton } from '../lists/AddToListButton'

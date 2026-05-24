@@ -2,15 +2,29 @@ import {
   Injectable, NotFoundException, ForbiddenException, ConflictException,
 } from '@nestjs/common'
 import { PrismaService } from '../../common/prisma/prisma.service'
-import type { CreateListDto, UpdateListDto, AddListItemDto } from './dto/list.dto'
+import type { CreateListDto, UpdateListDto, AddListItemDto, ReorderListItemsDto } from './dto/list.dto'
 
 function slugify(title: string): string {
-  return title
+  let base = title
     .toLowerCase()
     .replace(/[^a-z0-9\s-]/g, '')
     .trim()
     .replace(/\s+/g, '-')
     .slice(0, 60)
+
+  if (!base) {
+    base = 'untitled'
+  }
+
+  const RESERVED_SLUGS = [
+    'discovery', 'create', 'edit', 'settings', 'admin',
+    'new', 'popular', 'trending', 'api', 'auth', 'u', 'games', 'lists'
+  ]
+
+  if (RESERVED_SLUGS.includes(base)) {
+    return `${base}-collection`
+  }
+  return base
 }
 
 const LIST_SELECT = {
@@ -23,6 +37,13 @@ const LIST_SELECT = {
   updatedAt: true,
   user: { select: { id: true, username: true, displayName: true, avatarUrl: true } },
   _count: { select: { items: true } },
+  items: {
+    take: 3,
+    orderBy: { position: 'asc' as const },
+    select: {
+      game: { select: { coverUrl: true } },
+    },
+  },
 }
 
 const LIST_ITEM_GAME_SELECT = {
@@ -86,9 +107,9 @@ export class ListsService {
 
   async create(userId: string, dto: CreateListDto) {
     const base = slugify(dto.title)
-    // Ensure unique slug per user by appending a short suffix if needed
+    // Enforce global uniqueness of slugs for the top level /lists/[slug] routing
     const existing = await this.prisma.list.findMany({
-      where: { userId, deletedAt: null, slug: { startsWith: base } },
+      where: { deletedAt: null, slug: { startsWith: base } },
       select: { slug: true },
     })
     const slug = existing.length === 0 ? base : `${base}-${existing.length}`
@@ -141,6 +162,34 @@ export class ListsService {
 
     const list = await this.prisma.list.findFirst({
       where: { userId: user.id, slug, deletedAt: null },
+      include: {
+        user: { select: { id: true, username: true, displayName: true, avatarUrl: true } },
+        items: {
+          orderBy: { position: 'asc' },
+          select: {
+            id: true,
+            note: true,
+            position: true,
+            createdAt: true,
+            game: { select: LIST_ITEM_GAME_SELECT },
+          },
+        },
+        _count: { select: { items: true } },
+      },
+    })
+    if (!list) throw new NotFoundException('List not found')
+
+    // Private list — only owner can see
+    if (list.visibility === 'PRIVATE' && requesterId !== list.userId) {
+      throw new ForbiddenException('This list is private')
+    }
+
+    return list
+  }
+
+  async findBySlug(slug: string, requesterId?: string) {
+    const list = await this.prisma.list.findFirst({
+      where: { slug, deletedAt: null },
       include: {
         user: { select: { id: true, username: true, displayName: true, avatarUrl: true } },
         items: {
@@ -225,6 +274,38 @@ export class ListsService {
     })
     if (!item) throw new NotFoundException('Item not found in list')
     await this.prisma.listItem.delete({ where: { id: item.id } })
+  }
+
+  async reorderItems(listId: string, userId: string, dto: ReorderListItemsDto) {
+    await this.assertOwner(listId, userId)
+
+    // Run order update atomically in a transaction
+    const updates = dto.gameIds.map((gameId, index) =>
+      this.prisma.listItem.update({
+        where: { listId_gameId: { listId, gameId } },
+        data: { position: index },
+      })
+    )
+
+    await this.prisma.$transaction(updates)
+
+    return this.prisma.list.findUnique({
+      where: { id: listId },
+      include: {
+        user: { select: { id: true, username: true, displayName: true, avatarUrl: true } },
+        items: {
+          orderBy: { position: 'asc' },
+          select: {
+            id: true,
+            note: true,
+            position: true,
+            createdAt: true,
+            game: { select: LIST_ITEM_GAME_SELECT },
+          },
+        },
+        _count: { select: { items: true } },
+      },
+    })
   }
 
   // ─── Helper ─────────────────────────────────────────────────────────────────

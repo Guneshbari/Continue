@@ -32,8 +32,8 @@ export function GameDetailInteractive({
   const [composerOpen, setComposerOpen] = useState(false)
 
   // Averages local states (for real-time optimistic update support in future)
-  const [avgRating, setAvgRating] = useState<number | null>(initialAvgRating)
-  const [ratingCount, setRatingCount] = useState<number>(initialRatingCount)
+  const avgRating = initialAvgRating
+  const ratingCount = initialRatingCount
 
   const handleReviewStateChanged = (reviewed: boolean, myReview?: Review) => {
     setHasReviewed(reviewed)

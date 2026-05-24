@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Eye, Edit2, Trash2, ShieldAlert } from 'lucide-react'
+import { Edit2, Trash2, ShieldAlert } from 'lucide-react'
 import { useAuth } from '@/lib/auth/AuthContext'
 
 interface ReviewPreviewCardProps {

@@ -42,7 +42,7 @@ export function Navbar() {
     actions = (
       <>
         <Link
-          href={`/users/${user.username}`}
+          href={`/u/${user.username}`}
           className="navbar__icon-btn"
           aria-label="Your profile"
         >

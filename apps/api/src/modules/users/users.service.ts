@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { PrismaService } from '../../common/prisma/prisma.service'
+import { UpdateUserDto } from './dto/update-user.dto'
 
 @Injectable()
 export class UsersService {
@@ -42,7 +43,20 @@ export class UsersService {
       ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
       orderBy: { createdAt: 'desc' },
       include: {
-        game: { select: { id: true, slug: true, title: true, coverUrl: true } },
+        game: {
+          select: {
+            id: true,
+            slug: true,
+            title: true,
+            coverUrl: true,
+            avgRating: true,
+            releaseDate: true,
+            ratings: {
+              where: { userId: user.id },
+              select: { score: true },
+            },
+          },
+        },
       },
     })
     const hasNext = reviews.length > limit
@@ -76,5 +90,38 @@ export class UsersService {
         _count: { select: { items: true } },
       },
     })
+  }
+
+  async updateProfile(userId: string, dto: UpdateUserDto) {
+    const user = await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        ...(dto.displayName !== undefined ? { displayName: dto.displayName } : {}),
+        ...(dto.bio !== undefined ? { bio: dto.bio } : {}),
+        ...(dto.avatarUrl !== undefined ? { avatarUrl: dto.avatarUrl } : {}),
+      },
+      select: {
+        id: true,
+        username: true,
+        displayName: true,
+        bio: true,
+        avatarUrl: true,
+        role: true,
+        createdAt: true,
+        _count: { select: { reviews: true, ratings: true, lists: true } },
+      },
+    })
+    return {
+      id: user.id,
+      username: user.username,
+      displayName: user.displayName,
+      bio: user.bio,
+      avatarUrl: user.avatarUrl,
+      role: user.role,
+      createdAt: user.createdAt,
+      reviewCount: user._count.reviews,
+      ratingCount: user._count.ratings,
+      listCount: user._count.lists,
+    }
   }
 }

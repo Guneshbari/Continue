@@ -1,6 +1,7 @@
 'use client'
 
-import { useEffect, useState, KeyboardEvent } from 'react'
+import { useEffect, useState } from 'react'
+import type { KeyboardEvent } from 'react'
 import { Star, X, Loader2 } from 'lucide-react'
 import { useAuth } from '@/lib/auth/AuthContext'
 import { ratingsApi } from '@/lib/api/interactions'
@@ -12,7 +13,7 @@ interface RatingSelectorProps {
   onRatingChanged?: (newAvgRating: number, newCount: number) => void
 }
 
-export function RatingSelector({ gameId, onRatingChanged }: RatingSelectorProps) {
+export function RatingSelector({ gameId, onRatingChanged: _onRatingChanged }: RatingSelectorProps) {
   const { user, token } = useAuth()
   const [hovered, setHovered] = useState(0)
   const [selected, setSelected] = useState(0)

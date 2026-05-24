@@ -1,0 +1,151 @@
+import { Star, MessageSquare, Layers, Calendar } from 'lucide-react'
+import Link from 'next/link'
+
+interface ActivityItem {
+  id: string
+  type: 'RATING' | 'REVIEW' | 'LIST'
+  title: string
+  subtitle?: string | null
+  gameTitle?: string
+  gameSlug?: string
+  score?: number
+  slug?: string
+  date: string
+}
+
+interface ActivityOverviewProps {
+  ratings: any[]
+  reviews: any[]
+  lists: any[]
+  username: string
+  isOwner: boolean
+}
+
+export function ActivityOverview({ ratings, reviews, lists, username: _username, isOwner: _isOwner }: ActivityOverviewProps) {
+  // Aggregate recent events into a single sorted chronological list of max 4 items
+  const activities: ActivityItem[] = []
+
+  // Add ratings
+  ratings.slice(0, 3).forEach((r) => {
+    activities.push({
+      id: `rating-${r.id}`,
+      type: 'RATING',
+      title: `Rated ${r.game.title}`,
+      gameTitle: r.game.title,
+      gameSlug: r.game.slug,
+      score: r.score,
+      date: r.createdAt || r.updatedAt,
+    })
+  })
+
+  // Add reviews
+  reviews.slice(0, 3).forEach((rev) => {
+    activities.push({
+      id: `review-${rev.id}`,
+      type: 'REVIEW',
+      title: `Reviewed ${rev.game.title}`,
+      subtitle: rev.title,
+      gameTitle: rev.game.title,
+      gameSlug: rev.game.slug,
+      date: rev.createdAt,
+    })
+  })
+
+  // Add lists
+  lists.slice(0, 3).forEach((l) => {
+    activities.push({
+      id: `list-${l.id}`,
+      type: 'LIST',
+      title: `Created collection "${l.title}"`,
+      slug: l.slug,
+      date: l.createdAt,
+    })
+  })
+
+  // Sort chronological
+  const sortedActivities = activities
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .slice(0, 4)
+
+  if (sortedActivities.length === 0) {
+    return (
+      <div className="p-5 rounded-xl bg-surface-raised border border-border-subtle text-center text-sm text-text-muted">
+        No recent profile activity to showcase.
+      </div>
+    )
+  }
+
+  const iconMap = {
+    RATING: <Star size={12} className="text-warning" />,
+    REVIEW: <MessageSquare size={12} className="text-accent" />,
+    LIST: <Layers size={12} className="text-success" />,
+  }
+
+  return (
+    <div className="p-5 rounded-xl bg-surface-raised border border-border-subtle">
+      <h3 className="text-xs font-bold text-text-muted uppercase tracking-wider mb-4 flex items-center gap-1.5">
+        <Calendar size={14} aria-hidden="true" />
+        Activity highlights
+      </h3>
+
+      <div className="relative pl-4 border-l border-border-subtle flex flex-col gap-5">
+        {sortedActivities.map((act) => (
+          <div key={act.id} className="relative flex flex-col">
+            {/* Dot indicator */}
+            <div
+              className="absolute left-[-23px] top-[2px] w-4.5 h-4.5 rounded-full bg-surface-raised border border-border flex items-center justify-center shadow-sm"
+              aria-hidden="true"
+            >
+              {iconMap[act.type]}
+            </div>
+
+            <div className="flex items-baseline justify-between gap-4 mb-0.5">
+              {/* Event description */}
+              <span className="text-xs font-semibold text-text-primary leading-tight">
+                {act.type === 'RATING' && act.gameSlug ? (
+                  <>
+                    Rated{' '}
+                    <Link href={`/games/${act.gameSlug}`} className="hover:text-accent underline decoration-border-strong transition-colors">
+                      {act.gameTitle}
+                    </Link>{' '}
+                    <span className="text-warning font-bold">{act.score}/10</span>
+                  </>
+                ) : act.type === 'REVIEW' && act.gameSlug ? (
+                  <>
+                    Reviewed{' '}
+                    <Link href={`/games/${act.gameSlug}`} className="hover:text-accent underline decoration-border-strong transition-colors">
+                      {act.gameTitle}
+                    </Link>
+                  </>
+                ) : act.type === 'LIST' && act.slug ? (
+                  <>
+                    Created list{' '}
+                    <Link href={`/lists/${act.slug}`} className="hover:text-accent underline decoration-border-strong transition-colors">
+                      {act.title.replace('Created collection ', '')}
+                    </Link>
+                  </>
+                ) : (
+                  act.title
+                )}
+              </span>
+
+              {/* Date */}
+              <span className="text-[9px] font-medium text-text-muted uppercase tracking-wider whitespace-nowrap shrink-0">
+                {new Date(act.date).toLocaleDateString('en-US', {
+                  month: 'short',
+                  day: 'numeric',
+                })}
+              </span>
+            </div>
+
+            {act.type === 'REVIEW' && act.subtitle && (
+              <span className="text-[10px] text-text-secondary italic pl-1 mt-0.5 border-l border-border">
+                "{act.subtitle}"
+              </span>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}

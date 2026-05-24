@@ -84,7 +84,7 @@ export function ReviewsSection({ gameId, onReviewStateChanged }: ReviewsSectionP
     try {
       await reviewsApi.remove(gameId, reviewId, token)
       setReviews((prev) => prev.filter((r) => r.id !== reviewId))
-    } catch (err) {
+    } catch {
       alert('Failed to delete review.')
     }
   }

@@ -69,7 +69,7 @@ export function UserListsManager({ initialLists, username }: Props) {
               Create List
             </button>
           )}
-          <Link href={`/users/${username}`} className="user-lists-page__back">
+          <Link href={`/u/${username}`} className="user-lists-page__back">
             ← Profile
           </Link>
         </div>
@@ -152,7 +152,7 @@ export function UserListsManager({ initialLists, username }: Props) {
         <ul className="lists-grid">
           {lists.map((list) => (
             <li key={list.id}>
-              <Link href={`/users/${username}/lists/${list.slug}`} className="list-card">
+              <Link href={`/lists/${list.slug}`} className="list-card">
                 <div className="list-card__covers" aria-hidden="true">
                   <div className="list-card__cover-placeholder" />
                 </div>

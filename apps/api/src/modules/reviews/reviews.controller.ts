@@ -4,7 +4,7 @@ import {
 } from '@nestjs/common'
 import { ApiTags, ApiBearerAuth, ApiOperation, ApiQuery } from '@nestjs/swagger'
 import { ReviewsService } from './reviews.service'
-import type { CreateReviewDto, UpdateReviewDto } from './dto/review.dto'
+import { CreateReviewDto, UpdateReviewDto } from './dto/review.dto'
 import { CurrentUser } from '../auth/decorators/current-user.decorator'
 import { Public } from '../auth/decorators/public.decorator'
 

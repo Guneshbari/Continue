@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Param, Body, Query, Res } from '@nestjs/common'
 import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery } from '@nestjs/swagger'
 import { GamesService } from './games.service'
-import type { GamesQueryDto, CreateGameDto } from './dto/games.dto'
+import { GamesQueryDto, CreateGameDto } from './dto/games.dto'
 import { Public } from '../auth/decorators/public.decorator'
 import { Roles } from '../auth/decorators/roles.decorator'
 import type { FastifyReply } from 'fastify'

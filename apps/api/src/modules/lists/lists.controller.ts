@@ -4,7 +4,7 @@ import {
 } from '@nestjs/common'
 import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery } from '@nestjs/swagger'
 import { ListsService } from './lists.service'
-import type { CreateListDto, UpdateListDto, AddListItemDto } from './dto/list.dto'
+import { CreateListDto, UpdateListDto, AddListItemDto, ReorderListItemsDto } from './dto/list.dto'
 import { CurrentUser, type AuthUser } from '../auth/decorators/current-user.decorator'
 import { Public } from '../auth/decorators/public.decorator'
 
@@ -32,6 +32,15 @@ export class ListsController {
   @ApiOperation({ summary: 'Create a new list' })
   create(@CurrentUser() user: AuthUser, @Body() dto: CreateListDto) {
     return this.listsService.create(user.id, dto)
+  }
+
+  // ─── Global lists (new route) ───────────────────────────────────────────────
+
+  @Public()
+  @Get('lists/:slug')
+  @ApiOperation({ summary: 'Get list globally by slug' })
+  findBySlug(@Param('slug') slug: string, @Request() req: { user?: AuthUser }) {
+    return this.listsService.findBySlug(slug, req.user?.id)
   }
 
   // ─── User lists (public route) ───────────────────────────────────────────────
@@ -67,6 +76,17 @@ export class ListsController {
     @Body() dto: UpdateListDto,
   ) {
     return this.listsService.update(id, user.id, dto)
+  }
+
+  @Patch('lists/:id/reorder')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Reorder list items' })
+  reorder(
+    @Param('id') id: string,
+    @CurrentUser() user: AuthUser,
+    @Body() dto: ReorderListItemsDto,
+  ) {
+    return this.listsService.reorderItems(id, user.id, dto)
   }
 
   @Delete('lists/:id')

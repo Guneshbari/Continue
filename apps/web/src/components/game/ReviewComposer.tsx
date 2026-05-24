@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, SyntheticEvent } from 'react'
+import { useState, useEffect } from 'react'
 import { X, Loader2, Save } from 'lucide-react'
 import { useAuth } from '@/lib/auth/AuthContext'
 import { reviewsApi } from '@/lib/api/interactions'
@@ -46,7 +46,7 @@ export function ReviewComposer({
           setBody(parsed.body ?? '')
           setStatus(parsed.status ?? 'PUBLISHED')
           setIsSpoiler(parsed.isSpoiler ?? false)
-        } catch (e) {
+        } catch {
           // ignore invalid draft
         }
       } else {
@@ -72,7 +72,7 @@ export function ReviewComposer({
     }
   }, [title, body, status, isSpoiler, gameId, editingReview, isOpen])
 
-  const handleSubmit = async (e: SyntheticEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (!token) return
     if (body.trim().length < 10) {

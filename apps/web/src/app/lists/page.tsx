@@ -118,7 +118,7 @@ export default function ListsPage() {
                 {discoveryLists.map((collection) => (
                   <li key={collection.id}>
                     <Link
-                      href={`/users/${collection.curator.username}/lists/${collection.slug}`}
+                      href={`/lists/${collection.slug}`}
                       className="collection-card"
                     >
                       <div className="collection-card__mosaic">
