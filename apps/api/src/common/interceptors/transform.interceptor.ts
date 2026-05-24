@@ -16,7 +16,10 @@ export class TransformInterceptor<T> implements NestInterceptor<T, unknown> {
         // Null (204 No Content) — pass through
         if (value === null || value === undefined) return value
 
-        // Already wrapped or is a raw array with pagination — pass through
+        // Array — pass through
+        if (Array.isArray(value)) return value
+
+        // Already wrapped — pass through
         if (typeof value === 'object' && 'data' in (value as object)) return value
 
         // Wrap everything else
@@ -25,3 +28,4 @@ export class TransformInterceptor<T> implements NestInterceptor<T, unknown> {
     )
   }
 }
+

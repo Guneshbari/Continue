@@ -9,16 +9,18 @@ interface RatingResponse {
 }
 
 export const ratingsApi = {
-  upsert(gameId: string, score: number, token: string): Promise<RatingResponse> {
-    return apiClient.post(`/games/${gameId}/ratings`, { score }, token)
+  async upsert(gameId: string, score: number, token: string): Promise<RatingResponse> {
+    const res = await apiClient.post<{ data: RatingResponse }>(`/games/${gameId}/ratings`, { score }, token)
+    return res.data
   },
 
   remove(gameId: string, token: string): Promise<void> {
     return apiClient.delete(`/games/${gameId}/ratings`, token)
   },
 
-  myRating(gameId: string, token: string): Promise<RatingResponse | null> {
-    return apiClient.get(`/games/${gameId}/ratings/me`, token)
+  async myRating(gameId: string, token: string): Promise<RatingResponse | null> {
+    const res = await apiClient.get<{ data: RatingResponse | null }>(`/games/${gameId}/ratings/me`, token)
+    return res.data
   },
 }
 
@@ -29,12 +31,14 @@ export const reviewsApi = {
     return apiClient.get(`/games/${gameId}/reviews?${qs}`)
   },
 
-  create<TReview>(gameId: string, data: { title?: string; body: string }, token: string): Promise<TReview> {
-    return apiClient.post(`/games/${gameId}/reviews`, data, token)
+  async create<TReview>(gameId: string, data: { title?: string; body: string }, token: string): Promise<TReview> {
+    const res = await apiClient.post<{ data: TReview }>(`/games/${gameId}/reviews`, data, token)
+    return res.data
   },
 
-  update(gameId: string, reviewId: string, data: { title?: string; body?: string }, token: string) {
-    return apiClient.patch(`/games/${gameId}/reviews/${reviewId}`, data, token)
+  async update<TReview>(gameId: string, reviewId: string, data: { title?: string; body?: string }, token: string): Promise<TReview> {
+    const res = await apiClient.patch<{ data: TReview }>(`/games/${gameId}/reviews/${reviewId}`, data, token)
+    return res.data
   },
 
   remove(gameId: string, reviewId: string, token: string): Promise<void> {

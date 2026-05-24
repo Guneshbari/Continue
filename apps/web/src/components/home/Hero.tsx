@@ -70,7 +70,7 @@ export function Hero({ featured }: HeroProps) {
       <div className="hero__content">
         <div className="hero__meta" aria-live="polite" aria-atomic="true">
           {/* Genres */}
-          {active.genres.length > 0 && (
+          {active.genres?.length > 0 && (
             <ul className="hero__genres" aria-label="Genres">
               {active.genres.slice(0, 3).map((g) => (
                 <li key={g.id} className="hero__genre-tag">{g.name}</li>

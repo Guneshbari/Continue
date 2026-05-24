@@ -1,7 +1,7 @@
 import {
   Injectable, NotFoundException, ForbiddenException, ConflictException,
 } from '@nestjs/common'
-import { PrismaService } from '../../common/prisma/prisma.service'
+import type { PrismaService } from '../../common/prisma/prisma.service'
 import type { CreateReviewDto, UpdateReviewDto } from './dto/review.dto'
 
 @Injectable()

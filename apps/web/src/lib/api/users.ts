@@ -15,8 +15,9 @@ export interface UserProfile {
 }
 
 export const usersApi = {
-  profile(username: string): Promise<UserProfile> {
-    return apiClient.get(`/users/${username}`)
+  async profile(username: string): Promise<UserProfile> {
+    const res = await apiClient.get<{ data: UserProfile }>(`/users/${username}`)
+    return res.data
   },
 
   reviews(username: string, limit = 10, cursor?: string) {

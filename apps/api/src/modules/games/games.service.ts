@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
-import { PrismaService } from '../../common/prisma/prisma.service'
+import type { PrismaService } from '../../common/prisma/prisma.service'
 import type { CreateGameDto, GamesQueryDto } from './dto/games.dto'
 
 // ─── Shared Prisma select shapes ──────────────────────────────────────────────
@@ -145,21 +145,22 @@ export class GamesService {
   }
 
   async create(dto: CreateGameDto) {
-    return this.prisma.game.create({ data: { ...dto }, select: GAME_DETAIL_SELECT })
+    const game = await this.prisma.game.create({ data: { ...dto }, select: GAME_DETAIL_SELECT })
+    return this.mapGameDetail(game as GameDetailRow)
   }
 
   // ─── Private mappers ─────────────────────────────────────────────────────────
 
   private mapGameSummary = (game: GameSummaryRow) => ({
     ...game,
-    genres: game.genres.map((g) => g.genre).filter(Boolean),
-    platforms: game.platforms.map((p) => p.platform).filter(Boolean),
+    genres: game.genres?.map((g) => g.genre).filter(Boolean) ?? [],
+    platforms: game.platforms?.map((p) => p.platform).filter(Boolean) ?? [],
     releaseDate: game.releaseDate?.toISOString() ?? null,
   })
 
   private mapGameDetail = (game: GameDetailRow) => ({
     ...this.mapGameSummary(game),
-    tags: game.tags.map((t) => t.tag).filter(Boolean),
+    tags: game.tags?.map((t) => t.tag).filter(Boolean) ?? [],
   })
 
   private resolveOrderBy(sort?: string) {

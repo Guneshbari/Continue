@@ -19,7 +19,7 @@ function searchSeed(q: string): SearchResultItem[] {
       seen.add(g.id)
       return (
         g.title.toLowerCase().includes(term) ||
-        g.genres.some((genre) => genre.name.toLowerCase().includes(term))
+        g.genres?.some((genre) => genre.name.toLowerCase().includes(term))
       )
     })
     .map((g) => ({ ...g, type: 'game' as const }))
@@ -142,7 +142,7 @@ export default function SearchPage() {
                     <div className="search-result-card__info">
                       <span className="search-result-card__title">{game.title}</span>
                       <div className="search-result-card__meta">
-                        {game.genres.length > 0 && (
+                        {game.genres?.length > 0 && (
                           <span className="search-result-card__genres">
                             {game.genres.slice(0, 2).map((g) => g.name).join(' · ')}
                           </span>

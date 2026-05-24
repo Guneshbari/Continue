@@ -92,7 +92,7 @@ export default async function GameDetailPage({ params }: PageProps) {
           {/* Main info */}
           <div className="game-detail__main">
             {/* Genres */}
-            {g.genres.length > 0 && (
+            {g.genres?.length > 0 && (
               <ul className="game-detail__genres" aria-label="Genres">
                 {g.genres.map((genre) => (
                   <li key={genre.id}>

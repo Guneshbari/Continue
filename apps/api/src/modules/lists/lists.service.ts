@@ -1,7 +1,7 @@
 import {
   Injectable, NotFoundException, ForbiddenException, ConflictException,
 } from '@nestjs/common'
-import { PrismaService } from '../../common/prisma/prisma.service'
+import type { PrismaService } from '../../common/prisma/prisma.service'
 import type { CreateListDto, UpdateListDto, AddListItemDto } from './dto/list.dto'
 
 function slugify(title: string): string {

@@ -42,27 +42,31 @@ export const listsApi = {
   discoveryCollections(limit = 3): Promise<DiscoveryCollection[]> {
     return apiClient.get(`/lists/discovery?limit=${limit}`)
   },
-  create(token: string, payload: CreateListPayload): Promise<ListSummary> {
-    return apiClient.post('/lists', payload, token)
+  async create(token: string, payload: CreateListPayload): Promise<ListSummary> {
+    const res = await apiClient.post<{ data: ListSummary }>('/lists', payload, token)
+    return res.data
   },
   byUser(username: string, token?: string): Promise<ListSummary[]> {
     return apiClient.get(`/users/${username}/lists`, token)
   },
-  getOne(username: string, slug: string, token?: string): Promise<ListDetail> {
-    return apiClient.get(`/users/${username}/lists/${slug}`, token)
+  async getOne(username: string, slug: string, token?: string): Promise<ListDetail> {
+    const res = await apiClient.get<{ data: ListDetail }>(`/users/${username}/lists/${slug}`, token)
+    return res.data
   },
-  update(id: string, token: string, payload: Partial<CreateListPayload>): Promise<ListSummary> {
-    return apiClient.patch(`/lists/${id}`, payload, token)
+  async update(id: string, token: string, payload: Partial<CreateListPayload>): Promise<ListSummary> {
+    const res = await apiClient.patch<{ data: ListSummary }>(`/lists/${id}`, payload, token)
+    return res.data
   },
   delete(id: string, token: string): Promise<void> {
     return apiClient.delete(`/lists/${id}`, token)
   },
-  addItem(listId: string, token: string, gameId: string, note?: string): Promise<ListItem> {
-    return apiClient.post(
+  async addItem(listId: string, token: string, gameId: string, note?: string): Promise<ListItem> {
+    const res = await apiClient.post<{ data: ListItem }>(
       `/lists/${listId}/items`,
       { gameId, ...(note ? { note } : {}) },
       token,
     )
+    return res.data
   },
   removeItem(listId: string, gameId: string, token: string): Promise<void> {
     return apiClient.delete(`/lists/${listId}/items/${gameId}`, token)

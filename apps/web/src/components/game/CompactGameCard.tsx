@@ -53,7 +53,7 @@ export function CompactGameCard({ game, className, rank }: CompactGameCardProps)
       <div className="compact-game-card__info">
         <h3 className="compact-game-card__title">{game.title}</h3>
         <div className="compact-game-card__meta">
-          {game.genres.length > 0 && (
+          {game.genres?.length > 0 && (
             <span className="compact-game-card__genre">{game.genres[0]?.name}</span>
           )}
           {game.releaseDate && (

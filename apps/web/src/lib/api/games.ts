@@ -38,7 +38,8 @@ export const gamesApi = {
   },
 
   // ─── Single game ────────────────────────────────────────────────────────────
-  get(idOrSlug: string): Promise<GameDetail> {
-    return apiClient.get(`/games/${idOrSlug}`)
+  async get(idOrSlug: string): Promise<GameDetail> {
+    const res = await apiClient.get<{ data: GameDetail }>(`/games/${idOrSlug}`)
+    return res.data
   },
 }

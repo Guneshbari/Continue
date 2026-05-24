@@ -54,7 +54,7 @@ export function GameCard({ game, variant = 'discovery', className }: GameCardPro
       <div className="game-card__info">
         <h3 className="game-card__title">{game.title}</h3>
 
-        {variant !== 'compact' && game.genres.length > 0 && (
+        {variant !== 'compact' && game.genres?.length > 0 && (
           <ul className="game-card__genres" aria-label="Genres">
             {game.genres.slice(0, 2).map((g) => (
               <li key={g.id} className="game-card__genre-tag">
