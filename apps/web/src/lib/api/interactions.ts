@@ -10,7 +10,7 @@ interface RatingResponse {
 
 export const ratingsApi = {
   async upsert(gameId: string, score: number, token: string): Promise<RatingResponse> {
-    const res = await apiClient.post<{ data: RatingResponse }>(`/games/${gameId}/ratings`, { score }, token)
+    const res = await apiClient.put<{ data: RatingResponse }>(`/games/${gameId}/ratings`, { score }, token)
     return res.data
   },
 
@@ -31,12 +31,21 @@ export const reviewsApi = {
     return apiClient.get(`/games/${gameId}/reviews?${qs}`)
   },
 
-  async create<TReview>(gameId: string, data: { title?: string; body: string }, token: string): Promise<TReview> {
+  async create<TReview>(
+    gameId: string,
+    data: { title?: string | undefined; body: string; isSpoiler?: boolean | undefined; status?: 'PUBLISHED' | 'DRAFT' | undefined },
+    token: string
+  ): Promise<TReview> {
     const res = await apiClient.post<{ data: TReview }>(`/games/${gameId}/reviews`, data, token)
     return res.data
   },
 
-  async update<TReview>(gameId: string, reviewId: string, data: { title?: string; body?: string }, token: string): Promise<TReview> {
+  async update<TReview>(
+    gameId: string,
+    reviewId: string,
+    data: { title?: string | undefined; body?: string | undefined; isSpoiler?: boolean | undefined; status?: 'PUBLISHED' | 'DRAFT' | undefined },
+    token: string
+  ): Promise<TReview> {
     const res = await apiClient.patch<{ data: TReview }>(`/games/${gameId}/reviews/${reviewId}`, data, token)
     return res.data
   },

@@ -2938,4 +2938,735 @@
     letter-spacing: 0.03em;
     line-height: 1;
   }
+
+  /* ─── Lists Page (Tabs & Discovery Full) ────────────────────────────────── */
+  .lists-page {
+    padding-top: 2.5rem;
+    padding-bottom: 4rem;
+  }
+
+  .lists-page__header-tabs {
+    display: flex;
+    gap: 0.5rem;
+    border-bottom: 1px solid var(--color-border-subtle);
+    margin-bottom: 2.5rem;
+    overflow-x: auto;
+    scrollbar-width: none; /* Hide scrollbar for clean visual */
+  }
+  .lists-page__header-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .lists-page__tab {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    font-family: var(--font-ui);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: color 150ms, border-color 150ms;
+    white-space: nowrap;
+  }
+  .lists-page__tab:hover {
+    color: var(--color-text-primary);
+  }
+  .lists-page__tab--active {
+    color: var(--color-accent);
+    border-bottom-color: var(--color-accent);
+  }
+
+  .lists-page__loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    padding: 5rem 1rem;
+    color: var(--color-text-muted);
+    font-size: 0.95rem;
+  }
+
+  .lists-page__loading .spinner {
+    animation: search-spin 0.8s linear infinite;
+    color: var(--color-accent);
+    width: 24px;
+    height: 24px;
+  }
+
+  .lists-page__empty {
+    text-align: center;
+    padding: 4rem 1rem;
+    color: var(--color-text-muted);
+  }
+
+  .community-collections-full {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .community-collections__subtitle {
+    font-size: 1rem;
+    color: var(--color-text-secondary);
+    margin: 0.25rem 0 0;
+  }
+
+  .lists-page__cta {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 3rem 2rem;
+    background: linear-gradient(135deg, var(--color-surface-raised), var(--color-surface-sunken));
+    border: 1px solid var(--color-border-subtle);
+    border-radius: 12px;
+    margin-top: 3rem;
+  }
+
+  .lists-page__cta h2 {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    color: var(--color-text-primary);
+    margin: 0 0 0.5rem;
+  }
+
+  .lists-page__cta p {
+    font-size: 0.95rem;
+    color: var(--color-text-muted);
+    max-width: 480px;
+    margin: 0 0 1.5rem;
+    line-height: 1.5;
+  }
+
+  /* ─── Game Detail Bento Gallery & Details Redesign ─────────────────────── */
+  .game-detail__sidebar-group {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .game-detail__interactive-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+  }
+
+  .game-action-panel {
+    background-color: var(--color-surface-raised);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: 14px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  }
+
+  .action-panel__score-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: linear-gradient(135deg, var(--color-surface-overlay), var(--color-surface-sunken));
+    padding: 1rem;
+    border-radius: 10px;
+    border: 1px solid var(--color-border-subtle);
+  }
+
+  .score-card__circle {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background-color: var(--color-surface-raised);
+    border: 2px solid var(--color-accent);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-accent);
+    font-weight: 800;
+    font-size: 0.95rem;
+    flex-shrink: 0;
+    position: relative;
+  }
+
+  .score-card__star-icon {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    color: oklch(75% 0.18 70);
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+  }
+
+  .score-card__stats {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  .score-card__count {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+  }
+
+  .score-card__tagline {
+    font-size: 0.72rem;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .action-panel__content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .action-panel__section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .metadata-label--panel {
+    margin-bottom: 0.15rem;
+  }
+
+  .catalog-toggles {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
+
+  .catalog-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.55rem;
+    border-radius: 8px;
+    border: 1px solid var(--color-border);
+    background: none;
+    font-family: var(--font-ui);
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: all 120ms;
+  }
+  .catalog-btn:hover {
+    background-color: var(--color-surface-overlay);
+    border-color: var(--color-border-strong);
+  }
+  .catalog-btn--active {
+    background-color: oklch(35% 0.15 150);
+    border-color: var(--color-success);
+    color: oklch(90% 0.1 150);
+  }
+
+  .action-panel__footer-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+
+  .favorite-btn {
+    padding: 0.6rem;
+    border-radius: 8px;
+    border: 1px solid var(--color-border);
+    background: none;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: all 120ms;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .favorite-btn:hover {
+    color: oklch(65% 0.25 20);
+    border-color: oklch(65% 0.25 20 / 0.4);
+    background-color: oklch(65% 0.25 20 / 0.05);
+  }
+  .favorite-btn--active {
+    color: oklch(65% 0.25 20);
+    border-color: oklch(65% 0.25 20);
+    background-color: oklch(65% 0.25 20 / 0.1);
+  }
+
+  .review-trigger-btn {
+    flex: 1;
+  }
+
+  .action-panel__guest-banner {
+    text-align: center;
+    padding: 0.5rem;
+    font-size: 0.88rem;
+    color: var(--color-text-secondary);
+    line-height: 1.5;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  /* Rating Selector */
+  .rating-selector {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .rating-selector__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .rating-selector__label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-text-muted);
+  }
+
+  .rating-selector__clear-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.72rem;
+    color: var(--color-error);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    transition: opacity 120ms;
+  }
+  .rating-selector__clear-btn:hover {
+    opacity: 0.8;
+  }
+
+  .rating-selector__loading {
+    padding: 0.5rem 0;
+    font-size: 0.82rem;
+    color: var(--color-text-muted);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .rating-selector__spinner {
+    animation: search-spin 0.8s linear infinite;
+    color: var(--color-accent);
+  }
+
+  .rating-selector__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .rating-selector__stars {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .rating-selector__star-btn {
+    background: none;
+    border: none;
+    color: var(--color-text-sunken, var(--color-border));
+    cursor: pointer;
+    padding: 2px;
+    transition: color 100ms, transform 100ms;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .rating-selector__star-btn:hover {
+    transform: scale(1.15);
+  }
+  .rating-selector__star-btn--lit {
+    color: oklch(75% 0.18 70);
+  }
+
+  .rating-selector__display {
+    text-align: center;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--color-text-secondary);
+    min-height: 1.25rem;
+  }
+
+  .rating-selector__value {
+    color: oklch(75% 0.18 70);
+  }
+
+  .rating-selector__hint {
+    color: var(--color-text-muted);
+    font-weight: 500;
+  }
+
+  .rating-selector__error {
+    font-size: 0.75rem;
+    color: var(--color-error);
+    margin-top: 0.25rem;
+  }
+
+  /* Game Metadata Grid */
+  .game-metadata-grid {
+    background-color: var(--color-surface-raised);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .metadata-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1.5rem 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .metadata-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .metadata-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-text-muted);
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  .metadata-value {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+  }
+
+  .metadata-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 1.25rem;
+    border-top: 1px solid var(--color-border-subtle);
+    padding-top: 1.25rem;
+  }
+
+  .metadata-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+  }
+
+  .metadata-tag {
+    padding: 0.25rem 0.6rem;
+    border-radius: 6px;
+    border: 1px solid var(--color-border);
+    font-size: 0.78rem;
+    color: var(--color-text-secondary);
+    background-color: var(--color-surface-sunken);
+  }
+
+  /* Review Preview Card & Spoiler Blur */
+  .review-card__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+  }
+
+  .review-card__user {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .review-card__avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    background-color: var(--color-surface-sunken);
+    border: 1px solid var(--color-border);
+  }
+
+  .review-card__avatar-placeholder {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: var(--color-surface-sunken);
+    border: 1px solid var(--color-border-strong);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: var(--color-accent);
+    font-size: 0.9rem;
+  }
+
+  .review-card__user-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  .review-card__draft-badge {
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    background-color: var(--color-surface-sunken);
+    border: 1px solid oklch(75% 0.1 70);
+    color: oklch(75% 0.1 70);
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .review-card__actions {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  .review-card__action-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--color-text-muted);
+    padding: 4px;
+    border-radius: 4px;
+    transition: all 120ms;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .review-card__action-btn:hover {
+    color: var(--color-text-primary);
+    background-color: var(--color-surface-overlay);
+  }
+  .review-card__action-btn--delete:hover {
+    color: var(--color-error);
+    background-color: oklch(62% 0.25 20 / 0.1);
+  }
+
+  .review-card__content-wrap {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .review-card__spoiler-gate {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .review-card__spoiler-blur {
+    filter: blur(20px);
+    opacity: 0.3;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .review-card__spoiler-btn {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    z-index: 5;
+    background: rgba(15, 15, 15, 0.75);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: oklch(98% 0 0);
+    border-radius: 8px;
+    padding: 0.75rem 1.25rem;
+    font-family: var(--font-ui);
+    font-size: 0.85rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    width: fit-content;
+    height: fit-content;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    transition: all 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .review-card__spoiler-btn:hover {
+    background: rgba(15, 15, 15, 0.85);
+    transform: scale(1.02);
+  }
+
+  /* Bento Gallery Placeholders */
+  .game-detail__gallery {
+    margin: 2.5rem 0;
+  }
+
+  .gallery-section-title {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    color: var(--color-text-primary);
+    margin: 0 0 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .bento-gallery {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    grid-template-rows: 140px 140px;
+    gap: 0.75rem;
+  }
+
+  @media (max-width: 640px) {
+    .bento-gallery {
+      grid-template-columns: 1fr;
+      grid-template-rows: repeat(3, 160px);
+    }
+  }
+
+  .bento-gallery__slot {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--color-border-subtle);
+  }
+
+  .bento-gallery__slot--main {
+    grid-row: span 2;
+  }
+
+  @media (max-width: 640px) {
+    .bento-gallery__slot--main {
+      grid-row: span 1;
+    }
+  }
+
+  .bento-placeholder-bg {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--color-surface-raised) 0%, var(--color-surface-sunken) 100%);
+    opacity: 0.8;
+  }
+
+  .bento-gallery__label {
+    position: absolute;
+    bottom: 0.75rem;
+    left: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
+    background: rgba(15, 15, 15, 0.6);
+    backdrop-filter: blur(6px);
+    color: var(--color-text-primary);
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* Related Games Carousel */
+  .game-detail__related {
+    margin: 2.5rem 0;
+  }
+
+  .related-slider {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  /* Composer checklist options */
+  .review-composer__config {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 1.5rem;
+    align-items: center;
+    border-top: 1px solid var(--color-border-subtle);
+    padding-top: 1.25rem;
+    margin-top: 0.5rem;
+  }
+
+  @media (max-width: 580px) {
+    .review-composer__config {
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+    }
+  }
+
+  .review-composer__spoiler-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .composer-checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+  }
+
+  .composer-checkbox-label input {
+    cursor: pointer;
+    accent-color: var(--color-accent);
+  }
+
+  .composer-checkbox-hint {
+    font-size: 0.72rem;
+    color: var(--color-text-muted);
+    padding-left: 1.4rem;
+  }
+
+  .review-composer__counter {
+    font-size: 0.72rem;
+    color: var(--color-text-muted);
+    text-align: right;
+    margin-top: 0.25rem;
+  }
+
+  .list-modal__content--large {
+    max-width: 560px;
+  }
+
+  .game-detail__banner-fallback {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, var(--color-surface-sunken) 0%, var(--color-surface-base) 100%);
+  }
+
+  .game-detail__description-box {
+    margin: 1.5rem 0;
+    border-left: 3px solid var(--color-accent);
+    padding-left: 1rem;
+  }
+
+  .reviews-section__empty-card {
+    background-color: var(--color-surface-raised);
+    border: 1px dashed var(--color-border);
+    border-radius: 12px;
+    padding: 3rem 1.5rem;
+    text-align: center;
+    color: var(--color-text-muted);
+  }
 }
+

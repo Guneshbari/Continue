@@ -11,6 +11,7 @@ export interface ListSummary {
   updatedAt: string
   user: { id: string; username: string; displayName: string | null; avatarUrl: string | null }
   _count: { items: number }
+  items?: { gameId: string }[] | ListItem[]
 }
 
 export interface ListDetail extends ListSummary {
@@ -46,8 +47,9 @@ export const listsApi = {
     const res = await apiClient.post<{ data: ListSummary }>('/lists', payload, token)
     return res.data
   },
-  byUser(username: string, token?: string): Promise<ListSummary[]> {
-    return apiClient.get(`/users/${username}/lists`, token)
+  byUser(username: string, token?: string, gameId?: string): Promise<ListSummary[]> {
+    const qs = gameId ? `?gameId=${gameId}` : ''
+    return apiClient.get(`/users/${username}/lists${qs}`, token)
   },
   async getOne(username: string, slug: string, token?: string): Promise<ListDetail> {
     const res = await apiClient.get<{ data: ListDetail }>(`/users/${username}/lists/${slug}`, token)

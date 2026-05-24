@@ -8,6 +8,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       { protocol: 'https', hostname: '**.continue.app' },
       { protocol: 'https', hostname: 'images.igdb.com' },
+      { protocol: 'https', hostname: 'images.unsplash.com' },
     ],
   },
 

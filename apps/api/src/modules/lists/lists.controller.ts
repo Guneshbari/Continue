@@ -3,7 +3,7 @@ import {
   Param, Body, Request, HttpCode, HttpStatus, Query, ParseIntPipe, DefaultValuePipe,
 } from '@nestjs/common'
 import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery } from '@nestjs/swagger'
-import type { ListsService } from './lists.service'
+import { ListsService } from './lists.service'
 import type { CreateListDto, UpdateListDto, AddListItemDto } from './dto/list.dto'
 import { CurrentUser, type AuthUser } from '../auth/decorators/current-user.decorator'
 import { Public } from '../auth/decorators/public.decorator'
@@ -42,8 +42,9 @@ export class ListsController {
   findByUser(
     @Param('username') username: string,
     @Request() req: { user?: AuthUser },
+    @Query('gameId') gameId?: string,
   ) {
-    return this.listsService.findByUser(username, req.user?.id)
+    return this.listsService.findByUser(username, req.user?.id, gameId)
   }
 
   @Public()

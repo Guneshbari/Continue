@@ -1,7 +1,7 @@
 import {
   Injectable, NotFoundException, ForbiddenException, ConflictException,
 } from '@nestjs/common'
-import type { PrismaService } from '../../common/prisma/prisma.service'
+import { PrismaService } from '../../common/prisma/prisma.service'
 import type { CreateReviewDto, UpdateReviewDto } from './dto/review.dto'
 
 @Injectable()
@@ -20,6 +20,7 @@ export class ReviewsService {
       select: {
         id: true,
         body: true,
+        isSpoiler: true,
         createdAt: true,
         user: { select: { id: true, username: true, displayName: true } },
         game: { select: { id: true, slug: true, title: true, coverUrl: true } },
@@ -38,7 +39,7 @@ export class ReviewsService {
     if (existing) throw new ConflictException('You already reviewed this game')
 
     return this.prisma.review.create({
-      data: { userId, gameId, ...dto, status: 'PUBLISHED' },
+      data: { userId, gameId, ...dto, status: dto.status ?? 'PUBLISHED' },
       include: { user: { select: { id: true, username: true, displayName: true, avatarUrl: true } } },
     })
   }

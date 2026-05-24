@@ -1,5 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { IsString, MaxLength, IsOptional, MinLength } from 'class-validator'
+import { IsString, MaxLength, IsOptional, MinLength, IsEnum, IsBoolean } from 'class-validator'
+import { ReviewStatus } from '@prisma/client'
 
 export class CreateReviewDto {
   @ApiPropertyOptional({ maxLength: 200 })
@@ -13,6 +14,16 @@ export class CreateReviewDto {
   @MinLength(10)
   @MaxLength(10000)
   body!: string
+
+  @ApiPropertyOptional({ enum: ReviewStatus, default: ReviewStatus.PUBLISHED })
+  @IsOptional()
+  @IsEnum(ReviewStatus)
+  status?: ReviewStatus
+
+  @ApiPropertyOptional({ default: false })
+  @IsOptional()
+  @IsBoolean()
+  isSpoiler?: boolean
 }
 
 export class UpdateReviewDto {
@@ -28,4 +39,15 @@ export class UpdateReviewDto {
   @MinLength(10)
   @MaxLength(10000)
   body?: string
+
+  @ApiPropertyOptional({ enum: ReviewStatus })
+  @IsOptional()
+  @IsEnum(ReviewStatus)
+  status?: ReviewStatus
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsBoolean()
+  isSpoiler?: boolean
 }
+

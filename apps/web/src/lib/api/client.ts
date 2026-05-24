@@ -64,6 +64,14 @@ export const apiClient = {
     })
   },
 
+  put<T>(path: string, body: unknown, token?: string) {
+    return apiFetch<T>(path, {
+      method: 'PUT',
+      body: JSON.stringify(body),
+      ...(token ? { token } : {}),
+    })
+  },
+
   delete<T>(path: string, token?: string) {
     return apiFetch<T>(path, { method: 'DELETE', ...(token ? { token } : {}) })
   },

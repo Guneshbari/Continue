@@ -1,7 +1,7 @@
 import {
   Injectable, NotFoundException, ForbiddenException, ConflictException,
 } from '@nestjs/common'
-import type { PrismaService } from '../../common/prisma/prisma.service'
+import { PrismaService } from '../../common/prisma/prisma.service'
 import type { CreateListDto, UpdateListDto, AddListItemDto } from './dto/list.dto'
 
 function slugify(title: string): string {
@@ -51,6 +51,7 @@ export class ListsService {
       take: limit,
       select: {
         id: true,
+        slug: true,
         title: true,
         description: true,
         _count: { select: { items: true } },
@@ -67,6 +68,7 @@ export class ListsService {
 
     return lists.map((list) => ({
       id: list.id,
+      slug: list.slug,
       title: list.title,
       description: list.description,
       gameCount: list._count.items,
@@ -103,7 +105,7 @@ export class ListsService {
     })
   }
 
-  async findByUser(username: string, requesterId?: string) {
+  async findByUser(username: string, requesterId?: string, gameId?: string) {
     const user = await this.prisma.user.findFirst({
       where: { username, deletedAt: null },
       select: { id: true },
@@ -118,7 +120,15 @@ export class ListsService {
     return this.prisma.list.findMany({
       where: { userId: user.id, deletedAt: null, ...visibilityFilter },
       orderBy: { updatedAt: 'desc' },
-      select: LIST_SELECT,
+      select: {
+        ...LIST_SELECT,
+        ...(gameId && {
+          items: {
+            where: { gameId },
+            select: { gameId: true },
+          },
+        }),
+      },
     })
   }
 

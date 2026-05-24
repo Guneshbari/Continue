@@ -1,148 +1,160 @@
 'use client'
 
-import { useState, useEffect, type ReactNode, type SyntheticEvent } from 'react'
+import { useState, useEffect } from 'react'
 import { useAuth } from '@/lib/auth/AuthContext'
 import { reviewsApi } from '@/lib/api/interactions'
-import { Loader2 } from 'lucide-react'
+import { ReviewPreviewCard } from './ReviewPreviewCard'
+import { ReviewComposer } from './ReviewComposer'
+import { Loader2, MessageSquarePlus } from 'lucide-react'
 
 interface Review {
   id: string
   title: string | null
   body: string
+  status: 'PUBLISHED' | 'DRAFT'
+  isSpoiler: boolean
   createdAt: string
   user: { id: string; username: string; displayName: string | null; avatarUrl: string | null }
 }
 
-type ReviewsSectionProps = Readonly<{
+interface ReviewsSectionProps {
   gameId: string
-}>
+  onReviewStateChanged?: (hasReviewed: boolean, userReview?: Review) => void
+}
 
-export function ReviewsSection({ gameId }: ReviewsSectionProps) {
-  const { user, accessToken } = useAuth()
+export function ReviewsSection({ gameId, onReviewStateChanged }: ReviewsSectionProps) {
+  const { user, token } = useAuth()
   const [reviews, setReviews] = useState<Review[]>([])
   const [loading, setLoading] = useState(true)
-  const [showForm, setShowForm] = useState(false)
-  const [body, setBody] = useState('')
-  const [title, setTitle] = useState('')
-  const [submitting, setSubmitting] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [composerOpen, setComposerOpen] = useState(false)
+  const [editingReview, setEditingReview] = useState<Review | undefined>(undefined)
 
+  // Fetch reviews on mount
   useEffect(() => {
-    reviewsApi.list<Review>(gameId, 10).then((res) => {
-      setReviews(res.data)
-      setLoading(false)
-    }).catch(() => setLoading(false))
+    setLoading(true)
+    reviewsApi
+      .list<Review>(gameId, 30)
+      .then((res) => {
+        setReviews(res.data)
+        setLoading(false)
+      })
+      .catch(() => {
+        setLoading(false)
+      })
   }, [gameId])
 
-  const handleSubmit = async (e: SyntheticEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    if (!accessToken) return
-    setSubmitting(true)
-    setError(null)
-    try {
-      const payload = {
-        body,
-        ...(title.trim() ? { title: title.trim() } : {}),
+  // Sync edits from sidebar composer
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const savedReview = (e as CustomEvent).detail
+      handleCreateOrEditSuccess(savedReview)
+    }
+    window.addEventListener('review-saved', handler)
+    return () => window.removeEventListener('review-saved', handler)
+  }, [])
+
+  // Sync user review status to parent
+  useEffect(() => {
+    if (!user) {
+      onReviewStateChanged?.(false)
+      return
+    }
+    const myReview = reviews.find((r) => r.user.id === user.id)
+    onReviewStateChanged?.(!!myReview, myReview)
+  }, [reviews, user, onReviewStateChanged])
+
+  const handleCreateOrEditSuccess = (savedReview: Review) => {
+    setReviews((prev) => {
+      const idx = prev.findIndex((r) => r.id === savedReview.id)
+      if (idx !== -1) {
+        // Update existing review in feed
+        const updated = [...prev]
+        updated[idx] = savedReview
+        return updated
       }
-      const review = await reviewsApi.create<Review>(gameId, payload, accessToken)
-      setReviews((prev) => [review, ...prev])
-      setShowForm(false)
-      setBody('')
-      setTitle('')
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Failed to post review'
-      setError(msg)
-    } finally {
-      setSubmitting(false)
+      // Prepend new review
+      return [savedReview, ...prev]
+    })
+  }
+
+  const handleDelete = async (reviewId: string) => {
+    if (!token) return
+    if (!confirm('Are you sure you want to delete this review?')) return
+
+    try {
+      await reviewsApi.remove(gameId, reviewId, token)
+      setReviews((prev) => prev.filter((r) => r.id !== reviewId))
+    } catch (err) {
+      alert('Failed to delete review.')
     }
   }
 
-  let reviewsContent: ReactNode
-  if (loading) {
-    reviewsContent = <p className="reviews-section__empty">Loading reviews…</p>
-  } else if (reviews.length === 0) {
-    reviewsContent = <p className="reviews-section__empty">No reviews yet. Be the first!</p>
-  } else {
-    reviewsContent = (
-      <ul className="reviews-list">
-        {reviews.map((r) => (
-          <li key={r.id} className="review-card">
-            <div className="review-card__meta">
-              <span className="review-card__author">
-                <a href={`/users/${r.user.username}`} className="review-card__author-link">
-                  {r.user.displayName ?? r.user.username}
-                </a>
-              </span>
-              <time className="review-card__date" dateTime={r.createdAt}>
-                {new Date(r.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
-              </time>
-            </div>
-            {r.title && <h3 className="review-card__title">{r.title}</h3>}
-            <p className="review-card__body">{r.body}</p>
-          </li>
-        ))}
-      </ul>
-    )
+  const handleEditClick = (review: Review) => {
+    if (!user) {
+      window.location.href = '/login'
+      return
+    }
+    setEditingReview(review)
+    setComposerOpen(true)
   }
 
+  const handleWriteClick = () => {
+    if (!user) {
+      window.location.href = '/login'
+      return
+    }
+    setEditingReview(undefined)
+    setComposerOpen(true)
+  }
+
+  const myReview = user ? reviews.find((r) => r.user.id === user.id) : undefined
+
   return (
-    <section className="reviews-section" aria-label="Reviews">
+    <section className="reviews-section" aria-labelledby="reviews-title">
       <div className="reviews-section__header">
-        <h2 className="reviews-section__title">Reviews</h2>
-        {user && !showForm && (
-          <button onClick={() => setShowForm(true)} className="reviews-section__write-btn">
-            Write a review
-          </button>
-        )}
-        {!user && (
-          <a href="/login" className="reviews-section__write-btn reviews-section__write-btn--ghost">
-            Sign in to review
-          </a>
-        )}
+        <h2 id="reviews-title" className="reviews-section__title">
+          User Reviews
+        </h2>
+        <button
+          onClick={myReview ? () => handleEditClick(myReview) : handleWriteClick}
+          className="btn btn--secondary btn--icon"
+        >
+          <MessageSquarePlus size={16} />
+          <span>{myReview ? 'Edit Review' : 'Write Review'}</span>
+        </button>
       </div>
 
-      {/* Write form */}
-      {showForm && (
-        <form onSubmit={handleSubmit} className="review-form">
-          {error && <p className="auth-form__error">{error}</p>}
-          <div className="form-field">
-            <label htmlFor="review-title" className="form-label">Title (optional)</label>
-            <input
-              id="review-title"
-              type="text"
-              className="form-input"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              maxLength={200}
-              placeholder="Sum it up in a line..."
-            />
-          </div>
-          <div className="form-field">
-            <label htmlFor="review-body" className="form-label">Review <span aria-hidden="true">*</span></label>
-            <textarea
-              id="review-body"
-              className="form-input review-form__textarea"
-              value={body}
-              onChange={(e) => setBody(e.target.value)}
-              minLength={10}
-              maxLength={10000}
-              required
-              placeholder="Share your thoughts..."
-            />
-          </div>
-          <div className="review-form__actions">
-            <button type="button" onClick={() => setShowForm(false)} className="review-form__cancel">
-              Cancel
-            </button>
-            <button type="submit" disabled={submitting || body.length < 10} className="auth-form__submit review-form__submit">
-              {submitting ? <><Loader2 size={14} className="spin" /> Posting…</> : 'Post review'}
-            </button>
-          </div>
-        </form>
+      {loading ? (
+        <div className="reviews-section__loading">
+          <Loader2 size={24} className="reviews-section__spinner" />
+          <span>Fetching reviews...</span>
+        </div>
+      ) : reviews.length === 0 ? (
+        <div className="reviews-section__empty-card">
+          <p>No reviews posted yet. Be the first to share your thoughts!</p>
+        </div>
+      ) : (
+        <ul className="reviews-list">
+          {reviews.map((r) => (
+            <li key={r.id}>
+              <ReviewPreviewCard
+                review={r}
+                onEdit={() => handleEditClick(r)}
+                onDelete={() => handleDelete(r.id)}
+              />
+            </li>
+          ))}
+        </ul>
       )}
 
-      {/* List */}
-      {reviewsContent}
+      {/* Shared composer modal */}
+      <ReviewComposer
+        gameId={gameId}
+        isOpen={composerOpen}
+        onClose={() => setComposerOpen(false)}
+        onSuccess={handleCreateOrEditSuccess}
+        editingReview={editingReview}
+      />
     </section>
   )
 }

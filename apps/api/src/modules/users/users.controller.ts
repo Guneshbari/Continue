@@ -1,6 +1,6 @@
 import { Controller, Get, Param, Query, ParseIntPipe, DefaultValuePipe } from '@nestjs/common'
 import { ApiTags, ApiOperation, ApiQuery } from '@nestjs/swagger'
-import type { UsersService } from './users.service'
+import { UsersService } from './users.service'
 import { Public } from '../auth/decorators/public.decorator'
 
 @ApiTags('users')

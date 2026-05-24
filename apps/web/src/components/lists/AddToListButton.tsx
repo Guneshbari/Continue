@@ -30,11 +30,22 @@ export function AddToListButton({ gameId, gameTitle }: Props) {
   useEffect(() => {
     if (!open || !user || !token) return
     setLoading(true)
-    listsApi.byUser(user.username, token)
-      .then((data) => setLists(Array.isArray(data) ? data : []))
+    listsApi.byUser(user.username, token, gameId)
+      .then((data) => {
+        const listData = Array.isArray(data) ? data : []
+        setLists(listData)
+        // Initialize added set with list IDs that contain this game
+        const initialAdded = new Set<string>()
+        for (const list of listData) {
+          if (list.items && list.items.length > 0) {
+            initialAdded.add(list.id)
+          }
+        }
+        setAdded(initialAdded)
+      })
       .catch(() => setLists([]))
       .finally(() => setLoading(false))
-  }, [open, user, token])
+  }, [open, user, token, gameId])
 
   // Calculate dropdown position from trigger button
   useEffect(() => {
@@ -62,7 +73,21 @@ export function AddToListButton({ gameId, gameTitle }: Props) {
     return () => document.removeEventListener('mousedown', handler)
   }, [open])
 
-  if (!user) return null
+  if (!user) {
+    return (
+      <div className="add-to-list">
+        <button
+          className="add-to-list__trigger"
+          onClick={() => window.location.href = '/login'}
+          title={`Add ${gameTitle} to a list`}
+        >
+          <List size={16} aria-hidden="true" />
+          Add to List
+          <ChevronDown size={14} aria-hidden="true" />
+        </button>
+      </div>
+    )
+  }
 
   const handleAdd = async (listId: string) => {
     if (!token || adding) return

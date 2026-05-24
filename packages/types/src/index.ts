@@ -97,6 +97,7 @@ export interface ReviewSummary {
   title: string | null
   body: string
   status: ReviewStatus
+  isSpoiler: boolean
   createdAt: string
   updatedAt: string
   user: Pick<UserPublic, 'id' | 'username' | 'displayName' | 'avatarUrl'>
@@ -109,6 +110,7 @@ export interface ReviewSummary {
 export interface FeaturedReview {
   id: string
   body: string
+  isSpoiler: boolean
   createdAt: string
   user: {
     id: string
@@ -151,6 +153,7 @@ export interface ListSummary {
  */
 export interface DiscoveryCollection {
   id: string
+  slug: string
   title: string
   description: string | null
   gameCount: number
