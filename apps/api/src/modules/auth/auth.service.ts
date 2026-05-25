@@ -27,9 +27,21 @@ export class AuthService {
   ) {}
 
   async register(dto: RegisterDto) {
+    const normalizedUsername = dto.username.toLowerCase().trim()
+    const RESERVED_USERNAMES = [
+      'admin', 'support', 'continue', 'api', 'auth', 'settings', 'discover', 'games', 'lists', 'u'
+    ]
+
+    if (RESERVED_USERNAMES.includes(normalizedUsername)) {
+      throw new ConflictException('Username is reserved')
+    }
+
     const existing = await this.prisma.user.findFirst({
       where: {
-        OR: [{ email: dto.email }, { username: dto.username }],
+        OR: [
+          { email: dto.email },
+          { username: { equals: dto.username, mode: 'insensitive' } }
+        ],
         deletedAt: null,
       },
       select: { email: true, username: true },

@@ -40,6 +40,14 @@ export class GamesController {
     return this.gamesService.findDiscovery('top-rated', Math.min(Number(limit) || 6, 20))
   }
 
+  @Public()
+  @Get('filter')
+  @ApiOperation({ summary: 'Get active taxonomy lists (genres, platforms, years) for filtering' })
+  async filters(@Res({ passthrough: true }) res: FastifyReply) {
+    res.header('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=600')
+    return this.gamesService.findFilters()
+  }
+
   // ─── Generic list + detail ─────────────────────────────────────────────────
 
   @Public()

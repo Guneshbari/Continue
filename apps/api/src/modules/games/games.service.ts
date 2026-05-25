@@ -96,7 +96,7 @@ export class GamesService {
   // ─── Generic list (cursor-paginated) ─────────────────────────────────────────
 
   async findAll(query: GamesQueryDto) {
-    const { q, genre, platform, sort, cursor, limit } = query
+    const { q, genre, platform, sort, cursor, limit, year, minRating } = query
 
     const where = {
       deletedAt: null,
@@ -108,6 +108,17 @@ export class GamesService {
       }),
       ...(genre && { genres: { some: { genre: { slug: genre } } } }),
       ...(platform && { platforms: { some: { platform: { slug: platform } } } }),
+      ...(year && {
+        releaseDate: {
+          gte: new Date(year, 0, 1),
+          lte: new Date(year, 11, 31, 23, 59, 59),
+        },
+      }),
+      ...(minRating && {
+        avgRating: {
+          gte: minRating,
+        },
+      }),
     }
 
     const orderBy = this.resolveOrderBy(sort)
@@ -127,6 +138,64 @@ export class GamesService {
     return {
       data: (data as GameSummaryRow[]).map(this.mapGameSummary),
       meta: { nextCursor, total: undefined },
+    }
+  }
+
+  // ─── Discovery metadata / filters ───────────────────────────────────────────
+
+  async findFilters() {
+    const genres = await this.prisma.genre.findMany({
+      select: { id: true, slug: true, name: true },
+      orderBy: { name: 'asc' },
+    })
+
+    const platforms = await this.prisma.platform.findMany({
+      select: { id: true, slug: true, name: true },
+      orderBy: { name: 'asc' },
+    })
+
+    const gamesWithDates = await this.prisma.game.findMany({
+      where: { deletedAt: null, releaseDate: { not: null } },
+      select: { releaseDate: true },
+    })
+
+    const yearsSet = new Set<number>()
+    for (const g of gamesWithDates) {
+      if (g.releaseDate) {
+        yearsSet.add(g.releaseDate.getFullYear())
+      }
+    }
+    const years = Array.from(yearsSet).sort((a, b) => b - a)
+
+    return {
+      genres,
+      platforms,
+      years,
+      ratings: [10, 9, 8, 7, 6, 5, 4, 3, 2, 1],
+    }
+  }
+
+  async findDiscoverDashboard(limit = 6) {
+    const [trending, newReleases, topRated] = await Promise.all([
+      this.findDiscovery('trending', limit),
+      this.findDiscovery('new-releases', limit),
+      this.findDiscovery('top-rated', limit),
+    ])
+
+    const now = new Date()
+    const upcomingItems = await this.prisma.game.findMany({
+      where: { deletedAt: null, releaseDate: { gt: now } },
+      orderBy: { releaseDate: 'asc' },
+      take: limit,
+      select: GAME_SUMMARY_SELECT,
+    })
+    const upcoming = (upcomingItems as GameSummaryRow[]).map(this.mapGameSummary)
+
+    return {
+      trending,
+      newReleases,
+      topRated,
+      upcoming,
     }
   }
 

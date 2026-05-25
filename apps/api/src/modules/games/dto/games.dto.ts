@@ -80,6 +80,20 @@ export class GamesQueryDto {
   @IsString()
   cursor?: string
 
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  year?: number
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  @Max(10)
+  minRating?: number
+
   @ApiPropertyOptional({ default: 20 })
   @IsOptional()
   @Type(() => Number)

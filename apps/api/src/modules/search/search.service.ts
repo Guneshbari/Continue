@@ -73,4 +73,61 @@ export class SearchService {
       type: 'game' as const,
     }))
   }
+
+  async suggestions(q: string, limit = 5): Promise<SearchResult[]> {
+    if (!q || q.trim().length < 2) return []
+
+    const term = q.trim()
+
+    const games = await this.prisma.game.findMany({
+      where: {
+        deletedAt: null,
+        OR: [
+          { title: { contains: term, mode: 'insensitive' } },
+          { developer: { contains: term, mode: 'insensitive' } },
+          { slug: { contains: term, mode: 'insensitive' } },
+        ],
+      },
+      take: limit * 2,
+      orderBy: [
+        { ratingCount: 'desc' },
+        { avgRating: 'desc' },
+      ],
+      select: {
+        id: true,
+        slug: true,
+        title: true,
+        coverUrl: true,
+        avgRating: true,
+        ratingCount: true,
+        releaseDate: true,
+        genres: { select: { genre: { select: { id: true, slug: true, name: true } } } },
+      },
+    })
+
+    const sorted = (games as SearchGameRow[]).sort((a, b) => {
+      const aTitle = a.title.toLowerCase()
+      const bTitle = b.title.toLowerCase()
+      const termLower = term.toLowerCase()
+
+      const aStarts = aTitle.startsWith(termLower)
+      const bStarts = bTitle.startsWith(termLower)
+
+      if (aStarts && !bStarts) return -1
+      if (!aStarts && bStarts) return 1
+      return 0
+    })
+
+    return sorted.slice(0, limit).map((g) => ({
+      id: g.id,
+      slug: g.slug,
+      title: g.title,
+      coverUrl: g.coverUrl,
+      avgRating: g.avgRating,
+      ratingCount: g.ratingCount,
+      releaseDate: g.releaseDate?.toISOString() ?? null,
+      genres: g.genres.map((gg) => gg.genre),
+      type: 'game' as const,
+    }))
+  }
 }

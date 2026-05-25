@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils'
 
 type GameCardProps = Readonly<{
   game: GameSummary
-  variant?: 'discovery' | 'compact' | 'hero'
+  variant?: 'discovery' | 'compact' | 'hero' | 'list'
   className?: string
 }>
 
@@ -15,6 +15,55 @@ export function GameCard({ game, variant = 'discovery', className }: GameCardPro
   const ariaLabel = game.avgRating
     ? `${game.title}, rated ${game.avgRating.toFixed(1)} out of 10`
     : game.title
+
+  if (variant === 'list') {
+    return (
+      <Link
+        href={href}
+        className={cn('game-card game-card--list', className)}
+        aria-label={ariaLabel}
+      >
+        <div className="game-card__cover-list">
+          {game.coverUrl ? (
+            <Image
+              src={game.coverUrl}
+              alt={`${game.title} cover`}
+              fill
+              sizes="90px"
+              className="game-card__img"
+            />
+          ) : (
+            <div className="game-card__cover-placeholder" aria-hidden="true" />
+          )}
+        </div>
+        <div className="game-card__info-list">
+          <div className="game-card__main-list">
+            <h3 className="game-card__title-list">{game.title}</h3>
+            {game.genres?.length > 0 && (
+              <ul className="game-card__genres" aria-label="Genres">
+                {game.genres.slice(0, 3).map((g) => (
+                  <li key={g.id} className="game-card__genre-tag">
+                    {g.name}
+                  </li>
+                ))}
+              </ul>
+            )}
+            {game.releaseDate && (
+              <time className="game-card__date" dateTime={game.releaseDate}>
+                {new Date(game.releaseDate).getFullYear()}
+              </time>
+            )}
+          </div>
+          {game.avgRating !== null && (
+            <div className="game-card__rating-list">
+              <Star size={12} fill="currentColor" />
+              <span>{game.avgRating.toFixed(1)}</span>
+            </div>
+          )}
+        </div>
+      </Link>
+    )
+  }
 
   return (
     <Link
@@ -79,6 +128,20 @@ export function GameCard({ game, variant = 'discovery', className }: GameCardPro
 
 /** Skeleton placeholder — same dimensions as GameCard */
 export function GameCardSkeleton({ variant = 'discovery' }: Readonly<{ variant?: GameCardProps['variant'] }>) {
+  if (variant === 'list') {
+    return (
+      <div className="game-card game-card--list game-card--skeleton" aria-hidden="true">
+        <div className="game-card__cover-list skeleton-pulse" />
+        <div className="game-card__info-list">
+          <div className="game-card__main-list">
+            <div className="skeleton-line skeleton-line--title" style={{ width: '180px' }} />
+            <div className="skeleton-line skeleton-line--short" style={{ width: '100px', marginTop: '0.5rem' }} />
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div
       className={cn('game-card', `game-card--${variant}`, 'game-card--skeleton')}

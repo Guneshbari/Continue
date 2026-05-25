@@ -1,13 +1,29 @@
 import { apiClient } from './client'
 import type { GameSummary, GameDetail, GamesListResponse } from '@continue/types'
 
+export interface DiscoverDashboardResponse {
+  trending: GameSummary[]
+  newReleases: GameSummary[]
+  topRated: GameSummary[]
+  upcoming: GameSummary[]
+}
+
+export interface GameFiltersResponse {
+  genres: { id: string; slug: string; name: string }[]
+  platforms: { id: string; slug: string; name: string }[]
+  years: number[]
+  ratings: number[]
+}
+
 export interface GamesListParams {
-  sort?: 'trending' | 'top-rated' | 'new' | 'upcoming'
-  genre?: string
-  platform?: string
-  q?: string
-  cursor?: string
-  limit?: number
+  sort?: 'trending' | 'top-rated' | 'new' | 'upcoming' | undefined
+  genre?: string | undefined
+  platform?: string | undefined
+  q?: string | undefined
+  cursor?: string | undefined
+  limit?: number | undefined
+  year?: number | undefined
+  minRating?: number | undefined
 }
 
 export const gamesApi = {
@@ -20,6 +36,8 @@ export const gamesApi = {
     if (params.q) qs.set('q', params.q)
     if (params.cursor) qs.set('cursor', params.cursor)
     if (params.limit) qs.set('limit', String(params.limit))
+    if (params.year) qs.set('year', String(params.year))
+    if (params.minRating) qs.set('minRating', String(params.minRating))
     const query = qs.toString()
     return apiClient.get(`/games${query ? `?${query}` : ''}`)
   },
@@ -35,6 +53,14 @@ export const gamesApi = {
 
   topRated(limit = 6): Promise<GameSummary[]> {
     return apiClient.get(`/games/top-rated?limit=${limit}`)
+  },
+
+  discover(limit = 6): Promise<DiscoverDashboardResponse> {
+    return apiClient.get(`/discover?limit=${limit}`)
+  },
+
+  filters(): Promise<GameFiltersResponse> {
+    return apiClient.get('/games/filter')
   },
 
   // ─── Single game ────────────────────────────────────────────────────────────

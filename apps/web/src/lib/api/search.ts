@@ -14,4 +14,9 @@ export const searchApi = {
     const qs = new URLSearchParams({ q, limit: String(limit) })
     return apiClient.get(`/search?${qs}`)
   },
+
+  suggestions(q: string, limit = 5): Promise<SearchResponse> {
+    const qs = new URLSearchParams({ q, limit: String(limit) })
+    return apiClient.get(`/search/suggestions?${qs}`)
+  },
 }
