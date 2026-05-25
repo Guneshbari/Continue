@@ -9,6 +9,7 @@ import { ResponsiveGameGrid } from '@/components/game/ResponsiveGameGrid'
 import { PaginationLoader } from '@/components/game/PaginationLoader'
 import { GameCardSkeleton } from '@/components/game/GameCard'
 import { getSkeletonKeys } from '@/lib/skeletonKeys'
+import { ResponsiveContainer } from '@/components/ui/ResponsiveContainer'
 
 export const revalidate = 300
 
@@ -116,7 +117,7 @@ export default async function DiscoverSortPage({ params, searchParams }: PagePro
   const desc = DESC_MAP[sortKey]
 
   return (
-    <main className="site-container discovery-layout-container" style={{ paddingTop: '2.5rem', paddingBottom: '4rem' }}>
+    <ResponsiveContainer as="main" className="discovery-layout-container" style={{ paddingTop: '2.5rem', paddingBottom: '4rem' }}>
       <div className="discovery-page-hero">
         <div className="discovery-page-hero__meta">
           <span className="discovery-page-hero__tag">EDITORIAL SECTION</span>
@@ -156,6 +157,6 @@ export default async function DiscoverSortPage({ params, searchParams }: PagePro
           </Suspense>
         </div>
       </div>
-    </main>
+    </ResponsiveContainer>
   )
 }

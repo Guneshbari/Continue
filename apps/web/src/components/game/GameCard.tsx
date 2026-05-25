@@ -3,6 +3,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Star } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { MetadataBadge, MetadataBadgeGroup } from '@/components/ui/MetadataBadgeSystem'
 
 type GameCardProps = Readonly<{
   game: GameSummary
@@ -40,13 +41,13 @@ export function GameCard({ game, variant = 'discovery', className }: GameCardPro
           <div className="game-card__main-list">
             <h3 className="game-card__title-list">{game.title}</h3>
             {game.genres?.length > 0 && (
-              <ul className="game-card__genres" aria-label="Genres">
-                {game.genres.slice(0, 3).map((g) => (
-                  <li key={g.id} className="game-card__genre-tag">
+              <MetadataBadgeGroup className="mt-1.5 mb-2">
+                {game.genres.slice(0, 2).map((g) => (
+                  <MetadataBadge key={g.id} variant="accent">
                     {g.name}
-                  </li>
+                  </MetadataBadge>
                 ))}
-              </ul>
+              </MetadataBadgeGroup>
             )}
             {game.releaseDate && (
               <time className="game-card__date" dateTime={game.releaseDate}>
@@ -56,8 +57,9 @@ export function GameCard({ game, variant = 'discovery', className }: GameCardPro
           </div>
           {game.avgRating !== null && (
             <div className="game-card__rating-list">
-              <Star size={12} fill="currentColor" />
-              <span>{game.avgRating.toFixed(1)}</span>
+              <MetadataBadge variant="warning" icon={<Star size={10} fill="currentColor" />}>
+                {game.avgRating.toFixed(1)}
+              </MetadataBadge>
             </div>
           )}
         </div>
@@ -93,8 +95,9 @@ export function GameCard({ game, variant = 'discovery', className }: GameCardPro
         {/* Rating badge */}
         {game.avgRating !== null && (
           <div className="game-card__rating" aria-hidden="true">
-            <Star size={10} fill="currentColor" />
-            <span>{game.avgRating.toFixed(1)}</span>
+            <MetadataBadge variant="warning" icon={<Star size={10} fill="currentColor" />}>
+              {game.avgRating.toFixed(1)}
+            </MetadataBadge>
           </div>
         )}
       </div>
@@ -104,13 +107,13 @@ export function GameCard({ game, variant = 'discovery', className }: GameCardPro
         <h3 className="game-card__title">{game.title}</h3>
 
         {variant !== 'compact' && game.genres?.length > 0 && (
-          <ul className="game-card__genres" aria-label="Genres">
+          <MetadataBadgeGroup className="mb-2.5">
             {game.genres.slice(0, 2).map((g) => (
-              <li key={g.id} className="game-card__genre-tag">
+              <MetadataBadge key={g.id} variant="accent">
                 {g.name}
-              </li>
+              </MetadataBadge>
             ))}
-          </ul>
+          </MetadataBadgeGroup>
         )}
 
         {variant !== 'compact' && game.releaseDate && (

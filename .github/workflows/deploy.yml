@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Build & push Docker images
+      - name: Build & push Docker images (API)
         uses: docker/build-push-action@v5
         with:
           context: .
@@ -21,6 +21,15 @@ jobs:
           target: production
           push: true
           tags: ghcr.io/${{ github.repository }}/api:${{ github.sha }}
+
+      - name: Build & push Docker images (Web)
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: apps/web/Dockerfile
+          target: production
+          push: true
+          tags: ghcr.io/${{ github.repository }}/web:${{ github.sha }}
 
       - name: Deploy to VPS via SSH
         uses: appleboy/ssh-action@v1

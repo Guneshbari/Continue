@@ -5,6 +5,7 @@ import { DiscoverySidebar } from '@/components/game/DiscoverySidebar'
 import { GameCard } from '@/components/game/GameCard'
 import { Compass } from 'lucide-react'
 import Link from 'next/link'
+import { ResponsiveContainer } from '@/components/ui/ResponsiveContainer'
 
 export const revalidate = 300
 
@@ -63,7 +64,7 @@ async function DiscoverDashboard() {
 
 export default function DiscoverPage() {
   return (
-    <main className="site-container discovery-layout-container" style={{ paddingTop: '2.5rem', paddingBottom: '4rem' }}>
+    <ResponsiveContainer as="main" className="discovery-layout-container" style={{ paddingTop: '2.5rem', paddingBottom: '4rem' }}>
       <div className="discovery-page-hero">
         <div className="discovery-page-hero__meta">
           <span className="discovery-page-hero__tag">CURATED MEDIA SELECTIONS</span>
@@ -103,6 +104,6 @@ export default function DiscoverPage() {
           </Suspense>
         </div>
       </div>
-    </main>
+    </ResponsiveContainer>
   )
 }

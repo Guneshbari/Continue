@@ -40,6 +40,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`${inter.variable} ${bebasNeue.variable}`} suppressHydrationWarning>
       <body style={{ display: 'flex', flexDirection: 'column', minHeight: '100dvh' }}>
         <AuthProvider>
+          <div className="cinematic-ambient-spotlight" />
           <Navbar />
           {children}
           <Footer />

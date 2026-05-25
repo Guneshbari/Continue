@@ -6,6 +6,8 @@ import { DiscoverySection } from '@/components/game/DiscoverySection'
 import { FeaturedReviewsSection } from '@/components/home/FeaturedReviewsSection'
 import { CommunityCollectionsSection } from '@/components/home/CommunityCollectionsSection'
 import { AnimatedSection } from '@/components/ui/AnimatedSection'
+import { ResponsiveContainer } from '@/components/ui/ResponsiveContainer'
+import { EditorialSectionWrapper } from '@/components/ui/EditorialSectionWrapper'
 import {
   FEATURED_GAMES,
   TRENDING_GAMES,
@@ -127,39 +129,49 @@ export default async function HomePage() {
 
       <Hero featured={featured} />
 
-      <div className="homepage-sections">
+      <ResponsiveContainer className="pb-16 md:pb-24">
         <AnimatedSection delay={0}>
-          <DiscoverySection
-            title="Trending Now"
-            games={trending}
-            viewAllHref="/games?sort=trending"
-          />
+          <EditorialSectionWrapper hasDivider>
+            <DiscoverySection
+              title="Trending Now"
+              games={trending}
+              viewAllHref="/games?sort=trending"
+            />
+          </EditorialSectionWrapper>
         </AnimatedSection>
 
         <AnimatedSection delay={0.05}>
-          <DiscoverySection
-            title="New Releases"
-            games={newReleases}
-            viewAllHref="/games?sort=new"
-          />
+          <EditorialSectionWrapper hasDivider>
+            <DiscoverySection
+              title="New Releases"
+              games={newReleases}
+              viewAllHref="/games?sort=new"
+            />
+          </EditorialSectionWrapper>
         </AnimatedSection>
 
         <AnimatedSection delay={0.05}>
-          <DiscoverySection
-            title="Top Rated"
-            games={topRated}
-            viewAllHref="/games?sort=top-rated"
-          />
+          <EditorialSectionWrapper hasDivider>
+            <DiscoverySection
+              title="Top Rated"
+              games={topRated}
+              viewAllHref="/games?sort=top-rated"
+            />
+          </EditorialSectionWrapper>
         </AnimatedSection>
 
         <AnimatedSection delay={0.05}>
-          <FeaturedReviewsSection reviews={reviews} />
+          <EditorialSectionWrapper hasDivider>
+            <FeaturedReviewsSection reviews={reviews} />
+          </EditorialSectionWrapper>
         </AnimatedSection>
 
         <AnimatedSection delay={0.05}>
-          <CommunityCollectionsSection collections={collections} />
+          <EditorialSectionWrapper>
+            <CommunityCollectionsSection collections={collections} />
+          </EditorialSectionWrapper>
         </AnimatedSection>
-      </div>
+      </ResponsiveContainer>
     </main>
   )
 }

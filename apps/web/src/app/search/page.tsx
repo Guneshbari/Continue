@@ -10,6 +10,7 @@ import { FEATURED_GAMES, NEW_RELEASES } from '@/lib/data/seed'
 import type { GameSummary } from '@continue/types'
 import { SearchSuggestionsDropdown } from '@/components/game/SearchSuggestionsDropdown'
 import { SearchEmptyState } from '@/components/game/SearchEmptyState'
+import { MetadataBadge, MetadataBadgeGroup } from '@/components/ui/MetadataBadgeSystem'
 
 // Seed fallback search — client-side filter over seed data
 function searchSeed(q: string): SearchResultItem[] {
@@ -308,25 +309,26 @@ export default function SearchPage() {
                     {/* Info */}
                     <div className="search-result-card__info">
                       <span className="search-result-card__title">{game.title}</span>
-                      <div className="search-result-card__meta">
-                        {game.genres?.length > 0 && (
-                          <span className="search-result-card__genres">
-                            {game.genres.slice(0, 2).map((g) => g.name).join(' · ')}
-                          </span>
-                        )}
+                      <MetadataBadgeGroup className="mt-1">
+                        {game.genres?.slice(0, 2).map((g) => (
+                          <MetadataBadge key={g.id} variant="accent">
+                            {g.name}
+                          </MetadataBadge>
+                        ))}
                         {game.releaseDate && (
-                          <span className="search-result-card__year">
+                          <MetadataBadge variant="muted">
                             {new Date(game.releaseDate).getFullYear()}
-                          </span>
+                          </MetadataBadge>
                         )}
-                      </div>
+                      </MetadataBadgeGroup>
                     </div>
 
                     {/* Rating */}
                     {game.avgRating !== null && (
-                      <div className="search-result-card__rating" aria-label={`Rated ${game.avgRating.toFixed(1)}`}>
-                        <Star size={12} aria-hidden="true" />
-                        <span>{game.avgRating.toFixed(1)}</span>
+                      <div className="search-result-card__rating">
+                        <MetadataBadge variant="warning" icon={<Star size={10} fill="currentColor" />}>
+                          {game.avgRating.toFixed(1)}
+                        </MetadataBadge>
                       </div>
                     )}
                   </Link>

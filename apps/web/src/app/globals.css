@@ -3,8 +3,18 @@
 /* ─── Design Tokens ─────────────────────────────────────────────────── */
 @theme {
   /* Typography */
-  --font-display: 'Bebas Neue', 'Impact', ui-sans-serif;
+  --font-display: 'Bebas Neue', 'Oswald', 'Anton', ui-sans-serif, sans-serif;
   --font-ui: 'Inter', ui-sans-serif, system-ui, sans-serif;
+
+  /* Typography rhythm */
+  --tracking-compressed: -0.02em;
+  --tracking-wide-meta: 0.05em;
+  --leading-display: 0.95;
+
+  /* Transition timings */
+  --transition-micro: all 150ms ease-out;
+  --transition-surface: all 300ms ease-out;
+  --transition-fade: all 350ms ease-out;
 
   /* Cinematic dark surfaces */
   --color-surface-base:    oklch(8% 0.01 260);
@@ -90,6 +100,22 @@
     max-width: var(--max-w-site);
     margin-inline: auto;
     padding-inline: var(--px-site);
+  }
+
+  /* Cap reading text columns strictly to 65ch for premium ultrawide visual comfort */
+  .editorial-reading-container {
+    width: 100%;
+    max-width: 65ch;
+    margin-inline: auto;
+  }
+
+  /* Subtle 8% low-opacity atmospheric violet spotlight */
+  .cinematic-ambient-spotlight {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: -1;
+    background: radial-gradient(circle at 50% -20%, oklch(65% 0.25 290 / 0.08) 0%, transparent 65%);
   }
 
   /* Homepage sections wrapper */
@@ -559,25 +585,36 @@
     display: block;
     text-decoration: none;
     color: inherit;
-    border-radius: 10px;
+    border-radius: var(--radius-lg, 8px);
     overflow: hidden;
     background-color: var(--color-surface-raised);
     border: 1px solid var(--color-border-subtle);
-    transition: transform 200ms ease, box-shadow 200ms ease, border-color 200ms;
+    transition: var(--transition-surface);
   }
 
   .game-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 32px oklch(0% 0 0 / 0.4);
+    transform: translateY(-4px) scale(1.01);
     border-color: var(--color-border);
+    box-shadow: 0 12px 40px oklch(0% 0 0 / 0.5);
   }
 
-  /* Cover */
+  /* Cover aspect with bottom cinematic black-to-transparent fade overlay */
   .game-card__cover {
     position: relative;
     aspect-ratio: 3/4;
     overflow: hidden;
     background-color: var(--color-surface-sunken);
+  }
+  .game-card__cover::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, oklch(0% 0 0 / 0.85) 0%, oklch(0% 0 0 / 0.15) 50%, transparent 100%);
+    pointer-events: none;
+    transition: var(--transition-surface);
+  }
+  .game-card:hover .game-card__cover::after {
+    background: linear-gradient(to top, oklch(0% 0 0 / 0.9) 0%, oklch(0% 0 0 / 0.2) 50%, transparent 100%);
   }
 
   .game-card--hero .game-card__cover { aspect-ratio: 16/9; }
@@ -585,9 +622,13 @@
 
   .game-card__img {
     object-fit: cover;
-    transition: scale 400ms ease;
+    filter: saturate(0.85);
+    transition: scale 300ms ease-out, filter 300ms ease-out;
   }
-  .game-card:hover .game-card__img { scale: 1.05; }
+  .game-card:hover .game-card__img {
+    scale: 1.03;
+    filter: saturate(1);
+  }
 
   .game-card__cover-placeholder {
     width: 100%;
