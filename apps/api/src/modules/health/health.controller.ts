@@ -11,8 +11,21 @@ export class HealthController {
 
   @Public()
   @Get()
-  @ApiOperation({ summary: 'Health check endpoint' })
-  async check(@Res() res: FastifyReply) {
+  @ApiOperation({ summary: 'Liveness check (lightweight, process only)' })
+  check(@Res() res: FastifyReply) {
+    const payload = {
+      status: 'OK',
+      timestamp: new Date().toISOString(),
+      uptime: process.uptime(),
+      memory: process.memoryUsage(),
+    }
+    return res.status(200).send(payload)
+  }
+
+  @Public()
+  @Get('ready')
+  @ApiOperation({ summary: 'Readiness check (database connectivity)' })
+  async ready(@Res() res: FastifyReply) {
     let dbStatus = 'healthy'
     let dbError: string | null = null
 
@@ -24,10 +37,8 @@ export class HealthController {
     }
 
     const payload = {
-      status: dbStatus === 'healthy' ? 'OK' : 'DEGRADED',
+      status: dbStatus === 'healthy' ? 'OK' : 'UNREADY',
       timestamp: new Date().toISOString(),
-      uptime: process.uptime(),
-      memory: process.memoryUsage(),
       details: {
         database: {
           status: dbStatus,

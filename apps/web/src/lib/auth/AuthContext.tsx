@@ -15,7 +15,7 @@ interface AuthContextValue {
   user: AuthUser | null
   accessToken: string | null
   token: string | null
-  login: (tokens: AuthTokens) => void
+  login: (tokens: Omit<AuthTokens, 'refreshToken'>) => void
   logout: () => Promise<void>
   isLoading: boolean
 }
@@ -27,41 +27,81 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [accessToken, setAccessToken] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
-  // Rehydrate from localStorage on mount
-  useEffect(() => {
-    try {
-      const token = localStorage.getItem('access_token')
-      const raw = localStorage.getItem('auth_user')
-      if (token && raw) {
-        setAccessToken(token)
-        setUser(JSON.parse(raw))
-      }
-    } catch {
-      // ignore parse errors
-    } finally {
-      setIsLoading(false)
-    }
+  // Sync state helpers
+  const handleRefreshed = useCallback((e: Event) => {
+    const detail = (e as CustomEvent).detail as { accessToken: string; user: AuthUser }
+    setAccessToken(detail.accessToken)
+    setUser(detail.user)
+    localStorage.setItem('auth_user', JSON.stringify(detail.user))
   }, [])
 
-  const login = useCallback((tokens: AuthTokens) => {
-    localStorage.setItem('access_token', tokens.accessToken)
-    localStorage.setItem('refresh_token', tokens.refreshToken)
+  const handleExpired = useCallback(() => {
+    setAccessToken(null)
+    setUser(null)
+    localStorage.removeItem('auth_user')
+  }, [])
+
+  // Silent refresh bootstrap hydration on mount
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      window.addEventListener('auth:session_refreshed', handleRefreshed)
+      window.addEventListener('auth:session_expired', handleExpired)
+    }
+
+    const bootstrap = async () => {
+      try {
+        const result = await authApi.refresh('')
+        if (typeof window !== 'undefined') {
+          ;(window as any).__access_token = result.accessToken
+        }
+        setAccessToken(result.accessToken)
+        setUser(result.user)
+        localStorage.setItem('auth_user', JSON.stringify(result.user))
+      } catch {
+        if (typeof window !== 'undefined') {
+          ;(window as any).__access_token = null
+        }
+        localStorage.removeItem('auth_user')
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    void bootstrap()
+
+    return () => {
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('auth:session_refreshed', handleRefreshed)
+        window.removeEventListener('auth:session_expired', handleExpired)
+      }
+    }
+  }, [handleRefreshed, handleExpired])
+
+  const login = useCallback((tokens: Omit<AuthTokens, 'refreshToken'>) => {
+    if (typeof window !== 'undefined') {
+      ;(window as any).__access_token = tokens.accessToken
+    }
     localStorage.setItem('auth_user', JSON.stringify(tokens.user))
     setAccessToken(tokens.accessToken)
     setUser(tokens.user)
   }, [])
 
   const logout = useCallback(async () => {
-    const token = localStorage.getItem('access_token')
-    if (token) {
-      try { await authApi.logout(token) } catch { /* ignore */ }
+    const activeToken = accessToken || (typeof window !== 'undefined' ? (window as any).__access_token : null)
+    if (activeToken) {
+      try {
+        await authApi.logout(activeToken)
+      } catch {
+        /* ignore failures on logout */
+      }
     }
-    localStorage.removeItem('access_token')
-    localStorage.removeItem('refresh_token')
+    if (typeof window !== 'undefined') {
+      ;(window as any).__access_token = null
+    }
     localStorage.removeItem('auth_user')
     setAccessToken(null)
     setUser(null)
-  }, [])
+  }, [accessToken])
 
   return (
     <AuthContext.Provider value={{ user, accessToken, token: accessToken, login, logout, isLoading }}>

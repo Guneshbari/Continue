@@ -9,6 +9,7 @@ import { searchApi, type SearchResultItem } from '@/lib/api/search'
 import { FEATURED_GAMES, NEW_RELEASES } from '@/lib/data/seed'
 import type { GameSummary } from '@continue/types'
 import { SearchSuggestionsDropdown } from '@/components/game/SearchSuggestionsDropdown'
+import { SearchEmptyState } from '@/components/game/SearchEmptyState'
 
 // Seed fallback search — client-side filter over seed data
 function searchSeed(q: string): SearchResultItem[] {
@@ -267,10 +268,13 @@ export default function SearchPage() {
         )}
 
         {searched && !loading && results.length === 0 && (
-          <div className="search-page__empty">
-            <p className="search-page__empty-title">No results for "{query}"</p>
-            <p className="search-page__empty-sub">Try a different title or developer name.</p>
-          </div>
+          <SearchEmptyState
+            query={query}
+            onClear={() => {
+              setQuery('')
+              inputRef.current?.focus()
+            }}
+          />
         )}
 
         {results.length > 0 && (

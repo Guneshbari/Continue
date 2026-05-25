@@ -6,16 +6,32 @@ class ApiClientError extends Error {
     public readonly status: number,
     public readonly body: ApiError,
   ) {
-    super(body.message as string)
+    super(
+      typeof body.message === 'string'
+        ? body.message
+        : Array.isArray(body.message)
+          ? body.message.join(', ')
+          : 'Request failed',
+    )
     this.name = 'ApiClientError'
   }
 }
 
+class ApiTimeoutError extends Error {
+  constructor(message = 'Request timed out. Please try again.') {
+    super(message)
+    this.name = 'ApiTimeoutError'
+  }
+}
+
+let activeRefreshPromise: Promise<string> | null = null
+let retryCounter = 0
+
 async function apiFetch<T>(
   path: string,
-  options?: RequestInit & { token?: string | undefined },
+  options?: RequestInit & { token?: string | undefined; timeoutMs?: number },
 ): Promise<T> {
-  const { token, ...fetchOptions } = options ?? {}
+  const { token, timeoutMs = 10000, ...fetchOptions } = options ?? {}
 
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
@@ -23,24 +39,97 @@ async function apiFetch<T>(
     ...(fetchOptions.headers as Record<string, string> | undefined),
   }
 
-  const res = await fetch(`${env.apiUrl}${path}`, {
-    ...fetchOptions,
-    headers,
-  })
-
-  if (!res.ok) {
-    const body = (await res.json().catch(() => ({
-      statusCode: res.status,
-      error: 'Unknown',
-      message: 'Request failed',
-    }))) as ApiError
-    throw new ApiClientError(res.status, body)
+  // Ephemeral in-memory fallback
+  if (!token && typeof window !== 'undefined') {
+    const memoryToken = (window as any).__access_token
+    if (memoryToken) {
+      headers['Authorization'] = `Bearer ${memoryToken}`
+    }
   }
 
-  // 204 No Content
-  if (res.status === 204) return undefined as T
+  const controller = new AbortController()
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs)
 
-  return res.json() as Promise<T>
+  try {
+    let res = await fetch(`${env.apiUrl}${path}`, {
+      ...fetchOptions,
+      signal: controller.signal,
+      headers,
+    })
+
+    // 401 Unauthorized — auto refresh interceptor
+    if (
+      res.status === 401 &&
+      path !== '/auth/refresh' &&
+      path !== '/auth/login' &&
+      path !== '/auth/register' &&
+      typeof window !== 'undefined'
+    ) {
+      if (retryCounter < 1) {
+        retryCounter++
+
+        try {
+          if (!activeRefreshPromise) {
+            activeRefreshPromise = (async () => {
+              const refreshRes = await fetch(`${env.apiUrl}/auth/refresh`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+              })
+
+              if (!refreshRes.ok) {
+                activeRefreshPromise = null
+                throw new Error('Session expired')
+              }
+
+              const data = (await refreshRes.json()) as { accessToken: string; user: any }
+              ;(window as any).__access_token = data.accessToken
+
+              // Broadcast update to sync AuthContext state
+              window.dispatchEvent(new CustomEvent('auth:session_refreshed', { detail: data }))
+
+              return data.accessToken
+            })()
+          }
+
+          const newAccessToken = await activeRefreshPromise
+          activeRefreshPromise = null
+          retryCounter = 0
+
+          headers['Authorization'] = `Bearer ${newAccessToken}`
+          res = await fetch(`${env.apiUrl}${path}`, {
+            ...fetchOptions,
+            signal: controller.signal,
+            headers,
+          })
+        } catch {
+          activeRefreshPromise = null
+          retryCounter = 0
+          ;(window as any).__access_token = null
+          window.dispatchEvent(new CustomEvent('auth:session_expired'))
+        }
+      }
+    }
+
+    if (!res.ok) {
+      const body = (await res.json().catch(() => ({
+        statusCode: res.status,
+        error: 'Unknown',
+        message: 'Request failed',
+      }))) as ApiError
+      throw new ApiClientError(res.status, body)
+    }
+
+    if (res.status === 204) return undefined as T
+
+    return res.json() as Promise<T>
+  } catch (err) {
+    if (err instanceof Error && err.name === 'AbortError') {
+      throw new ApiTimeoutError()
+    }
+    throw err
+  } finally {
+    clearTimeout(timeoutId)
+  }
 }
 
 export const apiClient = {
@@ -77,4 +166,4 @@ export const apiClient = {
   },
 }
 
-export { ApiClientError }
+export { ApiClientError, ApiTimeoutError }

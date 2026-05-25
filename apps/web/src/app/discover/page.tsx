@@ -23,10 +23,10 @@ async function DiscoverDashboard() {
   }
 
   const sections = [
-    { title: 'Trending Now', games: data.trending, href: '/discover/trending' },
-    { title: 'Top Rated', games: data.topRated, href: '/discover/top-rated' },
-    { title: 'New Releases', games: data.newReleases, href: '/discover/new-releases' },
-    { title: 'Upcoming Releases', games: data.upcoming, href: '/discover/upcoming' },
+    { title: 'Trending Now', games: data?.trending ?? [], href: '/discover/trending' },
+    { title: 'Top Rated', games: data?.topRated ?? [], href: '/discover/top-rated' },
+    { title: 'New Releases', games: data?.newReleases ?? [], href: '/discover/new-releases' },
+    { title: 'Upcoming Releases', games: data?.upcoming ?? [], href: '/discover/upcoming' },
   ]
 
   return (

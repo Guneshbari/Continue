@@ -2,15 +2,24 @@
 
 import { useState } from 'react'
 import { LayoutGrid, List } from 'lucide-react'
+import { useRouter, usePathname } from 'next/navigation'
 import { GameCard } from './GameCard'
+import { DiscoveryEmptyState } from './DiscoveryEmptyState'
 import type { GameSummary } from '@continue/types'
 
 interface ResponsiveGameGridProps {
   games: GameSummary[]
+  onClearFilters?: () => void
 }
 
-export function ResponsiveGameGrid({ games }: ResponsiveGameGridProps) {
+export function ResponsiveGameGrid({ games, onClearFilters }: ResponsiveGameGridProps) {
   const [view, setView] = useState<'grid' | 'list'>('grid')
+  const router = useRouter()
+  const pathname = usePathname()
+
+  const handleClear = onClearFilters || (() => {
+    router.push(pathname)
+  })
 
   return (
     <div className="responsive-game-grid-container">
@@ -35,10 +44,7 @@ export function ResponsiveGameGrid({ games }: ResponsiveGameGridProps) {
       </div>
 
       {games.length === 0 ? (
-        <div className="games-grid-empty">
-          <p className="games-grid-empty__title">No games found</p>
-          <p className="games-grid-empty__sub">Try adjusting your active filters.</p>
-        </div>
+        <DiscoveryEmptyState onClearFilters={handleClear} />
       ) : (
         <ul className={view === 'grid' ? 'games-grid' : 'games-list-view'}>
           {games.map((game) => (
