@@ -37,6 +37,7 @@ services:
         max-file: "3"
 
   api:
+    image: ghcr.io/guneshbari/continue/api:latest
     build:
       context: .
       dockerfile: apps/api/Dockerfile
@@ -51,6 +52,12 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "node -e 'fetch(\"http://localhost:3001/api/v1/health\").then(res => res.ok ? process.exit(0) : process.exit(1)).catch(() => process.exit(1))' || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
     logging:
       driver: "json-file"
       options:
@@ -58,6 +65,7 @@ services:
         max-file: "3"
 
   web:
+    image: ghcr.io/guneshbari/continue/web:latest
     build:
       context: .
       dockerfile: apps/web/Dockerfile
@@ -68,6 +76,12 @@ services:
       NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL}
     depends_on:
       - api
+    healthcheck:
+      test: ["CMD-SHELL", "node -e 'fetch(\"http://localhost:3000/\").then(res => res.ok ? process.exit(0) : process.exit(1)).catch(() => process.exit(1))' || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
     logging:
       driver: "json-file"
       options:
@@ -87,6 +101,7 @@ services:
     volumes:
       - ./infra/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - certbot_certs:/etc/letsencrypt:ro
+      - ./logs/nginx:/var/log/nginx
     logging:
       driver: "json-file"
       options:

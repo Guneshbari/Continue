@@ -1,6 +1,7 @@
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 import { AuthProvider } from '@/lib/auth/AuthContext'
+import { SearchCommandPalette } from '@/components/game/SearchCommandPalette'
 import type { Metadata, Viewport } from 'next'
 import { Inter, Bebas_Neue } from 'next/font/google'
 import './globals.css'
@@ -42,6 +43,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <AuthProvider>
           <div className="cinematic-ambient-spotlight" />
           <Navbar />
+          <SearchCommandPalette />
           {children}
           <Footer />
         </AuthProvider>

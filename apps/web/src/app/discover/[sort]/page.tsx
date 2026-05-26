@@ -20,6 +20,8 @@ interface PageProps {
     platform?: string
     year?: string
     rating?: string
+    maxRating?: string
+    minReviewCount?: string
     cursor?: string
   }>
 }
@@ -27,6 +29,7 @@ interface PageProps {
 const SORT_MAP: Record<string, GamesListParams['sort']> = {
   'trending': 'trending',
   'top-rated': 'top-rated',
+  'most-reviewed': 'most-reviewed',
   'new-releases': 'new',
   'upcoming': 'upcoming',
 }
@@ -34,6 +37,7 @@ const SORT_MAP: Record<string, GamesListParams['sort']> = {
 const TITLE_MAP: Record<string, string> = {
   'trending': 'Trending Now',
   'top-rated': 'Top Rated Acclaimed',
+  'most-reviewed': 'Most Reviewed Collections',
   'new-releases': 'New Releases',
   'upcoming': 'Upcoming Releases',
 }
@@ -41,16 +45,29 @@ const TITLE_MAP: Record<string, string> = {
 const DESC_MAP: Record<string, string> = {
   'trending': 'Check out the most active, popular, and talked-about games on Continue right now.',
   'top-rated': 'Acclaimed masterpieces and highly rated hits reviewed by Continue community members.',
+  'most-reviewed': 'The most discussed, reviewed, and analyzed titles across the entire community.',
   'new-releases': 'Fresh out of the developer oven — recently launched games hot on the press.',
   'upcoming': 'Highly anticipated releases coming down the pipe. Keep these on your radar.',
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ sort: string }> }): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ sort: string }>
+  searchParams: Promise<{ cursor?: string }>
+}): Promise<Metadata> {
   const p = await params
+  const s = await searchParams
   const title = TITLE_MAP[p.sort] ?? 'Discover'
+
+  // Pagination Indexing Governance: deep scroll offsets are not indexed
+  const robots = s.cursor ? { index: false, follow: true } : { index: true, follow: true }
+
   return {
     title: `${title} — Continue`,
     description: DESC_MAP[p.sort] ?? 'Browse and discover games by category, genre, platform and more.',
+    robots,
   }
 }
 
@@ -60,6 +77,8 @@ async function FilteredGameView({
   platform,
   year,
   rating,
+  maxRating,
+  minReviewCount,
   cursor,
 }: {
   sortKey: string
@@ -67,6 +86,8 @@ async function FilteredGameView({
   platform?: string | undefined
   year?: string | undefined
   rating?: string | undefined
+  maxRating?: string | undefined
+  minReviewCount?: string | undefined
   cursor?: string | undefined
 }) {
   const apiSort = SORT_MAP[sortKey]
@@ -80,6 +101,8 @@ async function FilteredGameView({
       platform,
       year: year ? parseInt(year, 10) : undefined,
       minRating: rating ? parseInt(rating, 10) : undefined,
+      maxRating: maxRating ? parseInt(maxRating, 10) : undefined,
+      minReviewCount: minReviewCount ? parseInt(minReviewCount, 10) : undefined,
       cursor,
       limit: 24,
     })
@@ -152,6 +175,8 @@ export default async function DiscoverSortPage({ params, searchParams }: PagePro
               platform={resolvedQueryParams.platform}
               year={resolvedQueryParams.year}
               rating={resolvedQueryParams.rating}
+              maxRating={resolvedQueryParams.maxRating}
+              minReviewCount={resolvedQueryParams.minReviewCount}
               cursor={resolvedQueryParams.cursor}
             />
           </Suspense>

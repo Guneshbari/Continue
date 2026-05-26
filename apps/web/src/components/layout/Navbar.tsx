@@ -102,9 +102,17 @@ export function Navbar() {
 
           {/* Actions */}
           <div className="navbar__actions">
-            <Link href="/search" className="navbar__icon-btn" aria-label="Search games">
+            <button
+              onClick={(e) => {
+                e.preventDefault()
+                window.dispatchEvent(new CustomEvent('search:open'))
+              }}
+              className="navbar__icon-btn navbar__icon-btn--search"
+              aria-label="Search games (Ctrl+K)"
+            >
               <Search size={20} aria-hidden="true" />
-            </Link>
+              <kbd className="navbar__search-kbd" aria-hidden="true">⌘K</kbd>
+            </button>
 
             {actions}
 

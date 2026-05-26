@@ -11,7 +11,15 @@ import {
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { Type } from 'class-transformer'
 
-const SORT_VALUES = ['trending', 'top-rated', 'new', 'upcoming'] as const
+const SORT_VALUES = [
+  'trending',
+  'top-rated',
+  'most-reviewed',
+  'newest',
+  'recently-released',
+  'upcoming',
+  'new',
+] as const
 export type GameSortValue = typeof SORT_VALUES[number]
 
 export class CreateGameDto {
@@ -93,6 +101,22 @@ export class GamesQueryDto {
   @Min(1)
   @Max(10)
   minRating?: number
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  @Max(10)
+  maxRating?: number
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(0)
+  @Max(1000)
+  minReviewCount?: number
 
   @ApiPropertyOptional({ default: 20 })
   @IsOptional()

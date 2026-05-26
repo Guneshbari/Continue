@@ -2,13 +2,14 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { TrendingUp, Award, Calendar, Clock, Compass } from 'lucide-react'
+import { TrendingUp, Award, Calendar, Clock, Compass, MessageSquare } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const SIDEBAR_ITEMS = [
   { label: 'Overview', href: '/discover', icon: Compass },
   { label: 'Trending', href: '/discover/trending', icon: TrendingUp },
   { label: 'Top Rated', href: '/discover/top-rated', icon: Award },
+  { label: 'Most Reviewed', href: '/discover/most-reviewed', icon: MessageSquare },
   { label: 'New Releases', href: '/discover/new-releases', icon: Calendar },
   { label: 'Upcoming', href: '/discover/upcoming', icon: Clock },
 ] as const

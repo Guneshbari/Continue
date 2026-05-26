@@ -16,7 +16,15 @@ export interface GameFiltersResponse {
 }
 
 export interface GamesListParams {
-  sort?: 'trending' | 'top-rated' | 'new' | 'upcoming' | undefined
+  sort?:
+    | 'trending'
+    | 'top-rated'
+    | 'most-reviewed'
+    | 'newest'
+    | 'recently-released'
+    | 'upcoming'
+    | 'new'
+    | undefined
   genre?: string | undefined
   platform?: string | undefined
   q?: string | undefined
@@ -24,6 +32,8 @@ export interface GamesListParams {
   limit?: number | undefined
   year?: number | undefined
   minRating?: number | undefined
+  maxRating?: number | undefined
+  minReviewCount?: number | undefined
 }
 
 export const gamesApi = {
@@ -38,6 +48,12 @@ export const gamesApi = {
     if (params.limit) qs.set('limit', String(params.limit))
     if (params.year) qs.set('year', String(params.year))
     if (params.minRating) qs.set('minRating', String(params.minRating))
+    if (params.maxRating) qs.set('maxRating', String(params.maxRating))
+    if (params.minReviewCount) qs.set('minReviewCount', String(params.minReviewCount))
+    
+    // Enforce crawler-safe alphabetical parameter ordering
+    qs.sort()
+    
     const query = qs.toString()
     return apiClient.get(`/games${query ? `?${query}` : ''}`)
   },

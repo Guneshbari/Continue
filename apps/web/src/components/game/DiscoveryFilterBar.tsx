@@ -17,6 +17,8 @@ export function DiscoveryFilterBar({ filters }: DiscoveryFilterBarProps) {
   const currentPlatform = searchParams.get('platform') ?? ''
   const currentYear = searchParams.get('year') ?? ''
   const currentMinRating = searchParams.get('rating') ?? ''
+  const currentMaxRating = searchParams.get('maxRating') ?? ''
+  const currentMinReviewCount = searchParams.get('minReviewCount') ?? ''
 
   const handleFilterChange = (key: string, value: string) => {
     const params = new URLSearchParams(searchParams.toString())
@@ -26,6 +28,10 @@ export function DiscoveryFilterBar({ filters }: DiscoveryFilterBarProps) {
       params.delete(key)
     }
     params.delete('cursor') // reset pagination on filter change
+    
+    // Enforce crawler-safe alphabetical parameter ordering
+    params.sort()
+    
     router.push(`${pathname}?${params.toString()}`)
   }
 
@@ -33,7 +39,13 @@ export function DiscoveryFilterBar({ filters }: DiscoveryFilterBarProps) {
     router.push(pathname)
   }
 
-  const hasFilters = currentGenre || currentPlatform || currentYear || currentMinRating
+  const hasFilters =
+    currentGenre ||
+    currentPlatform ||
+    currentYear ||
+    currentMinRating ||
+    currentMaxRating ||
+    currentMinReviewCount
 
   return (
     <div className="discovery-filter-bar">
@@ -95,10 +107,43 @@ export function DiscoveryFilterBar({ filters }: DiscoveryFilterBarProps) {
             value={currentMinRating}
             onChange={(e) => handleFilterChange('rating', e.target.value)}
           >
-            <option value="">Any Rating</option>
+            <option value="">Min Rating</option>
             {filters.ratings.map((r) => (
               <option key={r} value={String(r)}>{r}+ Stars</option>
             ))}
+          </select>
+        </div>
+
+        {/* Max Rating filter */}
+        <div className="filter-select-wrapper">
+          <label htmlFor="max-rating-select" className="sr-only">Maximum Rating</label>
+          <select
+            id="max-rating-select"
+            className="filter-select"
+            value={currentMaxRating}
+            onChange={(e) => handleFilterChange('maxRating', e.target.value)}
+          >
+            <option value="">Max Rating</option>
+            {filters.ratings.map((r) => (
+              <option key={r} value={String(r)}>Up to {r} Stars</option>
+            ))}
+          </select>
+        </div>
+
+        {/* Review Count filter */}
+        <div className="filter-select-wrapper">
+          <label htmlFor="reviews-select" className="sr-only">Minimum Review Count</label>
+          <select
+            id="reviews-select"
+            className="filter-select"
+            value={currentMinReviewCount}
+            onChange={(e) => handleFilterChange('minReviewCount', e.target.value)}
+          >
+            <option value="">Review Count</option>
+            <option value="5">5+ Reviews</option>
+            <option value="10">10+ Reviews</option>
+            <option value="25">25+ Reviews</option>
+            <option value="50">50+ Reviews</option>
           </select>
         </div>
 

@@ -99,8 +99,33 @@ export default async function GameDetailPage({ params }: PageProps) {
   // Filter out the current game from suggestions
   const relatedSuggestions = SUGGESTED_GAMES.filter((item) => item.slug !== slug).slice(0, 3)
 
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'VideoGame',
+    'name': g.title,
+    'description': g.description ?? `Rate and review ${g.title} on Continue.`,
+    ...(g.coverUrl && { 'image': g.coverUrl }),
+    ...(g.releaseDate && { 'datePublished': g.releaseDate }),
+    ...(g.developer && { 'author': { '@type': 'Organization', 'name': g.developer } }),
+    ...(g.publisher && { 'publisher': { '@type': 'Organization', 'name': g.publisher } }),
+    ...(g.avgRating && {
+      'aggregateRating': {
+        '@type': 'AggregateRating',
+        'ratingValue': g.avgRating,
+        'bestRating': 10,
+        'worstRating': 1,
+        'ratingCount': g.ratingCount || 1,
+      },
+    }),
+  }
+
   return (
     <main className="game-detail-page-wrapper">
+      {/* Schema.org VideoGame JSON-LD Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* Cinematic landscape hero banner */}
       <div className="game-detail__banner" aria-hidden="true">
         {g.bannerUrl ? (

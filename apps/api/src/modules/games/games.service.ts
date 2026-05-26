@@ -96,10 +96,60 @@ export class GamesService {
   // ─── Generic list (cursor-paginated) ─────────────────────────────────────────
 
   async findAll(query: GamesQueryDto) {
-    const { q, genre, platform, sort, cursor, limit, year, minRating } = query
+    const {
+      q,
+      genre,
+      platform,
+      sort,
+      cursor,
+      limit,
+      year,
+      minRating,
+      maxRating,
+      minReviewCount,
+    } = query
+
+    const now = new Date()
+    const isRecentlyReleased = sort === 'recently-released'
+
+    // ─── 1. Review Count Aggregation Filter ──────────────────────────────────
+    let gameIdsWithMinReviews: string[] | undefined = undefined
+    if (minReviewCount !== undefined && minReviewCount !== null && minReviewCount > 0) {
+      const groups = await this.prisma.review.groupBy({
+        by: ['gameId'],
+        where: { deletedAt: null, status: 'PUBLISHED' },
+        _count: { _all: true },
+        having: {
+          gameId: {
+            _count: {
+              gte: minReviewCount,
+            },
+          },
+        },
+      })
+      gameIdsWithMinReviews = groups.map((g) => g.gameId)
+    }
+
+    // ─── 2. Rating Range Filter ──────────────────────────────────────────────
+    const hasMinRating = minRating !== undefined && minRating !== null
+    const hasMaxRating = maxRating !== undefined && maxRating !== null
+    const ratingFilter =
+      hasMinRating || hasMaxRating
+        ? {
+            avgRating: {
+              ...(hasMinRating && { gte: minRating }),
+              ...(hasMaxRating && { lte: maxRating }),
+            },
+          }
+        : {}
 
     const where = {
       deletedAt: null,
+      ...(isRecentlyReleased && {
+        releaseDate: {
+          lte: now,
+        },
+      }),
       ...(q && {
         OR: [
           { title: { contains: q, mode: 'insensitive' as const } },
@@ -114,10 +164,9 @@ export class GamesService {
           lte: new Date(year, 11, 31, 23, 59, 59),
         },
       }),
-      ...(minRating && {
-        avgRating: {
-          gte: minRating,
-        },
+      ...ratingFilter,
+      ...(gameIdsWithMinReviews !== undefined && {
+        id: { in: gameIdsWithMinReviews },
       }),
     }
 
@@ -234,10 +283,20 @@ export class GamesService {
 
   private resolveOrderBy(sort?: string) {
     switch (sort) {
-      case 'top-rated': return { avgRating: 'desc' as const }
-      case 'new':       return { releaseDate: 'desc' as const }
-      case 'upcoming':  return { releaseDate: 'asc' as const }
-      default:          return { ratingCount: 'desc' as const }
+      case 'trending':
+        return { ratingCount: 'desc' as const }
+      case 'top-rated':
+        return { avgRating: 'desc' as const }
+      case 'most-reviewed':
+        return { reviews: { _count: 'desc' as const } }
+      case 'newest':
+      case 'recently-released':
+      case 'new':
+        return { releaseDate: 'desc' as const }
+      case 'upcoming':
+        return { releaseDate: 'asc' as const }
+      default:
+        return { ratingCount: 'desc' as const }
     }
   }
 }
