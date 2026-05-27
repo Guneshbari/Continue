@@ -56,6 +56,59 @@
   --max-w-site:    1280px;
   --px-site:       clamp(1rem, 5vw, 4rem);
   --section-gap:   clamp(3rem, 8vw, 6rem);
+
+  /* ── Missing Text Tokens ─────────────────────────────────────────────
+     Used throughout components but previously undefined — resolves silent
+     fallback rendering and broken badge/label contrast. */
+  --color-text-inverse:  oklch(8%  0.01 260);   /* dark text on light/accent bg */
+  --color-text-sunken:   oklch(35% 0.012 260);  /* deeply de-emphasised meta text */
+  --color-text-disabled: oklch(30% 0.01  260);  /* inputs, labels in disabled state */
+
+  /* ── Semantic Spacing Scale ──────────────────────────────────────────
+     Section/content/card/meta rhythm enforced via named tokens.
+     Prevents arbitrary px drift across page compositions. */
+  --space-section:  clamp(3rem,   8vw,  6rem);  /* between major page sections */
+  --space-content:  clamp(1.5rem, 4vw,  2.5rem);/* between content blocks */
+  --space-card:     clamp(0.75rem,2vw,  1.25rem);/* internal card padding */
+  --space-meta:     0.375rem;                    /* between inline meta items */
+
+  /* ── Semantic Radius Scale ───────────────────────────────────────────
+     Named radii prevent inconsistent curvature across card/surface types. */
+  --radius-card:    8px;    /* game cards, collection cards */
+  --radius-surface: 12px;   /* modal panels, elevated surfaces */
+  --radius-overlay: 6px;    /* tooltips, dropdowns, popovers */
+  --radius-badge:   4px;    /* status badges, genre pills */
+  --radius-avatar:  50%;    /* user avatars */
+
+  /* ── Typography Scale (fluid) ────────────────────────────────────────
+     Fluid clamp scale. Display uses Bebas Neue via --font-display.
+     Body/UI uses Inter via --font-ui. */
+  --font-size-display-xl: clamp(3rem,   8vw,  6rem);    /* hero game title */
+  --font-size-display-lg: clamp(2rem,   5vw,  3.5rem);  /* section hero title */
+  --font-size-display-md: clamp(1.5rem, 3.5vw, 2.25rem);/* card title featured */
+  --font-size-heading-lg: clamp(1.25rem,2.5vw, 1.75rem);/* section headings */
+  --font-size-heading-md: clamp(1rem,   2vw,  1.25rem); /* sub-section headings */
+  --font-size-body-lg:    1.0625rem;  /* review prose, long-form text */
+  --font-size-body-md:    0.9375rem;  /* standard UI body */
+  --font-size-body-sm:    0.875rem;   /* secondary UI text */
+  --font-size-meta:       0.75rem;    /* compact metadata, badges */
+  --font-size-micro:      0.6875rem;  /* timestamps, footnotes */
+
+  /* ── Line-height Scale ───────────────────────────────────────────────
+     Explicit leading per role prevents auto inconsistency. */
+  --line-height-display: 0.95;   /* Bebas Neue — tight cinematic heads */
+  --line-height-heading: 1.15;   /* Inter semi-bold headings */
+  --line-height-prose:   1.72;   /* review paragraphs — optimal reading rhythm */
+  --line-height-ui:      1.4;    /* UI labels, nav items, card text */
+  --line-height-meta:    1.2;    /* compact metadata rows */
+
+  /* ── Measure (reading column width) ─────────────────────────────────
+     Constrains paragraph width by content role. Prevents wide-line prose
+     from collapsing editorial readability. */
+  --measure-review:   66ch;  /* full review body — long-form prose */
+  --measure-synopsis: 52ch;  /* game synopsis / short description */
+  --measure-hero:     42ch;  /* hero taglines — punchy, cinematic */
+  --measure-meta:     none;  /* metadata blocks — unconstrained */
 }
 
 /* NOTE: Tokens above are defined in @theme and are available as CSS custom properties
@@ -347,7 +400,7 @@
 @layer components {
   .hero {
     position: relative;
-    min-height: clamp(480px, 70svh, 720px);
+    min-height: clamp(520px, 72svh, 780px);
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
@@ -382,9 +435,10 @@
     inset: 0;
     background: linear-gradient(
       to bottom,
-      oklch(8% 0.01 260 / 0.2) 0%,
-      oklch(8% 0.01 260 / 0.5) 50%,
-      oklch(8% 0.01 260 / 0.95) 85%,
+      oklch(65% 0.25 290 / 0.05) 0%,   /* subtle violet atmosphere at top */
+      oklch(8% 0.01 260 / 0.1) 15%,
+      oklch(8% 0.01 260 / 0.55) 50%,
+      oklch(8% 0.01 260 / 0.92) 80%,
       var(--color-surface-base) 100%
     );
   }
@@ -585,7 +639,7 @@
     display: block;
     text-decoration: none;
     color: inherit;
-    border-radius: var(--radius-lg, 8px);
+    border-radius: var(--radius-card);
     overflow: hidden;
     background-color: var(--color-surface-raised);
     border: 1px solid var(--color-border-subtle);
@@ -593,9 +647,11 @@
   }
 
   .game-card:hover {
-    transform: translateY(-4px) scale(1.01);
+    transform: translateY(-5px) scale(1.015);
     border-color: var(--color-border);
-    box-shadow: 0 12px 40px oklch(0% 0 0 / 0.5);
+    box-shadow:
+      0 16px 48px oklch(0% 0 0 / 0.55),
+      0 4px 16px oklch(65% 0.25 290 / 0.08);
   }
 
   /* Cover aspect with bottom cinematic black-to-transparent fade overlay */
@@ -1106,7 +1162,7 @@
 @layer components {
   .game-detail__banner {
     position: relative;
-    height: 320px;
+    height: clamp(380px, 55vh, 560px);
     overflow: hidden;
     background-color: var(--color-surface-sunken);
   }
@@ -1119,9 +1175,13 @@
   .game-detail__banner-overlay {
     position: absolute;
     inset: 0;
+    /* Deep cinematic fade: transparent top → full base-color at 75%,
+       with a subtle violet atmosphere breath at the very top. */
     background: linear-gradient(
       to bottom,
-      transparent 0%,
+      oklch(65% 0.25 290 / 0.06) 0%,
+      transparent 20%,
+      oklch(8% 0.01 260 / 0.45) 55%,
       var(--color-surface-base) 100%
     );
   }
@@ -1130,7 +1190,9 @@
     display: grid;
     grid-template-columns: 220px 1fr;
     gap: 2.5rem;
-    margin-top: -80px;
+    /* Negative overlap lifts content over the bottom of the banner.
+       Uses a fixed value aligned with cover shadow depth. */
+    margin-top: -100px;
     position: relative;
     z-index: 1;
   }
@@ -1138,7 +1200,7 @@
   @media (max-width: 768px) {
     .game-detail__layout {
       grid-template-columns: 1fr;
-      margin-top: -40px;
+      margin-top: -48px;
     }
   }
 
@@ -1165,6 +1227,16 @@
 
   .game-detail__main {
     padding-top: 1rem;
+    /* Prevents flex/grid child from overflowing its column
+       when long strings or wide images are present. */
+    min-width: 0;
+  }
+
+  /* Specs section wrapper — adds top separator before GameMetadataGrid */
+  .game-detail__specs-section {
+    margin-top: var(--space-content);
+    padding-top: var(--space-content);
+    border-top: 1px solid var(--color-border-subtle);
   }
 
   .game-detail__genres {
@@ -4430,3 +4502,135 @@
 }
 
 
+
+/* ─── Game Detail — Atmosphere Separator ────────────────────────────── */
+@layer components {
+  /* Replaces the empty bento gallery placeholder.
+     A quiet editorial beat between specs and related games. */
+  .game-detail__atmosphere-separator {
+    margin-block: var(--space-content);
+    height: 1px;
+    background: linear-gradient(
+      to right,
+      transparent,
+      var(--color-border) 30%,
+      var(--color-border) 70%,
+      transparent
+    );
+    opacity: 0.6;
+  }
+}
+
+/* ─── Editorial Section Wrapper ─────────────────────────────────────── */
+@layer components {
+  /* Token-governed section rhythm.
+     Replaces hardcoded py-12/py-16 Tailwind classes with --space-section
+     so all section spacing responds to the token system centrally. */
+  .editorial-section {
+    width: 100%;
+    padding-block: var(--space-section);
+  }
+
+  .editorial-section:first-child {
+    padding-top: calc(var(--space-section) * 0.5);
+  }
+
+  .editorial-section:last-child {
+    padding-bottom: calc(var(--space-section) * 1.5);
+  }
+
+  .editorial-section--divider {
+    border-bottom: 1px solid var(--color-border-subtle);
+  }
+}
+
+/* ─── Discovery Carousel (Embla) ────────────────────────────────────── */
+@layer components {
+  .discovery-carousel {
+    width: 100%;
+  }
+
+  .discovery-carousel__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    gap: 1rem;
+  }
+
+  .discovery-carousel__controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+  }
+
+  /* Minimal arrow buttons — restrained, not gamer-loud */
+  .discovery-carousel__arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: var(--radius-overlay);
+    border: 1px solid var(--color-border);
+    background: var(--color-surface-raised);
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: border-color 150ms, color 150ms, background-color 150ms;
+    flex-shrink: 0;
+  }
+
+  .discovery-carousel__arrow:hover {
+    border-color: var(--color-border-strong);
+    color: var(--color-text-primary);
+    background: var(--color-surface-overlay);
+  }
+
+  /* Embla viewport — clips overflow, enables momentum scroll */
+  .discovery-carousel__viewport {
+    overflow: hidden;
+    /* Negative margin trick: allows edge cards to partially overflow */
+    margin-inline: -0.5rem;
+  }
+
+  /* Embla track — flex container Embla drives */
+  .discovery-carousel__track {
+    display: flex;
+    gap: 0.75rem;
+    padding-inline: 0.5rem;
+    list-style: none;
+    margin: 0;
+    padding-block: 0.25rem; /* allows card box-shadow to be visible */
+  }
+
+  /* Each slide — fixed width, flex-shrink: 0 required by Embla */
+  .discovery-carousel__slide {
+    flex: 0 0 clamp(140px, 18vw, 180px);
+    min-width: 0;
+  }
+
+  /* Tablet: slightly wider slides */
+  @media (min-width: 768px) {
+    .discovery-carousel__slide {
+      flex: 0 0 clamp(160px, 16vw, 200px);
+    }
+  }
+
+  /* Desktop: show ~6 cards at natural width */
+  @media (min-width: 1024px) {
+    .discovery-carousel__slide {
+      flex: 0 0 calc((100% - 5 * 0.75rem) / 6);
+    }
+  }
+
+  /* Reduced motion: disable Embla drag, keep static layout */
+  @media (prefers-reduced-motion: reduce) {
+    .discovery-carousel__viewport {
+      overflow: auto;
+    }
+    .discovery-carousel__track {
+      flex-wrap: wrap;
+    }
+  }
+}

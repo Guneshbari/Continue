@@ -3,6 +3,7 @@ import { Footer } from '@/components/layout/Footer'
 import { AuthProvider } from '@/lib/auth/AuthContext'
 import { SearchCommandPalette } from '@/components/game/SearchCommandPalette'
 import { SkipLink } from '@/components/layout/SkipLink'
+import { Providers } from './providers'
 import type { Metadata, Viewport } from 'next'
 import { Inter, Bebas_Neue } from 'next/font/google'
 import './globals.css'
@@ -41,16 +42,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${inter.variable} ${bebasNeue.variable}`} suppressHydrationWarning>
       <body style={{ display: 'flex', flexDirection: 'column', minHeight: '100dvh' }}>
-        <AuthProvider>
-          <SkipLink />
-          <div className="cinematic-ambient-spotlight" />
-          <Navbar />
-          <SearchCommandPalette />
-          <main id="main-content" tabIndex={-1} style={{ flex: 1, outline: 'none' }}>
-            {children}
-          </main>
-          <Footer />
-        </AuthProvider>
+        <Providers>
+          <AuthProvider>
+            <SkipLink />
+            <div className="cinematic-ambient-spotlight" />
+            <Navbar />
+            <SearchCommandPalette />
+            <main id="main-content" tabIndex={-1} style={{ flex: 1, outline: 'none' }}>
+              {children}
+            </main>
+            <Footer />
+          </AuthProvider>
+        </Providers>
       </body>
     </html>
   )

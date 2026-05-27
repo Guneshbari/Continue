@@ -21,8 +21,8 @@ export function EditorialSectionWrapper({
   return (
     <Component
       className={cn(
-        'w-full py-12 md:py-16 first:pt-6 last:pb-16',
-        hasDivider && 'border-b border-border-subtle',
+        'editorial-section',
+        hasDivider && 'editorial-section--divider',
         className
       )}
       style={style}

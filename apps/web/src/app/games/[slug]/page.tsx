@@ -6,7 +6,7 @@ import { findSeedGame } from '@/lib/data/seed'
 import { GameMetadataGrid } from '@/components/game/GameMetadataGrid'
 import { GameDetailInteractive } from '@/components/game/GameDetailInteractive'
 import { CompactGameCard } from '@/components/game/CompactGameCard'
-import { Star, Calendar, Building2, Eye, Layout } from 'lucide-react'
+import { Star, Calendar, Building2, Eye } from 'lucide-react'
 import type { GameDetail, GameSummary } from '@continue/types'
 
 interface PageProps {
@@ -221,27 +221,10 @@ export default async function GameDetailPage({ params }: PageProps) {
               <GameMetadataGrid game={g} />
             </div>
 
-            {/* Bento screenshots grid placeholder */}
-            <section className="game-detail__gallery" aria-labelledby="gallery-heading">
-              <h2 id="gallery-heading" className="gallery-section-title">
-                <Layout size={16} aria-hidden="true" />
-                Visual Atmosphere
-              </h2>
-              <div className="bento-gallery">
-                <div className="bento-gallery__slot bento-gallery__slot--main">
-                  <div className="bento-placeholder-bg" />
-                  <span className="bento-gallery__label">Cinematic Gameplay</span>
-                </div>
-                <div className="bento-gallery__slot">
-                  <div className="bento-placeholder-bg" />
-                  <span className="bento-gallery__label">Environmental Art</span>
-                </div>
-                <div className="bento-gallery__slot">
-                  <div className="bento-placeholder-bg" />
-                  <span className="bento-gallery__label">Combat Mechanics</span>
-                </div>
-              </div>
-            </section>
+            {/* Atmospheric visual separator — replaces placeholder bento gallery.
+                When the API supports screenshots, this section becomes a proper
+                media carousel (Phase 2 media ingestion). */}
+            <div className="game-detail__atmosphere-separator" aria-hidden="true" />
 
             {/* Related games slider */}
             {relatedSuggestions.length > 0 && (

@@ -2,7 +2,7 @@
 // Phase 2: parallel discovery fetches with ISR revalidation + graceful fallback
 
 import { Hero } from '@/components/home/Hero'
-import { DiscoverySection } from '@/components/game/DiscoverySection'
+import { DiscoveryCarousel } from '@/components/game/DiscoveryCarousel'
 import { FeaturedReviewsSection } from '@/components/home/FeaturedReviewsSection'
 import { CommunityCollectionsSection } from '@/components/home/CommunityCollectionsSection'
 import { AnimatedSection } from '@/components/ui/AnimatedSection'
@@ -132,7 +132,7 @@ export default async function HomePage() {
       <ResponsiveContainer className="pb-16 md:pb-24">
         <AnimatedSection delay={0}>
           <EditorialSectionWrapper hasDivider>
-            <DiscoverySection
+            <DiscoveryCarousel
               title="Trending Now"
               games={trending}
               viewAllHref="/games?sort=trending"
@@ -142,7 +142,7 @@ export default async function HomePage() {
 
         <AnimatedSection delay={0.05}>
           <EditorialSectionWrapper hasDivider>
-            <DiscoverySection
+            <DiscoveryCarousel
               title="New Releases"
               games={newReleases}
               viewAllHref="/games?sort=new"
@@ -152,7 +152,7 @@ export default async function HomePage() {
 
         <AnimatedSection delay={0.05}>
           <EditorialSectionWrapper hasDivider>
-            <DiscoverySection
+            <DiscoveryCarousel
               title="Top Rated"
               games={topRated}
               viewAllHref="/games?sort=top-rated"
