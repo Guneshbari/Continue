@@ -49,7 +49,7 @@ export interface GameSummary {
     id: string;
     slug: string;
     title: string;
-    cover: CanonicalMediaDTO | null;
+    cover?: CanonicalMediaDTO | null;
     coverUrl?: string | null;
     releaseDate: string | null;
     avgRating: number | null;
@@ -59,20 +59,22 @@ export interface GameSummary {
 }
 export interface GameDetail extends GameSummary {
     description: string | null;
-    backdrop: CanonicalMediaDTO | null;
+    backdrop?: CanonicalMediaDTO | null;
     bannerUrl?: string | null;
-    summary: string | null;
-    storyline: string | null;
-    igdbRating: number | null;
-    igdbRatingCount: number | null;
-    status: string | null;
-    franchise: FranchiseSummary | null;
-    developers: CompanySummary[];
-    publishers: CompanySummary[];
-    tags: TagSummary[];
-    screenshots: CanonicalMediaDTO[];
-    trailers: TrailerSummary[];
-    themes: ThemeSummary[];
+    developer?: string | null;
+    publisher?: string | null;
+    summary?: string | null;
+    storyline?: string | null;
+    igdbRating?: number | null;
+    igdbRatingCount?: number | null;
+    status?: string | null;
+    franchise?: FranchiseSummary | null;
+    developers?: CompanySummary[];
+    publishers?: CompanySummary[];
+    tags?: TagSummary[];
+    screenshots?: CanonicalMediaDTO[];
+    trailers?: TrailerSummary[];
+    themes?: ThemeSummary[];
 }
 export interface GenreSummary {
     id: string;

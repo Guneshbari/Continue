@@ -67,7 +67,7 @@ export interface GameSummary {
   id: string
   slug: string
   title: string
-  cover: CanonicalMediaDTO | null
+  cover?: CanonicalMediaDTO | null
   coverUrl?: string | null // transitional helper
   releaseDate: string | null
   avgRating: number | null
@@ -78,20 +78,22 @@ export interface GameSummary {
 
 export interface GameDetail extends GameSummary {
   description: string | null
-  backdrop: CanonicalMediaDTO | null
+  backdrop?: CanonicalMediaDTO | null
   bannerUrl?: string | null // transitional helper
-  summary: string | null
-  storyline: string | null
-  igdbRating: number | null
-  igdbRatingCount: number | null
-  status: string | null
-  franchise: FranchiseSummary | null
-  developers: CompanySummary[]
-  publishers: CompanySummary[]
-  tags: TagSummary[]
-  screenshots: CanonicalMediaDTO[]
-  trailers: TrailerSummary[]
-  themes: ThemeSummary[]
+  developer?: string | null // transitional helper
+  publisher?: string | null // transitional helper
+  summary?: string | null
+  storyline?: string | null
+  igdbRating?: number | null
+  igdbRatingCount?: number | null
+  status?: string | null
+  franchise?: FranchiseSummary | null
+  developers?: CompanySummary[]
+  publishers?: CompanySummary[]
+  tags?: TagSummary[]
+  screenshots?: CanonicalMediaDTO[]
+  trailers?: TrailerSummary[]
+  themes?: ThemeSummary[]
 }
 
 // ─── Supporting entities ─────────────────────────────────────────────────────

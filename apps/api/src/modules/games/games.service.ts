@@ -325,6 +325,8 @@ export class GamesService {
     description: game.description,
     backdrop: mapMediaAsset(game.backdrop),
     bannerUrl: getVariantUrl(game.backdrop, 'BACKDROP_HERO'),
+    developer: game.developers?.[0]?.developer?.name ?? null,
+    publisher: game.publishers?.[0]?.publisher?.name ?? null,
     developers: game.developers?.map((d: any) => d.developer).filter(Boolean) ?? [],
     publishers: game.publishers?.map((p: any) => p.publisher).filter(Boolean) ?? [],
     tags: game.tags?.map((t: any) => t.tag).filter(Boolean) ?? [],

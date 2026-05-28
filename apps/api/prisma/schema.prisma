@@ -42,6 +42,14 @@ enum MediaRole {
   LOGO_TRANSPARENT
 }
 
+enum MediaProcessingState {
+  PENDING
+  PROCESSING
+  READY
+  FAILED
+}
+
+
 
 // ─── User ────────────────────────────────────────────────────────────────────
 
@@ -146,12 +154,16 @@ model GamePlatform {
 // ─── Media Assets ────────────────────────────────────────────────────────────
 
 model MediaAsset {
-  id            String         @id @default(cuid())
-  rawUrl        String         @map("raw_url")
-  hash          String?        @unique
-  optimized     Boolean        @default(false)
-  createdAt     DateTime       @default(now()) @map("created_at")
-  updatedAt     DateTime       @updatedAt @map("updated_at")
+  id                String               @id @default(cuid())
+  rawUrl            String               @map("raw_url")
+  hash              String?              @unique
+  optimized         Boolean              @default(false)
+  processingState   MediaProcessingState @default(PENDING) @map("processing_state")
+  retryCount        Int                  @default(0) @map("retry_count")
+  lastFailureReason String?              @map("last_failure_reason")
+  lastProcessedAt   DateTime?            @map("last_processed_at")
+  createdAt         DateTime             @default(now()) @map("created_at")
+  updatedAt         DateTime             @updatedAt @map("updated_at")
   
   variants      MediaVariant[]
   coverGames    Game[]         @relation("GameCover")
