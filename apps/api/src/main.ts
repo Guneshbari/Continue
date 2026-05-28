@@ -10,6 +10,8 @@ import fastifyHelmet from '@fastify/helmet'
 import fastifyCors from '@fastify/cors'
 import { AppModule } from './app.module'
 import { HttpExceptionFilter } from './common/filters/http-exception.filter'
+import fastifyStatic from '@fastify/static'
+import { join } from 'path'
 
 function parseCorsOrigins(value?: string): string[] {
   return (value ?? 'http://localhost:3000')
@@ -29,6 +31,13 @@ async function bootstrap() {
   await app.register(fastifyCors, {
     origin: corsOrigins,
     credentials: true,
+  })
+
+  // Serve optimized assets statically from public directory
+  await app.register(fastifyStatic, {
+    root: join(process.cwd(), 'public'),
+    prefix: '/public/',
+    decorateReply: false, // Prevents decorator conflict in Fastify
   })
 
   await app.register(fastifyHelmet, {

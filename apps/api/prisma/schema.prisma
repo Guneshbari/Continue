@@ -154,16 +154,19 @@ model GamePlatform {
 // ─── Media Assets ────────────────────────────────────────────────────────────
 
 model MediaAsset {
-  id                String               @id @default(cuid())
-  rawUrl            String               @map("raw_url")
-  hash              String?              @unique
-  optimized         Boolean              @default(false)
-  processingState   MediaProcessingState @default(PENDING) @map("processing_state")
-  retryCount        Int                  @default(0) @map("retry_count")
-  lastFailureReason String?              @map("last_failure_reason")
-  lastProcessedAt   DateTime?            @map("last_processed_at")
-  createdAt         DateTime             @default(now()) @map("created_at")
-  updatedAt         DateTime             @updatedAt @map("updated_at")
+  id                        String               @id @default(cuid())
+  rawUrl                    String               @map("raw_url")
+  hash                      String?              @unique
+  optimized                 Boolean              @default(false)
+  processingState           MediaProcessingState @default(PENDING) @map("processing_state")
+  retryCount                Int                  @default(0) @map("retry_count")
+  lastFailureReason         String?              @map("last_failure_reason")
+  lastProcessedAt           DateTime?            @map("last_processed_at")
+  processingDurationMs      Int?                 @map("processing_duration_ms")
+  localOriginalPath         String?              @map("local_original_path")
+  transformationFingerprint String?              @map("transformation_fingerprint")
+  createdAt                 DateTime             @default(now()) @map("created_at")
+  updatedAt                 DateTime             @updatedAt @map("updated_at")
   
   variants      MediaVariant[]
   coverGames    Game[]         @relation("GameCover")
@@ -348,8 +351,10 @@ model Screenshot {
   game      Game       @relation(fields: [gameId], references: [id], onDelete: Cascade)
   assetId   String     @map("asset_id")
   asset     MediaAsset @relation(fields: [assetId], references: [id])
-  position  Int        @default(0)
-  createdAt DateTime   @default(now()) @map("created_at")
+  position                Int        @default(0)
+  heroScore               Float?     @map("hero_score")
+  isPrimaryHeroCandidate  Boolean    @default(false) @map("is_primary_hero_candidate")
+  createdAt               DateTime   @default(now()) @map("created_at")
 
   @@index([gameId])
   @@map("screenshots")

@@ -40,3 +40,39 @@ logs/
 # Test coverage
 coverage/
 .nyc_output/
+
+# Media & Assets (ignores local or temporary assets, but preserves standard public/ assets)
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+*.webp
+*.ico
+*.pdf
+*.mp4
+*.webm
+*.mov
+*.avif
+!**/public/**/*
+apps/api/public/media/
+
+# Caches and compiler metadata
+.eslintcache
+*.tsbuildinfo
+.npm
+.prettiercache
+.stylelintcache
+
+# Archives & binaries
+*.zip
+*.tar.gz
+*.tar
+*.gz
+*.rar
+*.7z
+*.dmg
+*.exe
+*.iso
+*.bin
+

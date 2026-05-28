@@ -16,6 +16,7 @@ import { HealthModule } from './modules/health/health.module'
 import { FixturesModule } from './modules/fixtures/fixtures.module'
 import { ProvidersModule } from './modules/providers/providers.module'
 import { IngestionModule } from './modules/ingestion/ingestion.module'
+import { MediaModule } from './modules/media/media.module'
 import { validateEnv } from './common/config/env.validation'
 import { TransformInterceptor } from './common/interceptors/transform.interceptor'
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor'
@@ -45,6 +46,7 @@ import { LoggingInterceptor } from './common/interceptors/logging.interceptor'
     FixturesModule,
     ProvidersModule,
     IngestionModule,
+    MediaModule,
   ],
   providers: [
     // LoggingInterceptor runs first — wraps the full pipeline
