@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { PrismaService } from '../../common/prisma/prisma.service'
 import { UpdateUserDto } from './dto/update-user.dto'
+import { getVariantUrl } from '../../common/utils/media'
 
 @Injectable()
 export class UsersService {
@@ -48,7 +49,22 @@ export class UsersService {
             id: true,
             slug: true,
             title: true,
-            coverUrl: true,
+            cover: {
+              select: {
+                rawUrl: true,
+                optimized: true,
+                variants: {
+                  select: {
+                    role: true,
+                    url: true,
+                    width: true,
+                    height: true,
+                    format: true,
+                    blurPlaceholder: true,
+                  },
+                },
+              },
+            },
             avgRating: true,
             releaseDate: true,
             ratings: {
@@ -61,7 +77,21 @@ export class UsersService {
     })
     const hasNext = reviews.length > limit
     const data = hasNext ? reviews.slice(0, limit) : reviews
-    return { data, nextCursor: hasNext ? (data[data.length - 1]?.id ?? null) : null }
+    
+    const mappedData = data.map((r) => ({
+      ...r,
+      game: {
+        id: r.game.id,
+        slug: r.game.slug,
+        title: r.game.title,
+        coverUrl: getVariantUrl(r.game.cover, 'COVER_MD'),
+        avgRating: r.game.avgRating,
+        releaseDate: r.game.releaseDate,
+        ratings: r.game.ratings,
+      },
+    }))
+
+    return { data: mappedData, nextCursor: hasNext ? (data[data.length - 1]?.id ?? null) : null }
   }
 
   async findRatings(username: string, limit = 20, cursor?: string) {
@@ -72,12 +102,45 @@ export class UsersService {
       ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
       orderBy: { updatedAt: 'desc' },
       include: {
-        game: { select: { id: true, slug: true, title: true, coverUrl: true } },
+        game: {
+          select: {
+            id: true,
+            slug: true,
+            title: true,
+            cover: {
+              select: {
+                rawUrl: true,
+                optimized: true,
+                variants: {
+                  select: {
+                    role: true,
+                    url: true,
+                    width: true,
+                    height: true,
+                    format: true,
+                    blurPlaceholder: true,
+                  },
+                },
+              },
+            },
+          },
+        },
       },
     })
     const hasNext = ratings.length > limit
     const data = hasNext ? ratings.slice(0, limit) : ratings
-    return { data, nextCursor: hasNext ? (data[data.length - 1]?.id ?? null) : null }
+
+    const mappedData = data.map((r) => ({
+      ...r,
+      game: {
+        id: r.game.id,
+        slug: r.game.slug,
+        title: r.game.title,
+        coverUrl: getVariantUrl(r.game.cover, 'COVER_MD'),
+      },
+    }))
+
+    return { data: mappedData, nextCursor: hasNext ? (data[data.length - 1]?.id ?? null) : null }
   }
 
   async findLists(username: string) {

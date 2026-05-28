@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { PrismaService } from '../../common/prisma/prisma.service'
+import { getVariantUrl } from '../../common/utils/media'
 
 export interface SearchResult {
   id: string
@@ -17,7 +18,18 @@ interface SearchGameRow {
   id: string
   slug: string
   title: string
-  coverUrl: string | null
+  cover: {
+    rawUrl: string
+    optimized: boolean
+    variants: {
+      role: string
+      url: string
+      width: number | null
+      height: number | null
+      format: string
+      blurPlaceholder: string | null
+    }[]
+  } | null
   avgRating: number | null
   ratingCount: number
   releaseDate: Date | null
@@ -33,19 +45,16 @@ export class SearchService {
 
     const term = q.trim()
 
-    // Use Postgres ILIKE on title + developer — fallback before pg_trgm extension enabled
     const games = await this.prisma.game.findMany({
       where: {
         deletedAt: null,
         OR: [
           { title: { contains: term, mode: 'insensitive' } },
-          { developer: { contains: term, mode: 'insensitive' } },
           { slug: { contains: term, mode: 'insensitive' } },
         ],
       },
       take: limit,
       orderBy: [
-        // Exact prefix matches float to top naturally with this ordering
         { ratingCount: 'desc' },
         { avgRating: 'desc' },
       ],
@@ -53,7 +62,22 @@ export class SearchService {
         id: true,
         slug: true,
         title: true,
-        coverUrl: true,
+        cover: {
+          select: {
+            rawUrl: true,
+            optimized: true,
+            variants: {
+              select: {
+                role: true,
+                url: true,
+                width: true,
+                height: true,
+                format: true,
+                blurPlaceholder: true,
+              },
+            },
+          },
+        },
         avgRating: true,
         ratingCount: true,
         releaseDate: true,
@@ -61,11 +85,11 @@ export class SearchService {
       },
     })
 
-    return (games as SearchGameRow[]).map((g) => ({
+    return (games as unknown as SearchGameRow[]).map((g) => ({
       id: g.id,
       slug: g.slug,
       title: g.title,
-      coverUrl: g.coverUrl,
+      coverUrl: getVariantUrl(g.cover, 'COVER_MD'),
       avgRating: g.avgRating,
       ratingCount: g.ratingCount,
       releaseDate: g.releaseDate?.toISOString() ?? null,
@@ -84,7 +108,6 @@ export class SearchService {
         deletedAt: null,
         OR: [
           { title: { contains: term, mode: 'insensitive' } },
-          { developer: { contains: term, mode: 'insensitive' } },
           { slug: { contains: term, mode: 'insensitive' } },
         ],
       },
@@ -97,7 +120,22 @@ export class SearchService {
         id: true,
         slug: true,
         title: true,
-        coverUrl: true,
+        cover: {
+          select: {
+            rawUrl: true,
+            optimized: true,
+            variants: {
+              select: {
+                role: true,
+                url: true,
+                width: true,
+                height: true,
+                format: true,
+                blurPlaceholder: true,
+              },
+            },
+          },
+        },
         avgRating: true,
         ratingCount: true,
         releaseDate: true,
@@ -105,7 +143,7 @@ export class SearchService {
       },
     })
 
-    const sorted = (games as SearchGameRow[]).sort((a, b) => {
+    const sorted = (games as unknown as SearchGameRow[]).sort((a, b) => {
       const aTitle = a.title.toLowerCase()
       const bTitle = b.title.toLowerCase()
       const termLower = term.toLowerCase()
@@ -122,7 +160,7 @@ export class SearchService {
       id: g.id,
       slug: g.slug,
       title: g.title,
-      coverUrl: g.coverUrl,
+      coverUrl: getVariantUrl(g.cover, 'COVER_MD'),
       avgRating: g.avgRating,
       ratingCount: g.ratingCount,
       releaseDate: g.releaseDate?.toISOString() ?? null,
@@ -131,3 +169,4 @@ export class SearchService {
     }))
   }
 }
+

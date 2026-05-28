@@ -3,6 +3,7 @@ import {
 } from '@nestjs/common'
 import { PrismaService } from '../../common/prisma/prisma.service'
 import type { CreateReviewDto, UpdateReviewDto } from './dto/review.dto'
+import { getVariantUrl } from '../../common/utils/media'
 
 @Injectable()
 export class ReviewsService {
@@ -23,11 +24,46 @@ export class ReviewsService {
         isSpoiler: true,
         createdAt: true,
         user: { select: { id: true, username: true, displayName: true } },
-        game: { select: { id: true, slug: true, title: true, coverUrl: true } },
+        game: {
+          select: {
+            id: true,
+            slug: true,
+            title: true,
+            cover: {
+              select: {
+                rawUrl: true,
+                optimized: true,
+                variants: {
+                  select: {
+                    role: true,
+                    url: true,
+                    width: true,
+                    height: true,
+                    format: true,
+                    blurPlaceholder: true,
+                  },
+                },
+              },
+            },
+          },
+        },
         // Pull rating from the ratings table via a join trick — not directly on review
       },
     })
-    return reviews
+
+    return reviews.map((r) => ({
+      id: r.id,
+      body: r.body,
+      isSpoiler: r.isSpoiler,
+      createdAt: r.createdAt.toISOString(),
+      user: r.user,
+      game: {
+        id: r.game.id,
+        slug: r.game.slug,
+        title: r.game.title,
+        coverUrl: getVariantUrl(r.game.cover, 'COVER_MD'),
+      },
+    }))
   }
 
   async create(userId: string, gameId: string, dto: CreateReviewDto) {

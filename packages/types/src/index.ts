@@ -48,11 +48,27 @@ export interface UserProfile extends UserPublic {
 
 // ─── Game ────────────────────────────────────────────────────────────────────
 
+export interface MediaVariantDTO {
+  role: 'COVER_SM' | 'COVER_MD' | 'COVER_LG' | 'BACKDROP_HERO' | 'GALLERY_HD' | 'THUMBNAIL_BLUR' | 'AVATAR_SM' | 'AVATAR_MD' | 'LOGO_TRANSPARENT'
+  url: string
+  width: number | null
+  height: number | null
+  format: string
+  blurPlaceholder: string | null
+}
+
+export interface CanonicalMediaDTO {
+  rawUrl: string
+  optimized: boolean
+  variants: MediaVariantDTO[]
+}
+
 export interface GameSummary {
   id: string
   slug: string
   title: string
-  coverUrl: string | null
+  cover: CanonicalMediaDTO | null
+  coverUrl?: string | null // transitional helper
   releaseDate: string | null
   avgRating: number | null
   ratingCount: number
@@ -62,10 +78,20 @@ export interface GameSummary {
 
 export interface GameDetail extends GameSummary {
   description: string | null
-  bannerUrl: string | null
-  developer: string | null
-  publisher: string | null
+  backdrop: CanonicalMediaDTO | null
+  bannerUrl?: string | null // transitional helper
+  summary: string | null
+  storyline: string | null
+  igdbRating: number | null
+  igdbRatingCount: number | null
+  status: string | null
+  franchise: FranchiseSummary | null
+  developers: CompanySummary[]
+  publishers: CompanySummary[]
   tags: TagSummary[]
+  screenshots: CanonicalMediaDTO[]
+  trailers: TrailerSummary[]
+  themes: ThemeSummary[]
 }
 
 // ─── Supporting entities ─────────────────────────────────────────────────────
@@ -87,6 +113,31 @@ export interface TagSummary {
   slug: string
   name: string
 }
+
+export interface TrailerSummary {
+  id: string
+  youtubeId: string
+  name: string | null
+}
+
+export interface CompanySummary {
+  id: string
+  slug: string
+  name: string
+}
+
+export interface ThemeSummary {
+  id: string
+  slug: string
+  name: string
+}
+
+export interface FranchiseSummary {
+  id: string
+  slug: string
+  name: string
+}
+
 
 // ─── Review ──────────────────────────────────────────────────────────────────
 

@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { PrismaService } from '../../common/prisma/prisma.service'
 import type { CreateGameDto, GamesQueryDto } from './dto/games.dto'
+import { mapMediaAsset, getVariantUrl } from '../../common/utils/media'
 
 // ─── Shared Prisma select shapes ──────────────────────────────────────────────
 
@@ -8,7 +9,22 @@ const GAME_SUMMARY_SELECT = {
   id: true,
   slug: true,
   title: true,
-  coverUrl: true,
+  cover: {
+    select: {
+      rawUrl: true,
+      optimized: true,
+      variants: {
+        select: {
+          role: true,
+          url: true,
+          width: true,
+          height: true,
+          format: true,
+          blurPlaceholder: true,
+        },
+      },
+    },
+  },
   releaseDate: true,
   avgRating: true,
   ratingCount: true,
@@ -19,39 +35,61 @@ const GAME_SUMMARY_SELECT = {
 const GAME_DETAIL_SELECT = {
   ...GAME_SUMMARY_SELECT,
   description: true,
-  bannerUrl: true,
-  developer: true,
-  publisher: true,
+  backdrop: {
+    select: {
+      rawUrl: true,
+      optimized: true,
+      variants: {
+        select: {
+          role: true,
+          url: true,
+          width: true,
+          height: true,
+          format: true,
+          blurPlaceholder: true,
+        },
+      },
+    },
+  },
+  developers: { select: { developer: { select: { id: true, slug: true, name: true } } } },
+  publishers: { select: { publisher: { select: { id: true, slug: true, name: true } } } },
   tags: { select: { tag: { select: { id: true, slug: true, name: true } } } },
+  screenshots: {
+    orderBy: { position: 'asc' as const },
+    select: {
+      asset: {
+        select: {
+          rawUrl: true,
+          optimized: true,
+          variants: {
+            select: {
+              role: true,
+              url: true,
+              width: true,
+              height: true,
+              format: true,
+              blurPlaceholder: true,
+            },
+          },
+        },
+      },
+    },
+  },
+  trailers: {
+    select: {
+      id: true,
+      youtubeId: true,
+      name: true,
+    },
+  },
+  themes: { select: { theme: { select: { id: true, slug: true, name: true } } } },
+  franchise: { select: { id: true, slug: true, name: true } },
+  summary: true,
+  storyline: true,
+  igdbRating: true,
+  igdbRatingCount: true,
+  status: true,
 } as const
-
-// ─── Internal row types (Prisma output shapes) ────────────────────────────────
-
-interface TaxonomyRow {
-  genre?: { id: string; slug: string; name: string }
-  platform?: { id: string; slug: string; name: string }
-  tag?: { id: string; slug: string; name: string }
-}
-
-interface GameSummaryRow {
-  id: string
-  slug: string
-  title: string
-  coverUrl: string | null
-  releaseDate: Date | null
-  avgRating: number | null
-  ratingCount: number
-  genres: TaxonomyRow[]
-  platforms: TaxonomyRow[]
-}
-
-interface GameDetailRow extends GameSummaryRow {
-  description: string | null
-  bannerUrl: string | null
-  developer: string | null
-  publisher: string | null
-  tags: TaxonomyRow[]
-}
 
 @Injectable()
 export class GamesService {
@@ -90,7 +128,7 @@ export class GamesService {
       select: GAME_SUMMARY_SELECT,
     })
 
-    return (items as GameSummaryRow[]).map(this.mapGameSummary)
+    return items.map(this.mapGameSummary)
   }
 
   // ─── Generic list (cursor-paginated) ─────────────────────────────────────────
@@ -153,7 +191,7 @@ export class GamesService {
       ...(q && {
         OR: [
           { title: { contains: q, mode: 'insensitive' as const } },
-          { developer: { contains: q, mode: 'insensitive' as const } },
+          { slug: { contains: q, mode: 'insensitive' as const } },
         ],
       }),
       ...(genre && { genres: { some: { genre: { slug: genre } } } }),
@@ -185,7 +223,7 @@ export class GamesService {
     const nextCursor = hasMore ? (data[data.length - 1]?.id ?? null) : null
 
     return {
-      data: (data as GameSummaryRow[]).map(this.mapGameSummary),
+      data: data.map(this.mapGameSummary),
       meta: { nextCursor, total: undefined },
     }
   }
@@ -238,7 +276,7 @@ export class GamesService {
       take: limit,
       select: GAME_SUMMARY_SELECT,
     })
-    const upcoming = (upcomingItems as GameSummaryRow[]).map(this.mapGameSummary)
+    const upcoming = upcomingItems.map(this.mapGameSummary)
 
     return {
       trending,
@@ -259,26 +297,46 @@ export class GamesService {
       select: GAME_DETAIL_SELECT,
     })
     if (!game) throw new NotFoundException('Game not found')
-    return this.mapGameDetail(game as GameDetailRow)
+    return this.mapGameDetail(game)
   }
 
   async create(dto: CreateGameDto) {
     const game = await this.prisma.game.create({ data: { ...dto }, select: GAME_DETAIL_SELECT })
-    return this.mapGameDetail(game as GameDetailRow)
+    return this.mapGameDetail(game)
   }
 
   // ─── Private mappers ─────────────────────────────────────────────────────────
 
-  private mapGameSummary = (game: GameSummaryRow) => ({
-    ...game,
-    genres: game.genres?.map((g) => g.genre).filter(Boolean) ?? [],
-    platforms: game.platforms?.map((p) => p.platform).filter(Boolean) ?? [],
+  private mapGameSummary = (game: any) => ({
+    id: game.id,
+    slug: game.slug,
+    title: game.title,
+    cover: mapMediaAsset(game.cover),
+    coverUrl: getVariantUrl(game.cover, 'COVER_MD'),
     releaseDate: game.releaseDate?.toISOString() ?? null,
+    avgRating: game.avgRating,
+    ratingCount: game.ratingCount,
+    genres: game.genres?.map((g: any) => g.genre).filter(Boolean) ?? [],
+    platforms: game.platforms?.map((p: any) => p.platform).filter(Boolean) ?? [],
   })
 
-  private mapGameDetail = (game: GameDetailRow) => ({
+  private mapGameDetail = (game: any) => ({
     ...this.mapGameSummary(game),
-    tags: game.tags?.map((t) => t.tag).filter(Boolean) ?? [],
+    description: game.description,
+    backdrop: mapMediaAsset(game.backdrop),
+    bannerUrl: getVariantUrl(game.backdrop, 'BACKDROP_HERO'),
+    developers: game.developers?.map((d: any) => d.developer).filter(Boolean) ?? [],
+    publishers: game.publishers?.map((p: any) => p.publisher).filter(Boolean) ?? [],
+    tags: game.tags?.map((t: any) => t.tag).filter(Boolean) ?? [],
+    screenshots: (game.screenshots ?? []).map((s: any) => mapMediaAsset(s.asset)).filter(Boolean),
+    trailers: game.trailers ?? [],
+    themes: game.themes?.map((t: any) => t.theme).filter(Boolean) ?? [],
+    franchise: game.franchise ?? null,
+    summary: game.summary,
+    storyline: game.storyline,
+    igdbRating: game.igdbRating,
+    igdbRatingCount: game.igdbRatingCount,
+    status: game.status,
   })
 
   private resolveOrderBy(sort?: string) {

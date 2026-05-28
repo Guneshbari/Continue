@@ -33,12 +33,12 @@ export function CinematicSurface({
     <Component
       onClick={onClick}
       className={cn(
-        'rounded-lg overflow-hidden transition-all duration-300 ease-out',
+        'overflow-hidden transition-all duration-300 ease-out',
         ELEVATION_MAP[elevation],
         interactive && 'hover:translate-y-[-4px] hover:scale-[1.01] hover:border-[var(--color-border)] hover:shadow-[0_12px_40px_rgb(0_0_0_/_0.6)] cursor-pointer',
         className
       )}
-      style={style}
+      style={{ borderRadius: 'var(--radius-surface)', ...style }}
     >
       {children}
     </Component>

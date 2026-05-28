@@ -30,6 +30,19 @@ enum ListVisibility {
   UNLISTED
 }
 
+enum MediaRole {
+  COVER_SM
+  COVER_MD
+  COVER_LG
+  BACKDROP_HERO
+  GALLERY_HD
+  THUMBNAIL_BLUR
+  AVATAR_SM
+  AVATAR_MD
+  LOGO_TRANSPARENT
+}
+
+
 // ─── User ────────────────────────────────────────────────────────────────────
 
 model User {
@@ -59,25 +72,40 @@ model User {
 // ─── Game ────────────────────────────────────────────────────────────────────
 
 model Game {
-  id          String    @id @default(cuid())
-  slug        String    @unique
-  title       String
-  description String?
-  coverUrl    String?   @map("cover_url")
-  bannerUrl   String?   @map("banner_url")
-  releaseDate DateTime? @map("release_date")
-  developer   String?
-  publisher   String?
-  deletedAt   DateTime? @map("deleted_at")
-  createdAt   DateTime  @default(now()) @map("created_at")
-  updatedAt   DateTime  @updatedAt @map("updated_at")
+  id              String    @id @default(cuid())
+  slug            String    @unique
+  title           String
+  description     String?
+  releaseDate     DateTime? @map("release_date")
+  deletedAt       DateTime? @map("deleted_at")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
 
-  platforms GamePlatform[]
-  genres    GameGenre[]
-  tags      GameTag[]
-  reviews   Review[]
-  ratings   Rating[]
-  listItems ListItem[]
+  igdbId          Int?      @unique @map("igdb_id")
+  summary         String?   @db.Text
+  storyline       String?   @db.Text
+  igdbRating      Float?    @map("igdb_rating")
+  igdbRatingCount Int?      @map("igdb_rating_count")
+  status          String?   // "released", "alpha", "announced"
+  franchiseId     String?   @map("franchise_id")
+  franchise       Franchise? @relation(fields: [franchiseId], references: [id])
+
+  coverId         String?   @map("cover_id")
+  backdropId      String?   @map("backdrop_id")
+  cover           MediaAsset? @relation("GameCover", fields: [coverId], references: [id])
+  backdrop        MediaAsset? @relation("GameBackdrop", fields: [backdropId], references: [id])
+
+  platforms   GamePlatform[]
+  genres      GameGenre[]
+  tags        GameTag[]
+  reviews     Review[]
+  ratings     Rating[]
+  listItems   ListItem[]
+  screenshots Screenshot[]
+  trailers    Trailer[]
+  themes      GameTheme[]
+  developers  GameDeveloper[]
+  publishers  GamePublisher[]
 
   // Denormalized avg rating — updated by trigger/job
   avgRating   Float? @map("avg_rating")
@@ -90,6 +118,8 @@ model Game {
   @@index([avgRating])
   @@map("games")
 }
+
+
 
 // ─── Platform ────────────────────────────────────────────────────────────────
 
@@ -112,6 +142,42 @@ model GamePlatform {
   @@index([platformId])
   @@map("game_platforms")
 }
+
+// ─── Media Assets ────────────────────────────────────────────────────────────
+
+model MediaAsset {
+  id            String         @id @default(cuid())
+  rawUrl        String         @map("raw_url")
+  hash          String?        @unique
+  optimized     Boolean        @default(false)
+  createdAt     DateTime       @default(now()) @map("created_at")
+  updatedAt     DateTime       @updatedAt @map("updated_at")
+  
+  variants      MediaVariant[]
+  coverGames    Game[]         @relation("GameCover")
+  backdropGames Game[]         @relation("GameBackdrop")
+  screenshots   Screenshot[]
+
+  @@map("media_assets")
+}
+
+model MediaVariant {
+  id              String     @id @default(cuid())
+  assetId         String     @map("asset_id")
+  asset           MediaAsset @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  role            MediaRole
+  url             String
+  width           Int?
+  height          Int?
+  format          String
+  blurPlaceholder String?    @map("blur_placeholder")
+  createdAt       DateTime   @default(now()) @map("created_at")
+
+  @@unique([assetId, role, format])
+  @@index([assetId])
+  @@map("media_variants")
+}
+
 
 // ─── Genre ───────────────────────────────────────────────────────────────────
 
@@ -261,3 +327,100 @@ model RefreshToken {
   @@index([expiresAt])
   @@map("refresh_tokens")
 }
+
+// ─── Additional Relational Metadata ──────────────────────────────────────────
+
+model Screenshot {
+  id        String     @id @default(cuid())
+  gameId    String     @map("game_id")
+  game      Game       @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  assetId   String     @map("asset_id")
+  asset     MediaAsset @relation(fields: [assetId], references: [id])
+  position  Int        @default(0)
+  createdAt DateTime   @default(now()) @map("created_at")
+
+  @@index([gameId])
+  @@map("screenshots")
+}
+
+model Trailer {
+  id        String   @id @default(cuid())
+  gameId    String   @map("game_id")
+  game      Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  youtubeId String   @map("youtube_id")
+  name      String?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([gameId])
+  @@map("trailers")
+}
+
+model Franchise {
+  id    String @id @default(cuid())
+  slug  String @unique
+  name  String
+  games Game[]
+
+  @@map("franchises")
+}
+
+model Theme {
+  id    String @id @default(cuid())
+  slug  String @unique
+  name  String
+  games GameTheme[]
+
+  @@map("themes")
+}
+
+model GameTheme {
+  gameId  String @map("game_id")
+  themeId String @map("theme_id")
+  game    Game   @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  theme   Theme  @relation(fields: [themeId], references: [id])
+
+  @@id([gameId, themeId])
+  @@index([themeId])
+  @@map("game_themes")
+}
+
+model Developer {
+  id    String @id @default(cuid())
+  slug  String @unique
+  name  String
+  games GameDeveloper[]
+
+  @@map("developers")
+}
+
+model GameDeveloper {
+  gameId      String    @map("game_id")
+  developerId String    @map("developer_id")
+  game        Game      @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  developer   Developer @relation(fields: [developerId], references: [id])
+
+  @@id([gameId, developerId])
+  @@index([developerId])
+  @@map("game_developers")
+}
+
+model Publisher {
+  id    String @id @default(cuid())
+  slug  String @unique
+  name  String
+  games GamePublisher[]
+
+  @@map("publishers")
+}
+
+model GamePublisher {
+  gameId      String    @map("game_id")
+  publisherId String    @map("publisher_id")
+  game        Game      @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  publisher   Publisher @relation(fields: [publisherId], references: [id])
+
+  @@id([gameId, publisherId])
+  @@index([publisherId])
+  @@map("game_publishers")
+}
+

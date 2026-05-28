@@ -3,6 +3,7 @@ import {
 } from '@nestjs/common'
 import { PrismaService } from '../../common/prisma/prisma.service'
 import type { CreateListDto, UpdateListDto, AddListItemDto, ReorderListItemsDto } from './dto/list.dto'
+import { getVariantUrl } from '../../common/utils/media'
 
 function slugify(title: string): string {
   let base = title
@@ -41,7 +42,26 @@ const LIST_SELECT = {
     take: 3,
     orderBy: { position: 'asc' as const },
     select: {
-      game: { select: { coverUrl: true } },
+      game: {
+        select: {
+          cover: {
+            select: {
+              rawUrl: true,
+              optimized: true,
+              variants: {
+                select: {
+                  role: true,
+                  url: true,
+                  width: true,
+                  height: true,
+                  format: true,
+                  blurPlaceholder: true,
+                },
+              },
+            },
+          },
+        },
+      },
     },
   },
 }
@@ -50,9 +70,47 @@ const LIST_ITEM_GAME_SELECT = {
   id: true,
   slug: true,
   title: true,
-  coverUrl: true,
+  cover: {
+    select: {
+      rawUrl: true,
+      optimized: true,
+      variants: {
+        select: {
+          role: true,
+          url: true,
+          width: true,
+          height: true,
+          format: true,
+          blurPlaceholder: true,
+        },
+      },
+    },
+  },
   avgRating: true,
   releaseDate: true,
+}
+
+function mapListItem(item: any): any {
+  if (!item) return item
+  return {
+    ...item,
+    game: {
+      id: item.game?.id,
+      slug: item.game?.slug,
+      title: item.game?.title,
+      coverUrl: getVariantUrl(item.game?.cover, 'COVER_MD'),
+      avgRating: item.game?.avgRating,
+      releaseDate: item.game?.releaseDate,
+    },
+  }
+}
+
+function mapList(list: any): any {
+  if (!list) return list
+  return {
+    ...list,
+    items: (list.items ?? []).map(mapListItem),
+  }
 }
 
 @Injectable()
@@ -81,7 +139,26 @@ export class ListsService {
           take: 3,
           orderBy: { position: 'asc' },
           select: {
-            game: { select: { coverUrl: true } },
+            game: {
+              select: {
+                cover: {
+                  select: {
+                    rawUrl: true,
+                    optimized: true,
+                    variants: {
+                      select: {
+                        role: true,
+                        url: true,
+                        width: true,
+                        height: true,
+                        format: true,
+                        blurPlaceholder: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
           },
         },
       },
@@ -98,7 +175,7 @@ export class ListsService {
         displayName: list.user.displayName ?? list.user.username,
       },
       covers: list.items
-        .map((item) => item.game.coverUrl)
+        .map((item) => getVariantUrl(item.game.cover, 'COVER_MD'))
         .filter((url): url is string => url !== null),
     }))
   }
@@ -107,14 +184,13 @@ export class ListsService {
 
   async create(userId: string, dto: CreateListDto) {
     const base = slugify(dto.title)
-    // Enforce global uniqueness of slugs for the top level /lists/[slug] routing
     const existing = await this.prisma.list.findMany({
       where: { deletedAt: null, slug: { startsWith: base } },
       select: { slug: true },
     })
     const slug = existing.length === 0 ? base : `${base}-${existing.length}`
 
-    return this.prisma.list.create({
+    const list = await this.prisma.list.create({
       data: {
         userId,
         slug,
@@ -124,6 +200,7 @@ export class ListsService {
       },
       select: LIST_SELECT,
     })
+    return mapList(list)
   }
 
   async findByUser(username: string, requesterId?: string, gameId?: string) {
@@ -133,12 +210,11 @@ export class ListsService {
     })
     if (!user) throw new NotFoundException('User not found')
 
-    // If requester is owner, show all; otherwise only PUBLIC
     const visibilityFilter = requesterId === user.id
       ? {}
       : { visibility: 'PUBLIC' as const }
 
-    return this.prisma.list.findMany({
+    const lists = await this.prisma.list.findMany({
       where: { userId: user.id, deletedAt: null, ...visibilityFilter },
       orderBy: { updatedAt: 'desc' },
       select: {
@@ -151,6 +227,8 @@ export class ListsService {
         }),
       },
     })
+
+    return lists.map(mapList)
   }
 
   async findOne(username: string, slug: string, requesterId?: string) {
@@ -179,12 +257,14 @@ export class ListsService {
     })
     if (!list) throw new NotFoundException('List not found')
 
-    // Private list — only owner can see
     if (list.visibility === 'PRIVATE' && requesterId !== list.userId) {
       throw new ForbiddenException('This list is private')
     }
 
-    return list
+    return {
+      ...list,
+      items: (list.items ?? []).map(mapListItem),
+    }
   }
 
   async findBySlug(slug: string, requesterId?: string) {
@@ -207,17 +287,19 @@ export class ListsService {
     })
     if (!list) throw new NotFoundException('List not found')
 
-    // Private list — only owner can see
     if (list.visibility === 'PRIVATE' && requesterId !== list.userId) {
       throw new ForbiddenException('This list is private')
     }
 
-    return list
+    return {
+      ...list,
+      items: (list.items ?? []).map(mapListItem),
+    }
   }
 
   async update(id: string, userId: string, dto: UpdateListDto) {
     await this.assertOwner(id, userId)
-    return this.prisma.list.update({
+    const list = await this.prisma.list.update({
       where: { id },
       data: {
         ...dto,
@@ -225,6 +307,7 @@ export class ListsService {
       },
       select: LIST_SELECT,
     })
+    return mapList(list)
   }
 
   async remove(id: string, userId: string) {
@@ -240,18 +323,16 @@ export class ListsService {
   async addItem(listId: string, userId: string, dto: AddListItemDto) {
     await this.assertOwner(listId, userId)
 
-    // Check game exists
     const game = await this.prisma.game.findFirst({
       where: { id: dto.gameId, deletedAt: null },
       select: { id: true },
     })
     if (!game) throw new NotFoundException('Game not found')
 
-    // Max position = current count
     const count = await this.prisma.listItem.count({ where: { listId } })
 
     try {
-      return await this.prisma.listItem.create({
+      const item = await this.prisma.listItem.create({
         data: {
           listId,
           gameId: dto.gameId,
@@ -262,6 +343,7 @@ export class ListsService {
           game: { select: LIST_ITEM_GAME_SELECT },
         },
       })
+      return mapListItem(item)
     } catch {
       throw new ConflictException('Game already in this list')
     }
@@ -279,7 +361,6 @@ export class ListsService {
   async reorderItems(listId: string, userId: string, dto: ReorderListItemsDto) {
     await this.assertOwner(listId, userId)
 
-    // Run order update atomically in a transaction
     const updates = dto.gameIds.map((gameId, index) =>
       this.prisma.listItem.update({
         where: { listId_gameId: { listId, gameId } },
@@ -289,7 +370,7 @@ export class ListsService {
 
     await this.prisma.$transaction(updates)
 
-    return this.prisma.list.findUnique({
+    const list = await this.prisma.list.findUnique({
       where: { id: listId },
       include: {
         user: { select: { id: true, username: true, displayName: true, avatarUrl: true } },
@@ -306,6 +387,11 @@ export class ListsService {
         _count: { select: { items: true } },
       },
     })
+    if (!list) return null
+    return {
+      ...list,
+      items: (list.items ?? []).map(mapListItem),
+    }
   }
 
   // ─── Helper ─────────────────────────────────────────────────────────────────
@@ -319,3 +405,4 @@ export class ListsService {
     if (list.userId !== userId) throw new ForbiddenException()
   }
 }
+
