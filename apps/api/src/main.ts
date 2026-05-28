@@ -89,6 +89,23 @@ async function bootstrap() {
       console.error('Failed to run auto-seed on startup:', err)
     }
   }
+
+  if (configService.get<string>('ENABLE_FIXTURE_MODE') === 'true') {
+    const nodeEnv = configService.get<string>('NODE_ENV')
+    if (nodeEnv === 'production') {
+      console.error('❌ CRITICAL WARNING: Fixture mode is enabled but NODE_ENV is set to "production". Hard-blocking fixture bootstrapping for safety!')
+    } else {
+      console.log('🎮 Fixture mode is enabled. Bootstrapping canonical datasets...')
+      try {
+        const { FixtureLoaderService } = await import('./modules/fixtures/fixture-loader.service.js')
+        const loader = app.get(FixtureLoaderService)
+        await loader.load()
+        console.log('✅ Game fixtures loaded successfully on startup.')
+      } catch (err) {
+        console.error('Failed to load game fixtures on startup:', err)
+      }
+    }
+  }
 }
 
 void bootstrap()

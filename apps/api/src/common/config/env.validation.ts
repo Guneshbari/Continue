@@ -12,6 +12,11 @@ const envSchema = z
     JWT_REFRESH_EXPIRES_IN: z.string().default('7d'),
     CORS_ORIGINS: z.string().default('http://localhost:3000'),
     AUTO_SEED_DATABASE: z.enum(['true', 'false']).default('false'),
+    ENABLE_FIXTURE_MODE: z.enum(['true', 'false']).default('false'),
+    FIXTURE_SCENARIO: z.enum(['minimal', 'realistic', 'stress_test', 'broken_metadata']).default('realistic'),
+    TWITCH_CLIENT_ID: z.string().optional(),
+    TWITCH_CLIENT_SECRET: z.string().optional(),
+    IGDB_OFFLINE_MODE: z.enum(['true', 'false']).default('false'),
   })
   .superRefine((env, ctx) => {
     if (env.NODE_ENV !== 'production') return

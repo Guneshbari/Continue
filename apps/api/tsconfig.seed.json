@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "module": "CommonJS",
+    "target": "ES2022",
+    "lib": ["ES2022"],
+    "moduleResolution": "node",
+    "strict": false,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "resolveJsonModule": true,
+    "baseUrl": ".",
+    "paths": {
+      "@continue/types": ["../../packages/types/src"],
+      "@continue/validation": ["../../packages/validation/src"]
+    }
+  },
+  "include": ["prisma/**/*", "src/**/*"],
+  "exclude": ["node_modules", "dist"]
+}

@@ -13,6 +13,8 @@ import { UsersModule } from './modules/users/users.module'
 import { SearchModule } from './modules/search/search.module'
 import { ListsModule } from './modules/lists/lists.module'
 import { HealthModule } from './modules/health/health.module'
+import { FixturesModule } from './modules/fixtures/fixtures.module'
+import { ProvidersModule } from './modules/providers/providers.module'
 import { validateEnv } from './common/config/env.validation'
 import { TransformInterceptor } from './common/interceptors/transform.interceptor'
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor'
@@ -39,6 +41,8 @@ import { LoggingInterceptor } from './common/interceptors/logging.interceptor'
     SearchModule,
     ListsModule,
     HealthModule,
+    FixturesModule,
+    ProvidersModule,
   ],
   providers: [
     // LoggingInterceptor runs first — wraps the full pipeline
