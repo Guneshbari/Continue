@@ -1,9 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common'
 import axios from 'axios'
-import { IgdbAuthService } from './igdb-auth.service'
-import { ProviderGame, ProviderTrailer } from '../contracts/provider.contracts'
-import { normalizeIgdbGame, RawIgdbGame } from '../normalizers/igdb-normalizer'
-import { ScenarioRegistryService } from '../../fixtures/scenario-registry.service'
+import type { IgdbAuthService } from './igdb-auth.service'
+import type { ProviderGame, ProviderTrailer } from '../contracts/provider.contracts'
+import type { RawIgdbGame } from '../normalizers/igdb-normalizer';
+import { normalizeIgdbGame } from '../normalizers/igdb-normalizer'
+import type { ScenarioRegistryService } from '../../fixtures/scenario-registry.service'
 
 @Injectable()
 export class IgdbApiService {

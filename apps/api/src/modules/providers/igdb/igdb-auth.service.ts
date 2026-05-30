@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
+import type { ConfigService } from '@nestjs/config'
 import axios from 'axios'
-import { TwitchOauthResponse } from './igdb.types'
+import type { TwitchOauthResponse } from './igdb.types'
 
 @Injectable()
 export class IgdbAuthService {

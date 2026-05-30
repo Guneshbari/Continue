@@ -1,6 +1,6 @@
 import { Controller, Get, Res } from '@nestjs/common'
 import { ApiOperation, ApiTags } from '@nestjs/swagger'
-import { PrismaService } from '../../common/prisma/prisma.service'
+import type { PrismaService } from '../../common/prisma/prisma.service'
 import { Public } from '../auth/decorators/public.decorator'
 import type { FastifyReply } from 'fastify'
 

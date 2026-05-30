@@ -1,6 +1,6 @@
 import { Controller, Get, Query, Res } from '@nestjs/common'
 import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger'
-import { SearchService } from './search.service'
+import type { SearchService } from './search.service'
 import { Public } from '../auth/decorators/public.decorator'
 import type { FastifyReply } from 'fastify'
 

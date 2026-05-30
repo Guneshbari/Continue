@@ -1,8 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { PrismaService } from '../../../common/prisma/prisma.service'
-import { MediaStorageService } from './media-storage.service'
-import { BlurPlaceholderService } from './blur-placeholder.service'
-import { VariantGeneratorService } from './variant-generator.service'
+import type { ConfigService } from '@nestjs/config'
+import type { PrismaService } from '../../../common/prisma/prisma.service'
+import type { MediaStorageService } from './media-storage.service'
+import type { BlurPlaceholderService } from './blur-placeholder.service'
+import type { VariantGeneratorService } from './variant-generator.service'
 import { MediaProcessingState, MediaRole } from '@prisma/client'
 import axios from 'axios'
 import sharp from 'sharp'
@@ -38,7 +39,7 @@ class Semaphore {
 @Injectable()
 export class MediaProcessingService {
   private readonly logger = new Logger(MediaProcessingService.name)
-  private readonly sharpSemaphore = new Semaphore(3) // Bound transformations to 3 concurrent slots
+  private readonly sharpSemaphore: Semaphore
 
   // Strict visual settings fingerprint definition
   private readonly settingsFingerprint: string
@@ -47,13 +48,36 @@ export class MediaProcessingService {
     private readonly prisma: PrismaService,
     private readonly storage: MediaStorageService,
     private readonly placeholders: BlurPlaceholderService,
-    private readonly generator: VariantGeneratorService
+    private readonly generator: VariantGeneratorService,
+    private readonly config: ConfigService
   ) {
+    // 1. Memory Pressure Governance: Disable sharp heavy memory caches
+    sharp.cache(false)
+
+    // 2. Configure concurrency bounds via ConfigService
+    const limit = this.config.get<number>('MEDIA_CONCURRENCY_LIMIT') || 3
+    this.sharpSemaphore = new Semaphore(limit)
+
+    // 3. Strict visual settings fingerprint definition
     const activeSettings = {
       pipelineVersion: 'v1.0',
-      quality: 80,
-      crop: 'centre',
-      sharpVersion: '0.34'
+      sharpVersion: '0.34.5',
+      cropStrategy: 'centre',
+      compression: {
+        webp: { quality: 80, effort: 4 },
+        avif: { quality: 80, effort: 4 }
+      },
+      variantConfigs: {
+        COVER_SM: { width: 120, height: 180 },
+        COVER_MD: { width: 240, height: 360 },
+        COVER_LG: { width: 480, height: 720 },
+        BACKDROP_HERO: { width: 1920, height: 1080 },
+        GALLERY_HD: { width: 1280, height: 720 },
+        THUMBNAIL_BLUR: { width: 64, height: 64 },
+        AVATAR_SM: { width: 48, height: 48 },
+        AVATAR_MD: { width: 96, height: 96 },
+        LOGO_TRANSPARENT: { width: 512, height: 512 }
+      }
     }
     this.settingsFingerprint = crypto
       .createHash('sha256')
@@ -74,7 +98,7 @@ export class MediaProcessingService {
       include: {
         coverGames: { select: { id: true } },
         backdropGames: { select: { id: true } },
-        screenshots: { select: { id: true } },
+        screenshots: { select: { id: true, gameId: true } },
       },
     })
 
@@ -147,7 +171,7 @@ export class MediaProcessingService {
       })
 
       // 3. Extract BlurHash & Base64 placeholder values
-      const { blurhashString, tinyBase64Url } = await this.placeholders.generatePlaceholders(rawBuffer)
+      const { tinyBase64Url } = await this.placeholders.generatePlaceholders(rawBuffer)
 
       // 4. Resolve visual roles to generate
       const targetRoles: MediaRole[] = []
@@ -214,6 +238,86 @@ export class MediaProcessingService {
         }
       } finally {
         this.sharpSemaphore.release()
+      }
+
+      // Deferred Hero Candidate Scoring for screenshots
+      if (asset.screenshots.length > 0) {
+        try {
+          this.logger.log(`📊 Analyzing screenshot visual stats for Asset ${assetId}`)
+          const stats = await sharp(rawBuffer).stats()
+
+          // Compute average luminance across R, G, B channels
+          const meanR = stats.channels[0]?.mean ?? 0
+          const meanG = stats.channels[1]?.mean ?? 0
+          const meanB = stats.channels[2]?.mean ?? 0
+          const avgLuminance = (meanR + meanG + meanB) / 3
+
+          // Ideal brightness is 100 on a 0-255 scale (good for white text overlay)
+          const brightnessScore = Math.max(0, 1.0 - Math.abs(avgLuminance - 100) / 100)
+
+          // Contrast is measured via the average standard deviation across RGB channels
+          const stdevR = stats.channels[0]?.stdev ?? 0
+          const stdevG = stats.channels[1]?.stdev ?? 0
+          const stdevB = stats.channels[2]?.stdev ?? 0
+          const avgStdev = (stdevR + stdevG + stdevB) / 3
+          // Cap contrastScore at 1.0 for stdev >= 50
+          const contrastScore = Math.min(avgStdev / 50, 1.0)
+
+          // Composite hero score
+          const heroScore = brightnessScore * 0.4 + contrastScore * 0.6
+          this.logger.log(
+            `📈 Calculated Hero Score: ${heroScore.toFixed(4)} (Luminance: ${avgLuminance.toFixed(2)}, StDev: ${avgStdev.toFixed(2)})`
+          )
+
+          // 1. Update this specific screenshot record with its score
+          await this.prisma.screenshot.updateMany({
+            where: { assetId },
+            data: { heroScore },
+          })
+
+          // 2. Resolve primary hero candidate for all screenshots belonging to the parent games
+          const gameIds = Array.from(new Set(asset.screenshots.map((s) => s.gameId)))
+          for (const gameId of gameIds) {
+            // Fetch all screenshots for this game, ordered by heroScore desc
+            const gameScreenshots = await this.prisma.screenshot.findMany({
+              where: { gameId },
+              orderBy: { heroScore: 'desc' },
+            })
+
+            const bestScreenshot = gameScreenshots[0]
+            if (bestScreenshot) {
+              const bestScreenshotId = bestScreenshot.id
+
+              // Bulk update: set isPrimaryHeroCandidate = true for the best one, false for others
+              await this.prisma.screenshot.updateMany({
+                where: { gameId, id: bestScreenshotId },
+                data: { isPrimaryHeroCandidate: true },
+              })
+
+              if (gameScreenshots.length > 1) {
+                await this.prisma.screenshot.updateMany({
+                  where: {
+                    gameId,
+                    id: { not: bestScreenshotId },
+                  },
+                  data: { isPrimaryHeroCandidate: false },
+                })
+              }
+            }
+          }
+        } catch (scoringErr: any) {
+          this.logger.warn(`⚠️ Failed to compute hero score for asset ${assetId}: ${scoringErr.message}`)
+        }
+      }
+
+      // Safe Memory Pressure Governance: set buffer reference to null and suggest GC
+      rawBuffer = null as any
+      if (global.gc) {
+        try {
+          global.gc()
+        } catch {
+          // Ignore GC execution issues if not running in --expose-gc mode
+        }
       }
 
       const durationMs = Date.now() - startTime

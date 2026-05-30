@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { PrismaService } from '../../../common/prisma/prisma.service'
-import { TaxonomyResolutionResult } from '../types/sync.types'
+import type { PrismaService } from '../../../common/prisma/prisma.service'
+import type { TaxonomyResolutionResult } from '../types/sync.types'
 
 @Injectable()
 export class TaxonomySyncService {

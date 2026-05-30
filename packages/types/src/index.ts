@@ -61,6 +61,8 @@ export interface CanonicalMediaDTO {
   rawUrl: string
   optimized: boolean
   variants: MediaVariantDTO[]
+  heroScore?: number | null
+  isPrimaryHeroCandidate?: boolean
 }
 
 export interface GameSummary {

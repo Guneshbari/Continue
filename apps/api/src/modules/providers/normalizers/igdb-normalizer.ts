@@ -1,4 +1,4 @@
-import { ProviderGame, ProviderTrailer } from '../contracts/provider.contracts'
+import type { ProviderGame, ProviderTrailer } from '../contracts/provider.contracts'
 
 /**
  * Interface representing the raw, highly nested structure returned by the IGDB v4 API.

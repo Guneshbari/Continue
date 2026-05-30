@@ -3,11 +3,11 @@ import {
   ConflictException,
   UnauthorizedException,
 } from '@nestjs/common'
-import { JwtService } from '@nestjs/jwt'
-import { ConfigService } from '@nestjs/config'
+import type { JwtService } from '@nestjs/jwt'
+import type { ConfigService } from '@nestjs/config'
 import * as bcrypt from 'bcryptjs'
 import * as crypto from 'node:crypto'
-import { PrismaService } from '../../common/prisma/prisma.service'
+import type { PrismaService } from '../../common/prisma/prisma.service'
 import type { RegisterDto } from './dto/register.dto'
 import type { LoginDto } from './dto/login.dto'
 

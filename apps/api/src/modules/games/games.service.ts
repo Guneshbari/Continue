@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
-import { PrismaService } from '../../common/prisma/prisma.service'
+import type { PrismaService } from '../../common/prisma/prisma.service'
 import type { CreateGameDto, GamesQueryDto } from './dto/games.dto'
 import { mapMediaAsset, getVariantUrl } from '../../common/utils/media'
 
@@ -330,7 +330,14 @@ export class GamesService {
     developers: game.developers?.map((d: any) => d.developer).filter(Boolean) ?? [],
     publishers: game.publishers?.map((p: any) => p.publisher).filter(Boolean) ?? [],
     tags: game.tags?.map((t: any) => t.tag).filter(Boolean) ?? [],
-    screenshots: (game.screenshots ?? []).map((s: any) => mapMediaAsset(s.asset)).filter(Boolean),
+    screenshots: (game.screenshots ?? []).map((s: any) => {
+      const mapped = mapMediaAsset(s.asset)
+      if (mapped) {
+        mapped.heroScore = s.heroScore
+        mapped.isPrimaryHeroCandidate = s.isPrimaryHeroCandidate
+      }
+      return mapped
+    }).filter(Boolean),
     trailers: game.trailers ?? [],
     themes: game.themes?.map((t: any) => t.theme).filter(Boolean) ?? [],
     franchise: game.franchise ?? null,

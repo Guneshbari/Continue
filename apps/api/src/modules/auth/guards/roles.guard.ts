@@ -1,6 +1,6 @@
 import type { CanActivate, ExecutionContext} from '@nestjs/common';
 import { Injectable } from '@nestjs/common'
-import { Reflector } from '@nestjs/core'
+import type { Reflector } from '@nestjs/core'
 import type { FastifyRequest } from 'fastify'
 import { ROLES_KEY } from '../decorators/roles.decorator'
 

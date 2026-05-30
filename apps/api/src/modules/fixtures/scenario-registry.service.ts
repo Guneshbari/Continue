@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
-import { FixtureGame } from './fixture.types'
+import type { ConfigService } from '@nestjs/config'
+import type { FixtureGame } from './fixture.types'
 import { MINIMAL_GAMES } from './datasets/minimal'
 import { REALISTIC_GAMES } from './datasets/realistic'
 import { STRESS_TEST_GAMES } from './datasets/stress-test'
