@@ -13,6 +13,7 @@ export class IgdbAuthService {
   
   private cachedToken: string | null = null
   private expiresAt: number | null = null // timestamp in milliseconds
+  private refreshPromise: Promise<void> | null = null
 
   constructor(private readonly config: ConfigService) {
     this.clientId = this.config.get<string>('TWITCH_CLIENT_ID') ?? null
@@ -45,6 +46,7 @@ export class IgdbAuthService {
   /**
    * Obtain a valid access token. Resolves in-memory cache, and fetches a new token
    * from Twitch if expired or nearing expiration (5-minute buffer).
+   * Serializes concurrent requests using refreshPromise.
    */
   async getAccessToken(): Promise<string> {
     if (this.offlineMode) {
@@ -55,8 +57,19 @@ export class IgdbAuthService {
       return this.cachedToken
     }
 
+    // Serialize concurrent token fetch calls to prevent multiple concurrent HTTP calls
+    if (this.refreshPromise) {
+      this.logger.log('🔄 Access token refresh already in progress. Awaiting existing promise...')
+      await this.refreshPromise
+      return this.cachedToken!
+    }
+
     this.logger.log('🔄 Access token expired or missing. Fetching a new Twitch OAuth token...')
-    await this.refreshAccessToken()
+    this.refreshPromise = this.refreshAccessToken().finally(() => {
+      this.refreshPromise = null
+    })
+
+    await this.refreshPromise
 
     if (!this.cachedToken) {
       throw new Error('Twitch OAuth token acquisition failed unexpectedly.')

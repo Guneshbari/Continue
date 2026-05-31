@@ -1,6 +1,7 @@
-import { Test, TestingModule } from '@nestjs/testing'
+import type { TestingModule } from '@nestjs/testing';
+import { Test } from '@nestjs/testing'
 import { getQueueToken } from '@nestjs/bullmq'
-import { Job, Queue } from 'bullmq'
+import type { Job, Queue } from 'bullmq'
 import { GameSyncWorker } from './game-sync.worker'
 import { MediaProcessingWorker } from './media-processing.worker'
 import { MaintenanceWorker } from './maintenance.worker'
@@ -11,7 +12,6 @@ import { MediaStorageService } from '../../media/services/media-storage.service'
 import {
   GAME_SYNC_QUEUE,
   MEDIA_PROCESSING_QUEUE,
-  MAINTENANCE_QUEUE,
   DEAD_LETTER_QUEUE,
   SYNC_GAME_JOB,
   SYNC_POPULAR_GAMES_JOB,
@@ -95,6 +95,7 @@ describe('Queue Workers & Processors', () => {
 
     it('should process SYNC_GAME_JOB with slug', async () => {
       const job = {
+        id: 'job-slug-1',
         name: SYNC_GAME_JOB,
         data: { slug: 'test-game' },
         attemptsMade: 0,
@@ -104,12 +105,13 @@ describe('Queue Workers & Processors', () => {
       providerSyncService.syncGameBySlug.mockResolvedValue({ id: 'game-1' } as any)
 
       const result = await gameSyncWorker.process(job)
-      expect(providerSyncService.syncGameBySlug).toHaveBeenCalledWith('test-game')
+      expect(providerSyncService.syncGameBySlug).toHaveBeenCalledWith('test-game', 'job-slug-1')
       expect(result).toEqual({ id: 'game-1' })
     })
 
     it('should process SYNC_GAME_JOB with gameId', async () => {
       const job = {
+        id: 'job-game-2',
         name: SYNC_GAME_JOB,
         data: { gameId: '123' },
         attemptsMade: 0,
@@ -119,12 +121,13 @@ describe('Queue Workers & Processors', () => {
       providerSyncService.syncGameByExternalId.mockResolvedValue({ id: 'game-2' } as any)
 
       const result = await gameSyncWorker.process(job)
-      expect(providerSyncService.syncGameByExternalId).toHaveBeenCalledWith(123)
+      expect(providerSyncService.syncGameByExternalId).toHaveBeenCalledWith(123, 'job-game-2')
       expect(result).toEqual({ id: 'game-2' })
     })
 
     it('should process SYNC_POPULAR_GAMES_JOB', async () => {
       const job = {
+        id: 'job-popular-3',
         name: SYNC_POPULAR_GAMES_JOB,
         data: { limit: 15 },
         attemptsMade: 0,
@@ -134,7 +137,7 @@ describe('Queue Workers & Processors', () => {
       providerSyncService.syncPopularGames.mockResolvedValue([{ id: 'game-1' }] as any)
 
       const result = await gameSyncWorker.process(job)
-      expect(providerSyncService.syncPopularGames).toHaveBeenCalledWith(15)
+      expect(providerSyncService.syncPopularGames).toHaveBeenCalledWith(15, 'job-popular-3')
       expect(result).toEqual([{ id: 'game-1' }])
     })
 

@@ -1,8 +1,8 @@
 import { Controller, Get, Res } from '@nestjs/common'
 import { ApiOperation, ApiTags } from '@nestjs/swagger'
 import { InjectQueue } from '@nestjs/bullmq'
-import { Queue } from 'bullmq'
-import { PrismaService } from '../../common/prisma/prisma.service'
+import type { Queue } from 'bullmq'
+import type { PrismaService } from '../../common/prisma/prisma.service'
 import { Public } from '../auth/decorators/public.decorator'
 import type { FastifyReply } from 'fastify'
 import {
@@ -77,9 +77,39 @@ export class HealthController {
         this.deadLetterQueue.getJobCounts(),
       ])
 
+      // Backpressure backlog assessments
+      const warnings: string[] = []
+      let backpressureStatus: 'healthy' | 'warning' | 'critical' = 'healthy'
+
+      const gameSyncWaiting = gameSyncCounts.waiting ?? 0
+      const mediaWaiting = mediaCounts.waiting ?? 0
+
+      // Overall backpressure state calculation
+      if (gameSyncWaiting > 2000 || mediaWaiting > 10000) {
+        backpressureStatus = 'critical'
+      } else if (gameSyncWaiting > 1000 || mediaWaiting > 5000) {
+        backpressureStatus = 'warning'
+      }
+
+      // Populate Game sync queue backlog warnings
+      if (gameSyncWaiting > 2000) {
+        warnings.push(`Game sync queue backlog is critical. Waiting jobs: ${gameSyncWaiting} (Threshold: 2000)`)
+      } else if (gameSyncWaiting > 1000) {
+        warnings.push(`Game sync queue backlog is high. Waiting jobs: ${gameSyncWaiting} (Threshold: 1000)`)
+      }
+
+      // Populate Media processing queue backlog warnings
+      if (mediaWaiting > 10000) {
+        warnings.push(`Media processing queue backlog is critical. Waiting jobs: ${mediaWaiting} (Threshold: 10000)`)
+      } else if (mediaWaiting > 5000) {
+        warnings.push(`Media processing queue backlog is high. Waiting jobs: ${mediaWaiting} (Threshold: 5000)`)
+      }
+
       const payload = {
-        status: 'OK',
+        status: backpressureStatus === 'critical' ? 'UNHEALTHY' : 'OK',
         timestamp: new Date().toISOString(),
+        backpressureStatus,
+        warnings,
         queues: {
           [GAME_SYNC_QUEUE]: gameSyncCounts,
           [MEDIA_PROCESSING_QUEUE]: mediaCounts,
@@ -88,7 +118,8 @@ export class HealthController {
         },
       }
 
-      return res.status(200).send(payload)
+      const statusCode = backpressureStatus === 'critical' ? 503 : 200
+      return res.status(statusCode).send(payload)
     } catch (err: any) {
       const payload = {
         status: 'UNHEALTHY',

@@ -1,4 +1,5 @@
-import { Test, TestingModule } from '@nestjs/testing'
+import type { TestingModule } from '@nestjs/testing';
+import { Test } from '@nestjs/testing'
 import { getQueueToken } from '@nestjs/bullmq'
 import { HealthController } from './health.controller'
 import { PrismaService } from '../../common/prisma/prisma.service'
@@ -159,6 +160,46 @@ describe('HealthController', () => {
         expect.objectContaining({
           status: 'UNHEALTHY',
           error: 'Redis Unavailable',
+        })
+      )
+    })
+
+    it('should return 200 with backpressure status warning when backlog is high', async () => {
+      const mockRes = {
+        status: jest.fn().mockReturnThis(),
+        send: jest.fn(),
+      } as any
+
+      mockGameSyncQueue.getJobCounts.mockResolvedValue({ active: 1, waiting: 1500, completed: 3, failed: 0, delayed: 0 })
+
+      await controller.queueHealth(mockRes)
+
+      expect(mockRes.status).toHaveBeenCalledWith(200)
+      expect(mockRes.send).toHaveBeenCalledWith(
+        expect.objectContaining({
+          status: 'OK',
+          backpressureStatus: 'warning',
+          warnings: expect.arrayContaining([expect.stringContaining('Game sync queue backlog is high')]),
+        })
+      )
+    })
+
+    it('should return 503 with backpressure status critical when backlog is critical', async () => {
+      const mockRes = {
+        status: jest.fn().mockReturnThis(),
+        send: jest.fn(),
+      } as any
+
+      mockGameSyncQueue.getJobCounts.mockResolvedValue({ active: 1, waiting: 2500, completed: 3, failed: 0, delayed: 0 })
+
+      await controller.queueHealth(mockRes)
+
+      expect(mockRes.status).toHaveBeenCalledWith(503)
+      expect(mockRes.send).toHaveBeenCalledWith(
+        expect.objectContaining({
+          status: 'UNHEALTHY',
+          backpressureStatus: 'critical',
+          warnings: expect.arrayContaining([expect.stringContaining('Game sync queue backlog is critical')]),
         })
       )
     })

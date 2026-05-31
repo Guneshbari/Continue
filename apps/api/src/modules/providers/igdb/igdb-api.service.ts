@@ -11,10 +11,43 @@ export class IgdbApiService {
   private readonly logger = new Logger(IgdbApiService.name)
   private readonly baseUrl = 'https://api.igdb.com/v4'
 
+  // Circuit breaker state variables
+  private consecutiveFailures = 0
+  private breakerState: 'CLOSED' | 'OPEN' = 'CLOSED'
+  private breakerCooldownUntil = 0
+
   constructor(
     private readonly authService: IgdbAuthService,
     private readonly fixtureRegistry: ScenarioRegistryService,
   ) {}
+
+  private verifyBreakerState(): void {
+    if (this.breakerState === 'OPEN') {
+      if (Date.now() >= this.breakerCooldownUntil) {
+        // Cooldown period expired: attempt half-open/closed recovery
+        this.breakerState = 'CLOSED'
+        this.consecutiveFailures = 0
+        this.logger.log('🔌 Circuit breaker cooldown complete. Resuming outgoing IGDB requests.')
+      } else {
+        const remainingSeconds = Math.ceil((this.breakerCooldownUntil - Date.now()) / 1000)
+        throw new Error(`IGDB API provider suspended due to too many consecutive failures. Cooldown active for: ${remainingSeconds}s.`)
+      }
+    }
+  }
+
+  private handleBreakerFailure(): void {
+    this.consecutiveFailures++
+    if (this.consecutiveFailures >= 5) {
+      this.breakerState = 'OPEN'
+      this.breakerCooldownUntil = Date.now() + 60_000 // 60-second suspension window
+      this.logger.error(`🔌 Circuit breaker tripped! Suspending all outgoing IGDB API requests for 60s.`)
+    }
+  }
+
+  private handleBreakerSuccess(): void {
+    this.consecutiveFailures = 0
+    this.breakerState = 'CLOSED'
+  }
 
   /**
    * Search for games on IGDB matching a text string.
@@ -113,7 +146,9 @@ export class IgdbApiService {
 
   // ─── HTTP Orchestration & Rate Limiting ────────────────────────────────────
 
-  private async postRequest<T>(endpoint: string, queryBody: string): Promise<T> {
+  private async postRequest<T>(endpoint: string, queryBody: string, isRetry = false): Promise<T> {
+    this.verifyBreakerState()
+
     const token = await this.authService.getAccessToken()
     const clientId = this.authService.getClientId() ?? ''
 
@@ -122,6 +157,7 @@ export class IgdbApiService {
         `${this.baseUrl}${endpoint}`,
         queryBody,
         {
+          timeout: 10000, // Enforce a 10s request timeout limit
           headers: {
             'Client-ID': clientId,
             Authorization: `Bearer ${token}`,
@@ -130,11 +166,28 @@ export class IgdbApiService {
         },
       )
 
-      // Telemetry rate limit tracking
+      this.handleBreakerSuccess()
       this.checkRateLimits(response.headers)
 
       return response.data
     } catch (error: any) {
+      // 1. Handle HTTP 401 Unauthorized - retry once with refreshed token
+      if (error.response?.status === 401 && !isRetry) {
+        this.logger.warn('⚠️ IGDB request returned 401 Unauthorized. Clearing Twitch token cache and retrying...')
+        await this.authService.refreshAccessToken()
+        return this.postRequest<T>(endpoint, queryBody, true)
+      }
+
+      this.handleBreakerFailure()
+
+      // 2. Handle HTTP 429 Rate Limit Exhausted
+      if (error.response?.status === 429) {
+        const retryAfter = error.response.headers?.['retry-after']
+        const msg = `IGDB API Rate Limit Exhausted (HTTP 429). Retry After: ${retryAfter ?? 'unknown'}s.`
+        this.logger.error(`❌ ${msg}`)
+        throw new Error(msg)
+      }
+
       const details = error.response?.data ? JSON.stringify(error.response.data) : error.message
       this.logger.error(`❌ IGDB API request to "${endpoint}" failed: ${details}`)
       throw new Error(`IGDB API Request Failed: ${error.message}`)

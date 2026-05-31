@@ -1,6 +1,4 @@
-import { MediaProcessingState } from '@prisma/client'
-
-export interface SyncResult<T = any> {
+export interface SyncResult {
   status: 'created' | 'updated' | 'skipped' | 'failed'
   entityId: string | null
   externalId: string | number | null

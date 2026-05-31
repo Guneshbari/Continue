@@ -1,13 +1,13 @@
 import { Processor, WorkerHost, InjectQueue } from '@nestjs/bullmq'
-import { Job, Queue } from 'bullmq'
+import type { Job, Queue } from 'bullmq'
 import { Logger } from '@nestjs/common'
-import { MediaProcessingService } from '../../media/services/media-processing.service'
+import type { MediaProcessingService } from '../../media/services/media-processing.service'
 import {
   MEDIA_PROCESSING_QUEUE,
   DEAD_LETTER_QUEUE,
   PROCESS_MEDIA_JOB,
 } from '../queue.constants'
-import { ProcessMediaPayload } from '../queue.types'
+import type { ProcessMediaPayload } from '../queue.types'
 
 @Processor(MEDIA_PROCESSING_QUEUE)
 export class MediaProcessingWorker extends WorkerHost {

@@ -23,9 +23,10 @@ export class TaxonomySyncService {
     }
   ): Promise<TaxonomyResolutionResult> {
     
-    // 1. Resolve Genres
+    // 1. Resolve Genres - De-duplicate genres slug-level prior to resolution to prevent parallel duplicate conflicts
+    const uniqueGenres = Array.from(new Set((payload.genres ?? []).map(g => g.trim().toLowerCase()))).filter(Boolean)
     const genreIds = await Promise.all(
-      payload.genres.map(async (slug) => {
+      uniqueGenres.map(async (slug) => {
         const name = this.slugToName(slug)
         const genre = await this.prisma.genre.upsert({
           where: { slug },
@@ -37,9 +38,10 @@ export class TaxonomySyncService {
       })
     )
 
-    // 2. Resolve Platforms
+    // 2. Resolve Platforms - De-duplicate platforms slug-level prior to resolution
+    const uniquePlatforms = Array.from(new Set((payload.platforms ?? []).map(p => p.trim().toLowerCase()))).filter(Boolean)
     const platformIds = await Promise.all(
-      payload.platforms.map(async (slug) => {
+      uniquePlatforms.map(async (slug) => {
         const name = this.slugToName(slug)
         const platform = await this.prisma.platform.upsert({
           where: { slug },
@@ -51,9 +53,10 @@ export class TaxonomySyncService {
       })
     )
 
-    // 3. Resolve Themes
+    // 3. Resolve Themes - De-duplicate themes slug-level prior to resolution
+    const uniqueThemes = Array.from(new Set((payload.themes ?? []).map(t => t.trim().toLowerCase()))).filter(Boolean)
     const themeIds = await Promise.all(
-      payload.themes.map(async (slug) => {
+      uniqueThemes.map(async (slug) => {
         const name = this.slugToName(slug)
         const theme = await this.prisma.theme.upsert({
           where: { slug },
@@ -65,12 +68,19 @@ export class TaxonomySyncService {
       })
     )
 
-    // 4. Resolve Developers
+    // 4. Resolve Developers - De-duplicate by mapping to unique normalized slugs first to prevent collision errors
+    const devMap = new Map<string, string>()
+    for (const name of (payload.developers ?? [])) {
+      if (!name) continue
+      const slug = this.nameToSlug(name)
+      if (slug && !devMap.has(slug)) {
+        devMap.set(slug, name)
+      }
+    }
     const developerIds = await Promise.all(
-      payload.developers.map(async (name) => {
-        const slug = this.nameToSlug(name)
+      Array.from(devMap.entries()).map(async ([slug, name]) => {
         const dev = await this.prisma.developer.upsert({
-          where: { slug: this.nameToSlug(name) },
+          where: { slug },
           update: { name },
           create: { slug, name },
           select: { id: true },
@@ -79,12 +89,19 @@ export class TaxonomySyncService {
       })
     )
 
-    // 5. Resolve Publishers
+    // 5. Resolve Publishers - De-duplicate by mapping to unique normalized slugs first
+    const pubMap = new Map<string, string>()
+    for (const name of (payload.publishers ?? [])) {
+      if (!name) continue
+      const slug = this.nameToSlug(name)
+      if (slug && !pubMap.has(slug)) {
+        pubMap.set(slug, name)
+      }
+    }
     const publisherIds = await Promise.all(
-      payload.publishers.map(async (name) => {
-        const slug = this.nameToSlug(name)
+      Array.from(pubMap.entries()).map(async ([slug, name]) => {
         const pub = await this.prisma.publisher.upsert({
-          where: { slug: this.nameToSlug(name) },
+          where: { slug },
           update: { name },
           create: { slug, name },
           select: { id: true },

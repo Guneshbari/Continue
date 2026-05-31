@@ -1,7 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common'
 import type { PrismaService } from '../../../common/prisma/prisma.service'
 import type { ProviderGame} from '../../providers/contracts/provider.contracts';
-import { ProviderTrailer } from '../../providers/contracts/provider.contracts'
 import type { TaxonomyResolutionResult } from '../types/sync.types'
 
 @Injectable()

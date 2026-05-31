@@ -39,8 +39,8 @@ export function normalizeIgdbImageUrl(url: string | undefined | null, size: 't_c
   // Prefix with https: if starting with double slash
   const absoluteUrl = url.startsWith('//') ? `https:${url}` : url
   
-  // Replace standard thumbnail size with the target high-resolution size
-  return absoluteUrl.replace('/t_thumb/', `/${size}/`)
+  // Replace standard size token (e.g. /t_thumb/, /t_cover_small/, etc.) with the target high-resolution size
+  return absoluteUrl.replace(/\/t_[a-zA-Z0-9_]+\//, `/${size}/`)
 }
 
 /**

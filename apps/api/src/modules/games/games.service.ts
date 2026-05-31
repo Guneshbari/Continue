@@ -5,26 +5,26 @@ import { mapMediaAsset, getVariantUrl } from '../../common/utils/media'
 
 // ─── Shared Prisma select shapes ──────────────────────────────────────────────
 
+const MEDIA_ASSET_SELECT = {
+  rawUrl: true,
+  optimized: true,
+  variants: {
+    select: {
+      role: true,
+      url: true,
+      width: true,
+      height: true,
+      format: true,
+      blurPlaceholder: true,
+    },
+  },
+} as const
+
 const GAME_SUMMARY_SELECT = {
   id: true,
   slug: true,
   title: true,
-  cover: {
-    select: {
-      rawUrl: true,
-      optimized: true,
-      variants: {
-        select: {
-          role: true,
-          url: true,
-          width: true,
-          height: true,
-          format: true,
-          blurPlaceholder: true,
-        },
-      },
-    },
-  },
+  cover: { select: MEDIA_ASSET_SELECT },
   releaseDate: true,
   avgRating: true,
   ratingCount: true,
@@ -35,45 +35,13 @@ const GAME_SUMMARY_SELECT = {
 const GAME_DETAIL_SELECT = {
   ...GAME_SUMMARY_SELECT,
   description: true,
-  backdrop: {
-    select: {
-      rawUrl: true,
-      optimized: true,
-      variants: {
-        select: {
-          role: true,
-          url: true,
-          width: true,
-          height: true,
-          format: true,
-          blurPlaceholder: true,
-        },
-      },
-    },
-  },
+  backdrop: { select: MEDIA_ASSET_SELECT },
   developers: { select: { developer: { select: { id: true, slug: true, name: true } } } },
   publishers: { select: { publisher: { select: { id: true, slug: true, name: true } } } },
   tags: { select: { tag: { select: { id: true, slug: true, name: true } } } },
   screenshots: {
     orderBy: { position: 'asc' as const },
-    select: {
-      asset: {
-        select: {
-          rawUrl: true,
-          optimized: true,
-          variants: {
-            select: {
-              role: true,
-              url: true,
-              width: true,
-              height: true,
-              format: true,
-              blurPlaceholder: true,
-            },
-          },
-        },
-      },
-    },
+    select: { asset: { select: MEDIA_ASSET_SELECT } },
   },
   trailers: {
     select: {

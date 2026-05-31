@@ -1,14 +1,14 @@
 import { Processor, WorkerHost, InjectQueue } from '@nestjs/bullmq'
-import { Job, Queue } from 'bullmq'
+import type { Job, Queue } from 'bullmq'
 import { Logger } from '@nestjs/common'
-import { ProviderSyncService } from '../../ingestion/services/provider-sync.service'
+import type { ProviderSyncService } from '../../ingestion/services/provider-sync.service'
 import {
   GAME_SYNC_QUEUE,
   DEAD_LETTER_QUEUE,
   SYNC_GAME_JOB,
   SYNC_POPULAR_GAMES_JOB,
 } from '../queue.constants'
-import { SyncGamePayload, SyncPopularGamesPayload } from '../queue.types'
+import type { SyncGamePayload, SyncPopularGamesPayload } from '../queue.types'
 
 @Processor(GAME_SYNC_QUEUE)
 export class GameSyncWorker extends WorkerHost {
@@ -34,19 +34,19 @@ export class GameSyncWorker extends WorkerHost {
           }
 
           if (slug) {
-            this.logger.log(`🎮 Syncing game by slug: "${slug}"`)
-            return await this.providerSync.syncGameBySlug(slug)
+            this.logger.log(`🎮 [CorrelationID: ${job.id}] Syncing game by slug: "${slug}"`)
+            return await this.providerSync.syncGameBySlug(slug, job.id)
           } else {
-            this.logger.log(`🎮 Syncing game by external ID: ${gameId}`)
-            return await this.providerSync.syncGameByExternalId(Number(gameId))
+            this.logger.log(`🎮 [CorrelationID: ${job.id}] Syncing game by external ID: ${gameId}`)
+            return await this.providerSync.syncGameByExternalId(Number(gameId), job.id)
           }
         }
 
         case SYNC_POPULAR_GAMES_JOB: {
           const { limit } = job.data as SyncPopularGamesPayload
           const finalLimit = limit || 10
-          this.logger.log(`🔥 Syncing popular games (Limit: ${finalLimit})`)
-          return await this.providerSync.syncPopularGames(finalLimit)
+          this.logger.log(`🔥 [CorrelationID: ${job.id}] Syncing popular games (Limit: ${finalLimit})`)
+          return await this.providerSync.syncPopularGames(finalLimit, job.id)
         }
 
         default:

@@ -24,19 +24,20 @@ export class ProviderSyncService {
   /**
    * Orchestrates the synchronization of a single game from IGDB by its slug.
    */
-  async syncGameBySlug(slug: string): Promise<SyncResult> {
+  async syncGameBySlug(slug: string, correlationId?: string): Promise<SyncResult> {
+    const cid = correlationId || `sync-${Math.random().toString(36).substring(2, 9)}`
     const startTime = Date.now()
     const provider = this.igdbAuth.isOfflineMode() ? 'mock' : 'igdb'
 
     try {
-      this.logger.log(`🚀 Starting synchronization for slug: "${slug}" (Provider: ${provider})`)
+      this.logger.log(`[CorrelationID: ${cid}] 🚀 Starting synchronization for slug: "${slug}" (Provider: ${provider})`)
 
       // 1. Search for game to resolve external details (offline or live)
       const matches = await this.igdbApi.searchGames(slug, 1)
       const matchedGame = matches.find((g: ProviderGame) => g.slug === slug) ?? matches[0]
 
       if (!matchedGame) {
-        this.logger.warn(`⚠️ Game slug "${slug}" not found in external provider.`)
+        this.logger.warn(`[CorrelationID: ${cid}] ⚠️ Game slug "${slug}" not found in external provider.`)
         return {
           status: 'failed',
           entityId: null,
@@ -45,12 +46,13 @@ export class ProviderSyncService {
         }
       }
 
-      const syncResult = await this.executeSyncLifecycle(matchedGame, provider)
+      const syncResult = await this.executeSyncLifecycle(matchedGame, provider, cid)
       
       const durationMs = Date.now() - startTime
       console.log(
         JSON.stringify({
           event: 'ingestion_sync_completed',
+          correlationId: cid,
           provider,
           status: syncResult.status,
           slug: matchedGame.slug,
@@ -61,7 +63,7 @@ export class ProviderSyncService {
 
       return syncResult
     } catch (err: any) {
-      this.logger.error(`❌ Sync failed for slug "${slug}": ${err.message}`)
+      this.logger.error(`[CorrelationID: ${cid}] ❌ Sync failed for slug "${slug}": ${err.message}`)
       return {
         status: 'failed',
         entityId: null,
@@ -74,17 +76,18 @@ export class ProviderSyncService {
   /**
    * Orchestrates the synchronization of a single game by its external ID.
    */
-  async syncGameByExternalId(id: number): Promise<SyncResult> {
+  async syncGameByExternalId(id: number, correlationId?: string): Promise<SyncResult> {
+    const cid = correlationId || `sync-${Math.random().toString(36).substring(2, 9)}`
     const startTime = Date.now()
     const provider = this.igdbAuth.isOfflineMode() ? 'mock' : 'igdb'
 
     try {
-      this.logger.log(`🚀 Starting synchronization for external ID: ${id} (Provider: ${provider})`)
+      this.logger.log(`[CorrelationID: ${cid}] 🚀 Starting synchronization for external ID: ${id} (Provider: ${provider})`)
 
       const matchedGame = await this.igdbApi.fetchGameById(id)
 
       if (!matchedGame) {
-        this.logger.warn(`⚠️ External ID ${id} not found in provider.`)
+        this.logger.warn(`[CorrelationID: ${cid}] ⚠️ External ID ${id} not found in provider.`)
         return {
           status: 'failed',
           entityId: null,
@@ -93,12 +96,13 @@ export class ProviderSyncService {
         }
       }
 
-      const syncResult = await this.executeSyncLifecycle(matchedGame, provider)
+      const syncResult = await this.executeSyncLifecycle(matchedGame, provider, cid)
 
       const durationMs = Date.now() - startTime
       console.log(
         JSON.stringify({
           event: 'ingestion_sync_completed',
+          correlationId: cid,
           provider,
           status: syncResult.status,
           slug: matchedGame.slug,
@@ -109,7 +113,7 @@ export class ProviderSyncService {
 
       return syncResult
     } catch (err: any) {
-      this.logger.error(`❌ Sync failed for external ID ${id}: ${err.message}`)
+      this.logger.error(`[CorrelationID: ${cid}] ❌ Sync failed for external ID ${id}: ${err.message}`)
       return {
         status: 'failed',
         entityId: null,
@@ -122,20 +126,21 @@ export class ProviderSyncService {
   /**
    * Fetches popular games from provider and synchronizes them all transaction-safely.
    */
-  async syncPopularGames(limit = 10): Promise<SyncResult[]> {
-    this.logger.log(`🚀 Starting popular games synchronization (Limit: ${limit})...`)
+  async syncPopularGames(limit = 10, correlationId?: string): Promise<SyncResult[]> {
+    const cid = correlationId || `sync-popular-${Math.random().toString(36).substring(2, 9)}`
+    this.logger.log(`[CorrelationID: ${cid}] 🚀 Starting popular games synchronization (Limit: ${limit})...`)
     try {
       const games = await this.igdbApi.fetchPopularGames(limit)
       const results: SyncResult[] = []
 
       for (const game of games) {
-        const result = await this.executeSyncLifecycle(game, this.igdbAuth.isOfflineMode() ? 'mock' : 'igdb')
+        const result = await this.executeSyncLifecycle(game, this.igdbAuth.isOfflineMode() ? 'mock' : 'igdb', cid)
         results.push(result)
       }
 
       return results
     } catch (err: any) {
-      this.logger.error(`❌ Popular games sync failed: ${err.message}`)
+      this.logger.error(`[CorrelationID: ${cid}] ❌ Popular games sync failed: ${err.message}`)
       return [{ status: 'failed', entityId: null, externalId: null, errors: [err.message] }]
     }
   }
@@ -143,20 +148,21 @@ export class ProviderSyncService {
   /**
    * Searches provider for games matching query and synchronizes the results.
    */
-  async syncSearchResults(query: string, limit = 5): Promise<SyncResult[]> {
-    this.logger.log(`🚀 Starting search results synchronization for query: "${query}" (Limit: ${limit})...`)
+  async syncSearchResults(query: string, limit = 5, correlationId?: string): Promise<SyncResult[]> {
+    const cid = correlationId || `sync-search-${Math.random().toString(36).substring(2, 9)}`
+    this.logger.log(`[CorrelationID: ${cid}] 🚀 Starting search results synchronization for query: "${query}" (Limit: ${limit})...`)
     try {
       const games = await this.igdbApi.searchGames(query, limit)
       const results: SyncResult[] = []
 
       for (const game of games) {
-        const result = await this.executeSyncLifecycle(game, this.igdbAuth.isOfflineMode() ? 'mock' : 'igdb')
+        const result = await this.executeSyncLifecycle(game, this.igdbAuth.isOfflineMode() ? 'mock' : 'igdb', cid)
         results.push(result)
       }
 
       return results
     } catch (err: any) {
-      this.logger.error(`❌ Search sync failed for "${query}": ${err.message}`)
+      this.logger.error(`[CorrelationID: ${cid}] ❌ Search sync failed for "${query}": ${err.message}`)
       return [{ status: 'failed', entityId: null, externalId: null, errors: [err.message] }]
     }
   }
@@ -165,9 +171,13 @@ export class ProviderSyncService {
 
   private async executeSyncLifecycle(
     game: ProviderGame,
-    provider: 'igdb' | 'mock'
+    provider: 'igdb' | 'mock',
+    correlationId?: string
   ): Promise<SyncResult> {
+    const cid = correlationId || `sync-lifecycle-${Math.random().toString(36).substring(2, 9)}`
     
+    this.logger.log(`[CorrelationID: ${cid}] Starting database write operations for game: "${game.title}"`)
+
     // Check if game exists to determine create/update status
     const existingGame = await this.prisma.game.findUnique({
       where: { slug: game.slug },
@@ -178,29 +188,36 @@ export class ProviderSyncService {
     const isNew = !existingGame
     const status: 'created' | 'updated' = isNew ? 'created' : 'updated'
 
-    // We execute the sync within a transaction boundary to protect taxonomy/media/game tree consistency
-    return await this.prisma.$transaction(async (tx: any) => {
-      // 1. Resolve taxonomies (Prisma writes inside transaction)
-      const taxonomy = await this.taxonomySync.resolveTaxonomies(game)
+    // We execute the sync within a transaction boundary to protect taxonomy/media/game tree consistency.
+    // Set custom transaction timeout configurations to avoid infinite database locks under load.
+    return await this.prisma.$transaction(
+      async (_tx: any) => {
+        // 1. Resolve taxonomies (Prisma writes inside transaction)
+        const taxonomy = await this.taxonomySync.resolveTaxonomies(game)
 
-      // 2. Resolve media assets
-      const coverId = await this.mediaSync.resolveAsset(game.coverUrl, provider)
-      const backdropId = await this.mediaSync.resolveAsset(game.backdropUrl, provider)
-      const screenshotAssetIds = await this.mediaSync.resolveScreenshots(game.screenshots, provider)
+        // 2. Resolve media assets
+        const coverId = await this.mediaSync.resolveAsset(game.coverUrl, provider)
+        const backdropId = await this.mediaSync.resolveAsset(game.backdropUrl, provider)
+        const screenshotAssetIds = await this.mediaSync.resolveScreenshots(game.screenshots, provider)
 
-      // 3. Persist the main game tree
-      const entityId = await this.gameSync.syncGame(
-        game,
-        taxonomy,
-        { coverId, backdropId },
-        screenshotAssetIds,
-      )
+        // 3. Persist the main game tree
+        const entityId = await this.gameSync.syncGame(
+          game,
+          taxonomy,
+          { coverId, backdropId },
+          screenshotAssetIds,
+        )
 
-      return {
-        status,
-        entityId,
-        externalId: game.externalId,
+        return {
+          status,
+          entityId,
+          externalId: game.externalId,
+        }
+      },
+      {
+        maxWait: 5000,
+        timeout: 15000,
       }
-    })
+    )
   }
 }
