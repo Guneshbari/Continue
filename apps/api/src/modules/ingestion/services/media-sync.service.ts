@@ -1,6 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common'
-import type { PrismaService } from '../../../common/prisma/prisma.service'
+import { PrismaService } from '../../../common/prisma/prisma.service'
 import { MediaProcessingState } from '@prisma/client'
+import { InjectQueue } from '@nestjs/bullmq'
+import { Queue } from 'bullmq'
+import { MEDIA_PROCESSING_QUEUE, PROCESS_MEDIA_JOB } from '../../queue/queue.constants'
 
 /**
  * Canonical Aspect Ratio Guidelines for future Sharp Optimization Phase:
@@ -28,7 +31,10 @@ import { MediaProcessingState } from '@prisma/client'
 export class MediaSyncService {
   private readonly logger = new Logger(MediaSyncService.name)
 
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    @InjectQueue(MEDIA_PROCESSING_QUEUE) private readonly mediaQueue: Queue
+  ) {}
 
   /**
    * Idempotently resolves a single raw media asset URL, performing hash-based deduplication
@@ -60,6 +66,25 @@ export class MediaSyncService {
       },
       select: { id: true },
     })
+
+    // Enqueue background processing job with idempotency jobId and exponential retries
+    try {
+      await this.mediaQueue.add(
+        PROCESS_MEDIA_JOB,
+        { assetId: created.id },
+        {
+          jobId: `media:${created.id}`, // Idempotency key preventing duplicate active optimization runs
+          attempts: 3,
+          backoff: {
+            type: 'exponential',
+            delay: 5000,
+          },
+        }
+      )
+      this.logger.debug(`Enqueued media-processing job for asset ID: ${created.id}`)
+    } catch (enqueueErr: any) {
+      this.logger.error(`❌ Failed to enqueue media-processing job for asset ${created.id}: ${enqueueErr.message}`)
+    }
 
     return created.id
   }

@@ -34,7 +34,7 @@ jest.mock('sharp', () => {
 
 describe('MediaProcessingService', () => {
   let service: MediaProcessingService
-  let prisma: jest.Mocked<PrismaService>
+  let prisma: any
   let storage: jest.Mocked<MediaStorageService>
 
   beforeEach(async () => {
