@@ -1,23 +1,25 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
-import type { PrismaService } from '../../common/prisma/prisma.service'
-import type { CreateGameDto, GamesQueryDto } from './dto/games.dto'
-import { mapMediaAsset, getVariantUrl } from '../../common/utils/media'
-
-// ─── Shared Prisma select shapes ──────────────────────────────────────────────
+import type { Prisma } from '@prisma/client'
+import { PrismaService } from '../../common/prisma/prisma.service'
+import type { CreateGameDto, GamesQueryDto, PaginatedGamesDto, ShelfDto } from './dto/games.dto'
+import { GameMapper } from './game.mapper'
 
 const MEDIA_ASSET_SELECT = {
-  rawUrl: true,
-  optimized: true,
   variants: {
     select: {
       role: true,
       url: true,
       width: true,
       height: true,
-      format: true,
       blurPlaceholder: true,
     },
   },
+} as const
+
+const TAXONOMY_SELECT = {
+  id: true,
+  slug: true,
+  name: true,
 } as const
 
 const GAME_SUMMARY_SELECT = {
@@ -28,199 +30,112 @@ const GAME_SUMMARY_SELECT = {
   releaseDate: true,
   avgRating: true,
   ratingCount: true,
-  genres: { select: { genre: { select: { id: true, slug: true, name: true } } } },
-  platforms: { select: { platform: { select: { id: true, slug: true, name: true } } } },
 } as const
 
 const GAME_DETAIL_SELECT = {
   ...GAME_SUMMARY_SELECT,
   description: true,
   backdrop: { select: MEDIA_ASSET_SELECT },
-  developers: { select: { developer: { select: { id: true, slug: true, name: true } } } },
-  publishers: { select: { publisher: { select: { id: true, slug: true, name: true } } } },
-  tags: { select: { tag: { select: { id: true, slug: true, name: true } } } },
+  developers: { select: { developer: { select: TAXONOMY_SELECT } } },
+  publishers: { select: { publisher: { select: TAXONOMY_SELECT } } },
+  genres: { select: { genre: { select: TAXONOMY_SELECT } } },
+  platforms: { select: { platform: { select: TAXONOMY_SELECT } } },
+  tags: { select: { tag: { select: TAXONOMY_SELECT } } },
+  themes: { select: { theme: { select: TAXONOMY_SELECT } } },
+  franchise: { select: TAXONOMY_SELECT },
   screenshots: {
     orderBy: { position: 'asc' as const },
     select: { asset: { select: MEDIA_ASSET_SELECT } },
   },
-  trailers: {
-    select: {
-      id: true,
-      youtubeId: true,
-      name: true,
-    },
-  },
-  themes: { select: { theme: { select: { id: true, slug: true, name: true } } } },
-  franchise: { select: { id: true, slug: true, name: true } },
   summary: true,
-  storyline: true,
-  igdbRating: true,
-  igdbRatingCount: true,
   status: true,
 } as const
 
+type ShelfKind = 'trending' | 'top-rated' | 'recent-releases'
+
 @Injectable()
 export class GamesService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly mapper: GameMapper,
+  ) {}
 
-  // ─── Discovery ───────────────────────────────────────────────────────────────
+  async findAll(query: GamesQueryDto): Promise<PaginatedGamesDto> {
+    const page = Math.max(query.page ?? 1, 1)
+    const limit = Math.min(Math.max(query.limit ?? 24, 1), 50)
+    const where = await this.buildWhere(query)
+    const orderBy = this.resolveOrderBy(query.sort)
 
-  /**
-   * Curated discovery queries — used by dedicated homepage endpoints.
-   * Returns a flat array (no cursor pagination) for SSR speed.
-   */
-  async findDiscovery(
-    section: 'trending' | 'new-releases' | 'top-rated',
-    limit: number,
-  ) {
-    const now = new Date()
-
-    const where =
-      section === 'new-releases'
-        ? { deletedAt: null, releaseDate: { lte: now } }
-        : section === 'top-rated'
-          ? { deletedAt: null, avgRating: { not: null }, ratingCount: { gte: 1 } }
-          : { deletedAt: null } // trending — all games
-
-    const orderBy =
-      section === 'new-releases'
-        ? { releaseDate: 'desc' as const }
-        : section === 'top-rated'
-          ? { avgRating: 'desc' as const }
-          : { ratingCount: 'desc' as const } // trending
-
-    const items = await this.prisma.game.findMany({
-      where,
-      orderBy,
-      take: limit,
-      select: GAME_SUMMARY_SELECT,
-    })
-
-    return items.map(this.mapGameSummary)
-  }
-
-  // ─── Generic list (cursor-paginated) ─────────────────────────────────────────
-
-  async findAll(query: GamesQueryDto) {
-    const {
-      q,
-      genre,
-      platform,
-      sort,
-      cursor,
-      limit,
-      year,
-      minRating,
-      maxRating,
-      minReviewCount,
-    } = query
-
-    const now = new Date()
-    const isRecentlyReleased = sort === 'recently-released'
-
-    // ─── 1. Review Count Aggregation Filter ──────────────────────────────────
-    let gameIdsWithMinReviews: string[] | undefined = undefined
-    if (minReviewCount !== undefined && minReviewCount !== null && minReviewCount > 0) {
-      const groups = await this.prisma.review.groupBy({
-        by: ['gameId'],
-        where: { deletedAt: null, status: 'PUBLISHED' },
-        _count: { _all: true },
-        having: {
-          gameId: {
-            _count: {
-              gte: minReviewCount,
-            },
-          },
-        },
-      })
-      gameIdsWithMinReviews = groups.map((g) => g.gameId)
-    }
-
-    // ─── 2. Rating Range Filter ──────────────────────────────────────────────
-    const hasMinRating = minRating !== undefined && minRating !== null
-    const hasMaxRating = maxRating !== undefined && maxRating !== null
-    const ratingFilter =
-      hasMinRating || hasMaxRating
-        ? {
-            avgRating: {
-              ...(hasMinRating && { gte: minRating }),
-              ...(hasMaxRating && { lte: maxRating }),
-            },
-          }
-        : {}
-
-    const where = {
-      deletedAt: null,
-      ...(isRecentlyReleased && {
-        releaseDate: {
-          lte: now,
-        },
+    const [items, total] = await Promise.all([
+      this.prisma.game.findMany({
+        where,
+        orderBy,
+        skip: (page - 1) * limit,
+        take: limit,
+        select: GAME_SUMMARY_SELECT,
       }),
-      ...(q && {
-        OR: [
-          { title: { contains: q, mode: 'insensitive' as const } },
-          { slug: { contains: q, mode: 'insensitive' as const } },
-        ],
-      }),
-      ...(genre && { genres: { some: { genre: { slug: genre } } } }),
-      ...(platform && { platforms: { some: { platform: { slug: platform } } } }),
-      ...(year && {
-        releaseDate: {
-          gte: new Date(year, 0, 1),
-          lte: new Date(year, 11, 31, 23, 59, 59),
-        },
-      }),
-      ...ratingFilter,
-      ...(gameIdsWithMinReviews !== undefined && {
-        id: { in: gameIdsWithMinReviews },
-      }),
-    }
-
-    const orderBy = this.resolveOrderBy(sort)
-
-    const items = await this.prisma.game.findMany({
-      where,
-      orderBy,
-      take: limit + 1,
-      ...(cursor && { cursor: { id: cursor }, skip: 1 }),
-      select: GAME_SUMMARY_SELECT,
-    })
-
-    const hasMore = items.length > limit
-    const data = hasMore ? items.slice(0, limit) : items
-    const nextCursor = hasMore ? (data[data.length - 1]?.id ?? null) : null
+      this.prisma.game.count({ where }),
+    ])
 
     return {
-      data: data.map(this.mapGameSummary),
-      meta: { nextCursor, total: undefined },
+      items: items.map((item) => this.mapper.toSummaryDto(item)),
+      page,
+      limit,
+      total,
+      hasNext: page * limit < total,
     }
   }
 
-  // ─── Discovery metadata / filters ───────────────────────────────────────────
+  async findBySlug(idOrSlug: string) {
+    const game = await this.prisma.game.findFirst({
+      where: {
+        deletedAt: null,
+        OR: [{ id: idOrSlug }, { slug: idOrSlug }],
+      },
+      select: GAME_DETAIL_SELECT,
+    })
+
+    if (!game) throw new NotFoundException('Game not found')
+    return this.mapper.toDetailDto(game)
+  }
+
+  async findDiscovery(section: 'trending' | 'new-releases' | 'top-rated', limit: number) {
+    const shelfKind = section === 'new-releases' ? 'recent-releases' : section
+    const shelf = await this.findShelf(shelfKind, limit)
+    return shelf.items
+  }
+
+  async findShelf(kind: ShelfKind, limit = 12): Promise<ShelfDto> {
+    const cappedLimit = Math.min(Math.max(limit, 1), 50)
+    const items = await this.prisma.game.findMany({
+      where: this.resolveShelfWhere(kind),
+      orderBy: this.resolveShelfOrderBy(kind),
+      take: cappedLimit,
+      select: GAME_SUMMARY_SELECT,
+    })
+
+    return this.mapper.toShelfDto(kind, this.shelfTitle(kind), items)
+  }
 
   async findFilters() {
-    const genres = await this.prisma.genre.findMany({
-      select: { id: true, slug: true, name: true },
-      orderBy: { name: 'asc' },
-    })
+    const [genres, platforms, gamesWithDates] = await Promise.all([
+      this.prisma.genre.findMany({
+        select: TAXONOMY_SELECT,
+        orderBy: { name: 'asc' },
+      }),
+      this.prisma.platform.findMany({
+        select: TAXONOMY_SELECT,
+        orderBy: { name: 'asc' },
+      }),
+      this.prisma.game.findMany({
+        where: { deletedAt: null, releaseDate: { not: null } },
+        select: { releaseDate: true },
+      }),
+    ])
 
-    const platforms = await this.prisma.platform.findMany({
-      select: { id: true, slug: true, name: true },
-      orderBy: { name: 'asc' },
-    })
-
-    const gamesWithDates = await this.prisma.game.findMany({
-      where: { deletedAt: null, releaseDate: { not: null } },
-      select: { releaseDate: true },
-    })
-
-    const yearsSet = new Set<number>()
-    for (const g of gamesWithDates) {
-      if (g.releaseDate) {
-        yearsSet.add(g.releaseDate.getFullYear())
-      }
-    }
-    const years = Array.from(yearsSet).sort((a, b) => b - a)
+    const years = Array.from(
+      new Set(gamesWithDates.flatMap((game) => (game.releaseDate ? [game.releaseDate.getFullYear()] : []))),
+    ).sort((a, b) => b - a)
 
     return {
       genres,
@@ -231,107 +146,158 @@ export class GamesService {
   }
 
   async findDiscoverDashboard(limit = 6) {
-    const [trending, newReleases, topRated] = await Promise.all([
-      this.findDiscovery('trending', limit),
-      this.findDiscovery('new-releases', limit),
-      this.findDiscovery('top-rated', limit),
+    const [trending, newReleases, topRated, upcoming] = await Promise.all([
+      this.findShelf('trending', limit),
+      this.findShelf('recent-releases', limit),
+      this.findShelf('top-rated', limit),
+      this.findUpcoming(limit),
     ])
 
-    const now = new Date()
-    const upcomingItems = await this.prisma.game.findMany({
-      where: { deletedAt: null, releaseDate: { gt: now } },
-      orderBy: { releaseDate: 'asc' },
-      take: limit,
-      select: GAME_SUMMARY_SELECT,
-    })
-    const upcoming = upcomingItems.map(this.mapGameSummary)
-
     return {
-      trending,
-      newReleases,
-      topRated,
+      trending: trending.items,
+      newReleases: newReleases.items,
+      topRated: topRated.items,
       upcoming,
     }
   }
 
-  // ─── Single game ─────────────────────────────────────────────────────────────
-
-  async findBySlug(idOrSlug: string) {
-    const game = await this.prisma.game.findFirst({
-      where: {
-        deletedAt: null,
-        OR: [{ id: idOrSlug }, { slug: idOrSlug }],
+  async create(dto: CreateGameDto) {
+    const game = await this.prisma.game.create({
+      data: {
+        slug: dto.slug,
+        title: dto.title,
+        ...(dto.description !== undefined && { description: dto.description }),
+        ...(dto.releaseDate && { releaseDate: new Date(dto.releaseDate) }),
       },
       select: GAME_DETAIL_SELECT,
     })
-    if (!game) throw new NotFoundException('Game not found')
-    return this.mapGameDetail(game)
+    return this.mapper.toDetailDto(game)
   }
 
-  async create(dto: CreateGameDto) {
-    const game = await this.prisma.game.create({ data: { ...dto }, select: GAME_DETAIL_SELECT })
-    return this.mapGameDetail(game)
+  private async buildWhere(query: GamesQueryDto): Promise<Prisma.GameWhereInput> {
+    const {
+      q,
+      genre,
+      platform,
+      year,
+      minRating,
+      maxRating,
+      minReviewCount,
+    } = query
+
+    const gameIdsWithMinReviews = await this.gameIdsWithMinReviews(minReviewCount)
+    const hasMinRating = minRating !== undefined && minRating !== null
+    const hasMaxRating = maxRating !== undefined && maxRating !== null
+
+    return {
+      deletedAt: null,
+      ...(q && {
+        OR: [
+          { title: { contains: q, mode: 'insensitive' } },
+          { slug: { contains: q, mode: 'insensitive' } },
+        ],
+      }),
+      ...(genre && { genres: { some: { genre: { slug: genre } } } }),
+      ...(platform && { platforms: { some: { platform: { slug: platform } } } }),
+      ...(year && {
+        releaseDate: {
+          gte: new Date(year, 0, 1),
+          lte: new Date(year, 11, 31, 23, 59, 59),
+        },
+      }),
+      ...((hasMinRating || hasMaxRating) && {
+        avgRating: {
+          ...(hasMinRating && { gte: minRating }),
+          ...(hasMaxRating && { lte: maxRating }),
+        },
+      }),
+      ...(gameIdsWithMinReviews && { id: { in: gameIdsWithMinReviews } }),
+    }
   }
 
-  // ─── Private mappers ─────────────────────────────────────────────────────────
+  private async gameIdsWithMinReviews(minReviewCount?: number): Promise<string[] | undefined> {
+    if (!minReviewCount || minReviewCount <= 0) return undefined
 
-  private mapGameSummary = (game: any) => ({
-    id: game.id,
-    slug: game.slug,
-    title: game.title,
-    cover: mapMediaAsset(game.cover),
-    coverUrl: getVariantUrl(game.cover, 'COVER_MD'),
-    releaseDate: game.releaseDate?.toISOString() ?? null,
-    avgRating: game.avgRating,
-    ratingCount: game.ratingCount,
-    genres: game.genres?.map((g: any) => g.genre).filter(Boolean) ?? [],
-    platforms: game.platforms?.map((p: any) => p.platform).filter(Boolean) ?? [],
-  })
+    const groups = await this.prisma.review.groupBy({
+      by: ['gameId'],
+      where: { deletedAt: null, status: 'PUBLISHED' },
+      _count: { _all: true },
+      having: {
+        gameId: {
+          _count: {
+            gte: minReviewCount,
+          },
+        },
+      },
+    })
 
-  private mapGameDetail = (game: any) => ({
-    ...this.mapGameSummary(game),
-    description: game.description,
-    backdrop: mapMediaAsset(game.backdrop),
-    bannerUrl: getVariantUrl(game.backdrop, 'BACKDROP_HERO'),
-    developer: game.developers?.[0]?.developer?.name ?? null,
-    publisher: game.publishers?.[0]?.publisher?.name ?? null,
-    developers: game.developers?.map((d: any) => d.developer).filter(Boolean) ?? [],
-    publishers: game.publishers?.map((p: any) => p.publisher).filter(Boolean) ?? [],
-    tags: game.tags?.map((t: any) => t.tag).filter(Boolean) ?? [],
-    screenshots: (game.screenshots ?? []).map((s: any) => {
-      const mapped = mapMediaAsset(s.asset)
-      if (mapped) {
-        mapped.heroScore = s.heroScore
-        mapped.isPrimaryHeroCandidate = s.isPrimaryHeroCandidate
-      }
-      return mapped
-    }).filter(Boolean),
-    trailers: game.trailers ?? [],
-    themes: game.themes?.map((t: any) => t.theme).filter(Boolean) ?? [],
-    franchise: game.franchise ?? null,
-    summary: game.summary,
-    storyline: game.storyline,
-    igdbRating: game.igdbRating,
-    igdbRatingCount: game.igdbRatingCount,
-    status: game.status,
-  })
+    return groups.map((group) => group.gameId)
+  }
 
-  private resolveOrderBy(sort?: string) {
+  private async findUpcoming(limit: number) {
+    const now = new Date()
+    const items = await this.prisma.game.findMany({
+      where: { deletedAt: null, releaseDate: { gt: now } },
+      orderBy: [{ releaseDate: 'asc' }, { title: 'asc' }],
+      take: Math.min(Math.max(limit, 1), 50),
+      select: GAME_SUMMARY_SELECT,
+    })
+
+    return items.map((item) => this.mapper.toSummaryDto(item))
+  }
+
+  private resolveShelfWhere(kind: ShelfKind): Prisma.GameWhereInput {
+    const now = new Date()
+    if (kind === 'top-rated') {
+      return { deletedAt: null, avgRating: { not: null }, ratingCount: { gte: 1 } }
+    }
+    if (kind === 'recent-releases') {
+      return { deletedAt: null, releaseDate: { lte: now } }
+    }
+    return { deletedAt: null }
+  }
+
+  private resolveShelfOrderBy(kind: ShelfKind): Prisma.GameOrderByWithRelationInput[] {
+    if (kind === 'top-rated') {
+      return [{ avgRating: 'desc' }, { ratingCount: 'desc' }, { title: 'asc' }]
+    }
+    if (kind === 'recent-releases') {
+      return [{ releaseDate: 'desc' }, { title: 'asc' }]
+    }
+    return [{ ratingCount: 'desc' }, { avgRating: 'desc' }, { title: 'asc' }]
+  }
+
+  private resolveOrderBy(sort?: string): Prisma.GameOrderByWithRelationInput[] {
     switch (sort) {
-      case 'trending':
-        return { ratingCount: 'desc' as const }
+      case 'rating':
       case 'top-rated':
-        return { avgRating: 'desc' as const }
-      case 'most-reviewed':
-        return { reviews: { _count: 'desc' as const } }
+        return [{ avgRating: 'desc' }, { ratingCount: 'desc' }, { title: 'asc' }]
+      case 'release_date':
       case 'newest':
       case 'recently-released':
       case 'new':
-        return { releaseDate: 'desc' as const }
+        return [{ releaseDate: 'desc' }, { title: 'asc' }]
+      case 'recently_added':
+        return [{ createdAt: 'desc' }, { title: 'asc' }]
+      case 'most-reviewed':
+        return [{ reviews: { _count: 'desc' } }, { title: 'asc' }]
       case 'upcoming':
-        return { releaseDate: 'asc' as const }
+        return [{ releaseDate: 'asc' }, { title: 'asc' }]
+      case 'popular':
+      case 'trending':
       default:
-        return { ratingCount: 'desc' as const }
+        return [{ ratingCount: 'desc' }, { avgRating: 'desc' }, { title: 'asc' }]
+    }
+  }
+
+  private shelfTitle(kind: ShelfKind): string {
+    switch (kind) {
+      case 'top-rated':
+        return 'Top Rated'
+      case 'recent-releases':
+        return 'Recent Releases'
+      case 'trending':
+        return 'Trending'
     }
   }
 }

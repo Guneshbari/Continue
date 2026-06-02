@@ -65,6 +65,68 @@ export interface CanonicalMediaDTO {
   isPrimaryHeroCandidate?: boolean
 }
 
+export interface CoverManifest {
+  sm: string | null
+  md: string | null
+  lg: string | null
+  blur: string | null
+}
+
+export interface BackdropManifest {
+  hero: string | null
+  blur: string | null
+}
+
+export interface ScreenshotManifest {
+  url: string | null
+  width: number | null
+  height: number | null
+  blur: string | null
+}
+
+export interface CanonicalGameSummary {
+  id: string
+  slug: string
+  title: string
+  releaseDate: string | null
+  averageRating: number | null
+  cover: CoverManifest | null
+}
+
+export interface CanonicalGameDetail extends CanonicalGameSummary {
+  summary: string | null
+  genres: GenreSummary[]
+  platforms: PlatformSummary[]
+  backdrop: BackdropManifest | null
+  screenshots: ScreenshotManifest[]
+  rating: {
+    average: number | null
+    count: number
+  }
+  metadata: {
+    developers: CompanySummary[]
+    publishers: CompanySummary[]
+    tags: TagSummary[]
+    themes: ThemeSummary[]
+    franchise: FranchiseSummary | null
+    status: string | null
+  }
+}
+
+export interface CanonicalGamesPage {
+  items: CanonicalGameSummary[]
+  page: number
+  limit: number
+  total: number
+  hasNext: boolean
+}
+
+export interface GameShelf {
+  id: string
+  title: string
+  items: CanonicalGameSummary[]
+}
+
 export interface GameSummary {
   id: string
   slug: string

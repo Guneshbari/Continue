@@ -22,10 +22,19 @@ export class TransformInterceptor<T> implements NestInterceptor<T, unknown> {
         // Already wrapped — pass through
         if (typeof value === 'object' && 'data' in (value as object)) return value
 
+        // Canonical paginated responses own their envelope.
+        if (
+          typeof value === 'object' &&
+          'items' in (value as object) &&
+          'page' in (value as object) &&
+          'limit' in (value as object)
+        ) {
+          return value
+        }
+
         // Wrap everything else
         return { data: value }
       }),
     )
   }
 }
-

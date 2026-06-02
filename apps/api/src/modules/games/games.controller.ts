@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Param, Body, Query, Res } from '@nestjs/common'
 import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery } from '@nestjs/swagger'
-import type { GamesService } from './games.service'
+import { GamesService } from './games.service'
 import type { GamesQueryDto, CreateGameDto } from './dto/games.dto'
 import { Public } from '../auth/decorators/public.decorator'
 import { Roles } from '../auth/decorators/roles.decorator'
@@ -52,14 +52,14 @@ export class GamesController {
 
   @Public()
   @Get()
-  @ApiOperation({ summary: 'List games with filtering, sorting, cursor pagination' })
+  @ApiOperation({ summary: 'List games with filtering, sorting, and page pagination' })
   findAll(@Query() query: GamesQueryDto) {
     return this.gamesService.findAll(query)
   }
 
   @Public()
   @Get(':idOrSlug')
-  @ApiOperation({ summary: 'Get game by id or slug' })
+  @ApiOperation({ summary: 'Get canonical game detail by slug or id' })
   findOne(@Param('idOrSlug') idOrSlug: string) {
     return this.gamesService.findBySlug(idOrSlug)
   }
