@@ -1,141 +1,153 @@
 import { Injectable } from '@nestjs/common'
-import type {
-  BackdropManifestDto,
-  CoverManifestDto,
-  GameDetailDto,
-  GameSummaryDto,
-  ScreenshotManifestDto,
-  ShelfDto,
-  TaxonomyDto,
-} from './dto/games.dto'
-
-type MediaRole =
-  | 'COVER_SM'
-  | 'COVER_MD'
-  | 'COVER_LG'
-  | 'BACKDROP_HERO'
-  | 'GALLERY_HD'
-  | 'THUMBNAIL_BLUR'
-
-interface MediaVariantLike {
-  role: string
-  url: string
-  width: number | null
-  height: number | null
-  blurPlaceholder: string | null
-}
-
-interface MediaAssetLike {
-  variants?: MediaVariantLike[]
-}
-
-interface RelationLike<T> {
-  genre?: T | null
-  platform?: T | null
-  developer?: T | null
-  publisher?: T | null
-  tag?: T | null
-  theme?: T | null
-}
+import { getVariantUrl } from '../../common/utils/media'
+import type { CoverManifestDto, BackdropManifestDto, ScreenshotDto } from './dto/media-manifest.dto'
+import type { GameSummaryDto, GameTaxonomyDto } from './dto/game-summary.dto'
+import type { GameDetailDto, GameRatingDto, GameMetadataDto } from './dto/game-detail.dto'
+import type { ShelfDto } from './dto/shelf.dto'
 
 @Injectable()
 export class GameMapper {
+  toCoverManifest(coverAsset: any): CoverManifestDto | null {
+    if (!coverAsset) return null
+
+    const sm = getVariantUrl(coverAsset, 'COVER_SM')
+    const md = getVariantUrl(coverAsset, 'COVER_MD')
+    const lg = getVariantUrl(coverAsset, 'COVER_LG')
+
+    return {
+      sm: sm || null,
+      md: md || null,
+      lg: lg || null,
+    }
+  }
+
+  toBackdropManifest(backdropAsset: any): BackdropManifestDto | null {
+    if (!backdropAsset) return null
+
+    const hero = getVariantUrl(backdropAsset, 'BACKDROP_HERO')
+
+    return {
+      hero: hero || null,
+    }
+  }
+
+  toScreenshotDto(screenshot: any): ScreenshotDto | null {
+    if (!screenshot || !screenshot.asset) return null
+
+    const asset = screenshot.asset
+    const url = getVariantUrl(asset, 'GALLERY_HD') || asset.rawUrl
+
+    return {
+      id: asset.id,
+      url,
+      heroScore: screenshot.heroScore,
+      isPrimaryHeroCandidate: screenshot.isPrimaryHeroCandidate || false,
+    }
+  }
+
   toSummaryDto(game: any): GameSummaryDto {
+    if (!game) throw new Error('Cannot map empty game to summary')
+
+    const genres: GameTaxonomyDto[] = (game.genres ?? [])
+      .map((g: any) => g.genre)
+      .filter(Boolean)
+      .map((g: any) => ({ id: g.id, slug: g.slug, name: g.name }))
+
+    const platforms: GameTaxonomyDto[] = (game.platforms ?? [])
+      .map((p: any) => p.platform)
+      .filter(Boolean)
+      .map((p: any) => ({ id: p.id, slug: p.slug, name: p.name }))
+
     return {
       id: game.id,
       slug: game.slug,
       title: game.title,
-      releaseDate: this.toIsoDate(game.releaseDate),
-      averageRating: game.avgRating ?? null,
+      releaseDate: game.releaseDate ? game.releaseDate.toISOString() : null,
+      averageRating: game.avgRating,
       cover: this.toCoverManifest(game.cover),
+      genres,
+      platforms,
     }
   }
 
   toDetailDto(game: any): GameDetailDto {
+    if (!game) throw new Error('Cannot map empty game to detail')
+
+    const genres: GameTaxonomyDto[] = (game.genres ?? [])
+      .map((g: any) => g.genre)
+      .filter(Boolean)
+      .map((g: any) => ({ id: g.id, slug: g.slug, name: g.name }))
+
+    const platforms: GameTaxonomyDto[] = (game.platforms ?? [])
+      .map((p: any) => p.platform)
+      .filter(Boolean)
+      .map((p: any) => ({ id: p.id, slug: p.slug, name: p.name }))
+
+    const cover = this.toCoverManifest(game.cover)
+    const backdrop = this.toBackdropManifest(game.backdrop)
+
+    const screenshots: ScreenshotDto[] = (game.screenshots ?? [])
+      .map((s: any) => this.toScreenshotDto(s))
+      .filter(Boolean) as ScreenshotDto[]
+
+    const rating: GameRatingDto = {
+      averageRating: game.avgRating,
+      ratingCount: game.ratingCount || 0,
+      externalRating: game.igdbRating,
+      externalRatingCount: game.igdbRatingCount,
+    }
+
+    const developers = (game.developers ?? [])
+      .map((d: any) => d.developer?.name)
+      .filter(Boolean)
+    const developer = developers[0] || null
+
+    const publishers = (game.publishers ?? [])
+      .map((p: any) => p.publisher?.name)
+      .filter(Boolean)
+    const publisher = publishers[0] || null
+
+    const themes = (game.themes ?? [])
+      .map((t: any) => t.theme?.name)
+      .filter(Boolean)
+
+    const tags = (game.tags ?? [])
+      .map((t: any) => t.tag?.name)
+      .filter(Boolean)
+
+    const metadata: GameMetadataDto = {
+      status: game.status || null,
+      developer,
+      publisher,
+      developers,
+      publishers,
+      themes,
+      tags,
+      franchise: game.franchise?.name || null,
+    }
+
     return {
-      ...this.toSummaryDto(game),
-      summary: game.summary ?? game.description ?? null,
-      genres: this.mapRelations(game.genres, 'genre'),
-      platforms: this.mapRelations(game.platforms, 'platform'),
-      backdrop: this.toBackdropManifest(game.backdrop),
-      screenshots: (game.screenshots ?? [])
-        .map((s: any) => this.toScreenshotManifest(s.asset))
-        .filter((s: ScreenshotManifestDto | null): s is ScreenshotManifestDto => s !== null),
-      rating: {
-        average: game.avgRating ?? null,
-        count: game.ratingCount ?? 0,
-      },
-      metadata: {
-        developers: this.mapRelations(game.developers, 'developer'),
-        publishers: this.mapRelations(game.publishers, 'publisher'),
-        tags: this.mapRelations(game.tags, 'tag'),
-        themes: this.mapRelations(game.themes, 'theme'),
-        franchise: game.franchise ?? null,
-        status: game.status ?? null,
-      },
+      id: game.id,
+      slug: game.slug,
+      title: game.title,
+      summary: game.summary || null,
+      storyline: game.storyline || null,
+      releaseDate: game.releaseDate ? game.releaseDate.toISOString() : null,
+      genres,
+      platforms,
+      cover,
+      backdrop,
+      screenshots,
+      rating,
+      metadata,
     }
   }
 
-  toShelfDto(id: string, title: string, items: any[]): ShelfDto {
+  toShelfDto(id: string, title: string, games: any[]): ShelfDto {
     return {
       id,
       title,
-      items: items.map((item) => this.toSummaryDto(item)),
+      items: (games ?? []).map(g => this.toSummaryDto(g)),
     }
-  }
-
-  private toCoverManifest(asset: MediaAssetLike | null | undefined): CoverManifestDto | null {
-    if (!asset) return null
-    return {
-      sm: this.variantUrl(asset, 'COVER_SM'),
-      md: this.variantUrl(asset, 'COVER_MD'),
-      lg: this.variantUrl(asset, 'COVER_LG'),
-      blur: this.variantBlur(asset),
-    }
-  }
-
-  private toBackdropManifest(asset: MediaAssetLike | null | undefined): BackdropManifestDto | null {
-    if (!asset) return null
-    return {
-      hero: this.variantUrl(asset, 'BACKDROP_HERO'),
-      blur: this.variantBlur(asset),
-    }
-  }
-
-  private toScreenshotManifest(asset: MediaAssetLike | null | undefined): ScreenshotManifestDto | null {
-    if (!asset) return null
-    const variant = this.variant(asset, 'GALLERY_HD')
-    return {
-      url: variant?.url ?? null,
-      width: variant?.width ?? null,
-      height: variant?.height ?? null,
-      blur: variant?.blurPlaceholder ?? this.variantBlur(asset),
-    }
-  }
-
-  private variant(asset: MediaAssetLike, role: MediaRole): MediaVariantLike | null {
-    return asset.variants?.find((v) => v.role === role) ?? null
-  }
-
-  private variantUrl(asset: MediaAssetLike, role: MediaRole): string | null {
-    return this.variant(asset, role)?.url ?? null
-  }
-
-  private variantBlur(asset: MediaAssetLike): string | null {
-    return asset.variants?.find((v) => v.blurPlaceholder)?.blurPlaceholder ?? null
-  }
-
-  private mapRelations<T extends TaxonomyDto>(
-    rows: RelationLike<T>[] | null | undefined,
-    key: keyof RelationLike<T>,
-  ): T[] {
-    return (rows ?? [])
-      .map((row) => row[key])
-      .filter((value: T | null | undefined): value is T => Boolean(value))
-  }
-
-  private toIsoDate(value: Date | string | null | undefined): string | null {
-    if (!value) return null
-    return value instanceof Date ? value.toISOString() : value
   }
 }

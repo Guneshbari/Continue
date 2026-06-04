@@ -1,54 +1,137 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { GameSummaryDto, TaxonomyDto } from './game-summary.dto'
-import { BackdropManifestDto, ScreenshotManifestDto } from './media-manifest.dto'
+import { IsString, IsOptional, IsDateString, IsNumber, ValidateNested, IsArray, IsInt } from 'class-validator'
+import { Type } from 'class-transformer'
+import { CoverManifestDto, BackdropManifestDto, ScreenshotDto } from './media-manifest.dto'
+import { GameTaxonomyDto } from './game-summary.dto'
 
-export class RatingDto {
-  @ApiPropertyOptional()
-  average!: number | null
+export class GameRatingDto {
+  @ApiPropertyOptional({ description: 'Average rating of internal user reviews' })
+  @IsOptional()
+  @IsNumber()
+  averageRating?: number | null
 
-  @ApiProperty()
-  count!: number
+  @ApiProperty({ description: 'Total count of internal user reviews' })
+  @IsInt()
+  ratingCount!: number
+
+  @ApiPropertyOptional({ description: 'Average rating from IGDB' })
+  @IsOptional()
+  @IsNumber()
+  externalRating?: number | null
+
+  @ApiPropertyOptional({ description: 'Total review counts from IGDB' })
+  @IsOptional()
+  @IsInt()
+  externalRatingCount?: number | null
 }
 
 export class GameMetadataDto {
-  @ApiProperty({ type: [TaxonomyDto] })
-  developers!: TaxonomyDto[]
+  @ApiPropertyOptional({ description: 'Release status (e.g., released, alpha, announced)' })
+  @IsOptional()
+  @IsString()
+  status?: string | null
 
-  @ApiProperty({ type: [TaxonomyDto] })
-  publishers!: TaxonomyDto[]
+  @ApiPropertyOptional({ description: 'Primary developer name' })
+  @IsOptional()
+  @IsString()
+  developer?: string | null
 
-  @ApiProperty({ type: [TaxonomyDto] })
-  tags!: TaxonomyDto[]
+  @ApiPropertyOptional({ description: 'Primary publisher name' })
+  @IsOptional()
+  @IsString()
+  publisher?: string | null
 
-  @ApiProperty({ type: [TaxonomyDto] })
-  themes!: TaxonomyDto[]
+  @IsArray()
+  @IsString({ each: true })
+  @ApiProperty({ type: [String], description: 'All associated developer names' })
+  developers!: string[]
 
-  @ApiPropertyOptional({ type: TaxonomyDto })
-  franchise!: TaxonomyDto | null
+  @IsArray()
+  @IsString({ each: true })
+  @ApiProperty({ type: [String], description: 'All associated publisher names' })
+  publishers!: string[]
 
-  @ApiPropertyOptional()
-  status!: string | null
+  @IsArray()
+  @IsString({ each: true })
+  @ApiProperty({ type: [String], description: 'All associated game themes' })
+  themes!: string[]
+
+  @IsArray()
+  @IsString({ each: true })
+  @ApiProperty({ type: [String], description: 'All approved user/system tags' })
+  tags!: string[]
+
+  @ApiPropertyOptional({ description: 'Associated franchise title' })
+  @IsOptional()
+  @IsString()
+  franchise?: string | null
 }
 
-export class GameDetailDto extends GameSummaryDto {
-  @ApiPropertyOptional()
-  summary!: string | null
+export class GameDetailDto {
+  @ApiProperty({ description: 'Game unique CUID' })
+  @IsString()
+  id!: string
 
-  @ApiProperty({ type: [TaxonomyDto] })
-  genres!: TaxonomyDto[]
+  @ApiProperty({ description: 'Game unique URL slug' })
+  @IsString()
+  slug!: string
 
-  @ApiProperty({ type: [TaxonomyDto] })
-  platforms!: TaxonomyDto[]
+  @ApiProperty({ description: 'Game title' })
+  @IsString()
+  title!: string
 
-  @ApiPropertyOptional({ type: BackdropManifestDto })
-  backdrop!: BackdropManifestDto | null
+  @ApiPropertyOptional({ description: 'Brief descriptions or pitch text' })
+  @IsOptional()
+  @IsString()
+  summary?: string | null
 
-  @ApiProperty({ type: [ScreenshotManifestDto] })
-  screenshots!: ScreenshotManifestDto[]
+  @ApiPropertyOptional({ description: 'In-depth description of plot or storyline' })
+  @IsOptional()
+  @IsString()
+  storyline?: string | null
 
-  @ApiProperty({ type: RatingDto })
-  rating!: RatingDto
+  @ApiPropertyOptional({ description: 'Official release date in ISO format' })
+  @IsOptional()
+  @IsDateString()
+  releaseDate?: string | null
 
-  @ApiProperty({ type: GameMetadataDto })
+  @ApiProperty({ type: [GameTaxonomyDto], description: 'Associated genres' })
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => GameTaxonomyDto)
+  genres!: GameTaxonomyDto[]
+
+  @ApiProperty({ type: [GameTaxonomyDto], description: 'Supported platforms' })
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => GameTaxonomyDto)
+  platforms!: GameTaxonomyDto[]
+
+  @ApiPropertyOptional({ type: CoverManifestDto, description: 'Cover image asset variants' })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => CoverManifestDto)
+  cover?: CoverManifestDto | null
+
+  @ApiPropertyOptional({ type: BackdropManifestDto, description: 'Hero banner backdrop image variants' })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => BackdropManifestDto)
+  backdrop?: BackdropManifestDto | null
+
+  @ApiProperty({ type: [ScreenshotDto], description: 'List of game screenshots with hero details' })
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ScreenshotDto)
+  screenshots!: ScreenshotDto[]
+
+  @ApiProperty({ type: GameRatingDto, description: 'Combined rating metrics' })
+  @ValidateNested()
+  @Type(() => GameRatingDto)
+  rating!: GameRatingDto
+
+  @ApiProperty({ type: GameMetadataDto, description: 'Descriptive contextual metadata' })
+  @ValidateNested()
+  @Type(() => GameMetadataDto)
   metadata!: GameMetadataDto
 }

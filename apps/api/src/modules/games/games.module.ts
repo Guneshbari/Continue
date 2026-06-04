@@ -8,6 +8,6 @@ import { GameMapper } from './game.mapper'
 @Module({
   providers: [GamesService, GameMapper],
   controllers: [GamesController, DiscoverController, ShelvesController],
-  exports: [GamesService],
+  exports: [GamesService, GameMapper],
 })
 export class GamesModule {}

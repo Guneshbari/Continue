@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import type { Prisma } from '@prisma/client'
-import { PrismaService } from '../../common/prisma/prisma.service'
-import type { CreateGameDto, GamesQueryDto, PaginatedGamesDto, ShelfDto } from './dto/games.dto'
-import { GameMapper } from './game.mapper'
+import type { PrismaService } from '../../common/prisma/prisma.service'
+import type { CreateGameDto, GamesQueryDto, PaginatedResponseDto, GameSummaryDto, ShelfDto } from './dto/games.dto'
+import type { GameMapper } from './game.mapper'
 
 const MEDIA_ASSET_SELECT = {
   variants: {
@@ -60,7 +60,7 @@ export class GamesService {
     private readonly mapper: GameMapper,
   ) {}
 
-  async findAll(query: GamesQueryDto): Promise<PaginatedGamesDto> {
+  async findAll(query: GamesQueryDto): Promise<PaginatedResponseDto<GameSummaryDto>> {
     const page = Math.max(query.page ?? 1, 1)
     const limit = Math.min(Math.max(query.limit ?? 24, 1), 50)
     const where = await this.buildWhere(query)
