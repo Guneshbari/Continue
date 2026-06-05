@@ -1,7 +1,7 @@
 import { Processor, WorkerHost, InjectQueue } from '@nestjs/bullmq'
 import type { Job, Queue } from 'bullmq'
 import { Logger } from '@nestjs/common'
-import type { ProviderSyncService } from '../../ingestion/services/provider-sync.service'
+import { ProviderSyncService } from '../../ingestion/services/provider-sync.service'
 import {
   GAME_SYNC_QUEUE,
   DEAD_LETTER_QUEUE,

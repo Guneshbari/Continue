@@ -1,13 +1,14 @@
 import { Controller, Get, Query, Res } from '@nestjs/common'
-import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger'
-import type { GamesService } from './games.service'
+import { ApiOperation, ApiQuery, ApiTags, ApiResponse } from '@nestjs/swagger'
+import { DiscoveryService } from '../discovery/services/discovery.service'
+import { DiscoverMetadataResponseDto } from '../discovery/dto/discover-metadata.dto'
 import { Public } from '../auth/decorators/public.decorator'
 import type { FastifyReply } from 'fastify'
 
 @ApiTags('discover')
 @Controller({ path: 'discover', version: '1' })
 export class DiscoverController {
-  constructor(private readonly gamesService: GamesService) {}
+  constructor(private readonly discoveryService: DiscoveryService) {}
 
   @Public()
   @Get()
@@ -18,6 +19,15 @@ export class DiscoverController {
     @Res({ passthrough: true }) res: FastifyReply,
   ) {
     res.header('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=60')
-    return this.gamesService.findDiscoverDashboard(Math.min(Number(limit) || 6, 20))
+    return this.discoveryService.findDiscoverDashboard(Math.min(Number(limit) || 6, 20))
+  }
+
+  @Public()
+  @Get('metadata')
+  @ApiOperation({ summary: 'Get active taxonomy lists and counts for filtering' })
+  @ApiResponse({ type: DiscoverMetadataResponseDto })
+  async getMetadata(@Res({ passthrough: true }) res: FastifyReply): Promise<DiscoverMetadataResponseDto> {
+    res.header('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=600')
+    return this.discoveryService.findFilters()
   }
 }

@@ -1,6 +1,6 @@
 import { Controller, Get, Patch, Body, Param, Query, ParseIntPipe, DefaultValuePipe } from '@nestjs/common'
 import { ApiTags, ApiOperation, ApiQuery, ApiBearerAuth } from '@nestjs/swagger'
-import type { UsersService } from './users.service'
+import { UsersService } from './users.service'
 import { Public } from '../auth/decorators/public.decorator'
 import { CurrentUser, type AuthUser } from '../auth/decorators/current-user.decorator'
 import type { UpdateUserDto } from './dto/update-user.dto'

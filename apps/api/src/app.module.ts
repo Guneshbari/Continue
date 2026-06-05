@@ -11,6 +11,7 @@ import { RatingsModule } from './modules/ratings/ratings.module'
 import { ReviewsModule } from './modules/reviews/reviews.module'
 import { UsersModule } from './modules/users/users.module'
 import { SearchModule } from './modules/search/search.module'
+import { DiscoveryModule } from './modules/discovery/discovery.module'
 import { ListsModule } from './modules/lists/lists.module'
 import { HealthModule } from './modules/health/health.module'
 import { FixturesModule } from './modules/fixtures/fixtures.module'
@@ -42,6 +43,7 @@ import { LoggingInterceptor } from './common/interceptors/logging.interceptor'
     ReviewsModule,
     UsersModule,
     SearchModule,
+    DiscoveryModule,
     ListsModule,
     HealthModule,
     FixturesModule,

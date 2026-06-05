@@ -1,8 +1,8 @@
 import { Processor, WorkerHost, InjectQueue } from '@nestjs/bullmq'
 import type { Job, Queue } from 'bullmq'
 import { Logger } from '@nestjs/common'
-import type { PrismaService } from '../../../common/prisma/prisma.service'
-import type { MediaStorageService } from '../../media/services/media-storage.service'
+import { PrismaService } from '../../../common/prisma/prisma.service'
+import { MediaStorageService } from '../../media/services/media-storage.service'
 import {
   MAINTENANCE_QUEUE,
   GAME_SYNC_QUEUE,

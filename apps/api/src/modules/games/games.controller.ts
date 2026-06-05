@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Param, Body, Query, Res } from '@nestjs/common'
 import { ApiTags, ApiOperation, ApiBearerAuth, ApiResponse } from '@nestjs/swagger'
-import type { GamesService } from './games.service'
+import { GamesService } from './games.service'
+import { DiscoveryService } from '../discovery/services/discovery.service'
 import type { GamesQueryDto, CreateGameDto, GameSummaryDto} from './dto/games.dto';
 import { GameDetailDto, PaginatedResponseDto } from './dto/games.dto'
 import { Public } from '../auth/decorators/public.decorator'
@@ -10,14 +11,17 @@ import type { FastifyReply } from 'fastify'
 @ApiTags('games')
 @Controller({ path: 'games', version: '1' })
 export class GamesController {
-  constructor(private readonly gamesService: GamesService) {}
+  constructor(
+    private readonly gamesService: GamesService,
+    private readonly discoveryService: DiscoveryService,
+  ) {}
 
   @Public()
   @Get('filter')
   @ApiOperation({ summary: 'Get active taxonomy lists (genres, platforms, years) for filtering' })
   async filters(@Res({ passthrough: true }) res: FastifyReply) {
     res.header('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=600')
-    return this.gamesService.findFilters()
+    return this.discoveryService.findFilters()
   }
 
   @Public()
@@ -25,7 +29,7 @@ export class GamesController {
   @ApiOperation({ summary: 'List games with filtering, sorting, and page pagination' })
   @ApiResponse({ type: PaginatedResponseDto })
   async findAll(@Query() query: GamesQueryDto): Promise<PaginatedResponseDto<GameSummaryDto>> {
-    return this.gamesService.findAll(query)
+    return this.discoveryService.findAll(query as any)
   }
 
   @Public()

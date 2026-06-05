@@ -1,7 +1,7 @@
 import { Processor, WorkerHost, InjectQueue } from '@nestjs/bullmq'
 import type { Job, Queue } from 'bullmq'
 import { Logger } from '@nestjs/common'
-import type { MediaProcessingService } from '../../media/services/media-processing.service'
+import { MediaProcessingService } from '../../media/services/media-processing.service'
 import {
   MEDIA_PROCESSING_QUEUE,
   DEAD_LETTER_QUEUE,

@@ -3,6 +3,7 @@ import { Test } from '@nestjs/testing'
 import { GamesController } from './games.controller'
 import { ShelvesController } from './shelves.controller'
 import { GamesService } from './games.service'
+import { DiscoveryService } from '../discovery/services/discovery.service'
 import type { GameSummaryDto } from './dto/game-summary.dto'
 import type { GameDetailDto } from './dto/game-detail.dto'
 import type { ShelfDto } from './dto/shelf.dto'
@@ -13,6 +14,7 @@ describe('Games & Shelves Controllers', () => {
   let gamesController: GamesController
   let shelvesController: ShelvesController
   let gamesService: jest.Mocked<GamesService>
+  let discoveryService: jest.Mocked<DiscoveryService>
 
   const mockFastifyReply = () => {
     const res = {
@@ -24,12 +26,18 @@ describe('Games & Shelves Controllers', () => {
   }
 
   beforeEach(async () => {
-    const mockService = {
-      findAll: jest.fn(),
+    const mockGamesService = {
       findBySlug: jest.fn(),
+      create: jest.fn(),
+    }
+
+    const mockDiscoveryService = {
+      findAll: jest.fn(),
       findFilters: jest.fn(),
       findShelf: jest.fn(),
-      create: jest.fn(),
+      findDiscoverDashboard: jest.fn(),
+      search: jest.fn(),
+      suggestions: jest.fn(),
     }
 
     const module: TestingModule = await Test.createTestingModule({
@@ -37,14 +45,19 @@ describe('Games & Shelves Controllers', () => {
       providers: [
         {
           provide: GamesService,
-          useValue: mockService,
+          useValue: mockGamesService,
+        },
+        {
+          provide: DiscoveryService,
+          useValue: mockDiscoveryService,
         },
       ],
     }).compile()
 
     gamesController = module.get<GamesController>(GamesController)
     shelvesController = module.get<ShelvesController>(ShelvesController)
-    gamesService = module.get(GamesService)
+    gamesService = module.get(GamesService) as any
+    discoveryService = module.get(DiscoveryService) as any
   })
 
   describe('GamesController', () => {
@@ -64,11 +77,11 @@ describe('Games & Shelves Controllers', () => {
         total: 1,
         hasNext: false,
       }
-      gamesService.findAll.mockResolvedValue(mockResult)
+      discoveryService.findAll.mockResolvedValue(mockResult)
 
       const result = await gamesController.findAll({ page: 1, limit: 24 })
       expect(result).toEqual(mockResult)
-      expect(gamesService.findAll).toHaveBeenCalledWith({ page: 1, limit: 24 })
+      expect(discoveryService.findAll).toHaveBeenCalledWith({ page: 1, limit: 24 })
     })
 
     it('findOne should return canonical GameDetailDto', async () => {
@@ -91,14 +104,14 @@ describe('Games & Shelves Controllers', () => {
 
     it('filters should return available taxonomies and set cache control headers', async () => {
       const mockFilters = { genres: [], platforms: [], years: [], ratings: [] }
-      gamesService.findFilters.mockResolvedValue(mockFilters)
+      discoveryService.findFilters.mockResolvedValue(mockFilters)
 
       const reply = mockFastifyReply()
       const result = await gamesController.filters(reply)
 
       expect(result).toEqual(mockFilters)
       expect(reply.header).toHaveBeenCalledWith('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=600')
-      expect(gamesService.findFilters).toHaveBeenCalled()
+      expect(discoveryService.findFilters).toHaveBeenCalled()
     })
   })
 
@@ -109,14 +122,14 @@ describe('Games & Shelves Controllers', () => {
         title: 'Trending Games',
         items: [],
       }
-      gamesService.findShelf.mockResolvedValue(mockShelf)
+      discoveryService.findShelf.mockResolvedValue(mockShelf)
 
       const reply = mockFastifyReply()
       const result = await shelvesController.getTrending(12, reply)
 
       expect(result).toEqual(mockShelf)
       expect(reply.header).toHaveBeenCalledWith('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=60')
-      expect(gamesService.findShelf).toHaveBeenCalledWith('trending', 12)
+      expect(discoveryService.findShelf).toHaveBeenCalledWith('trending', 12)
     })
 
     it('getTopRated should return ShelfDto', async () => {
@@ -125,13 +138,13 @@ describe('Games & Shelves Controllers', () => {
         title: 'Top Rated Games',
         items: [],
       }
-      gamesService.findShelf.mockResolvedValue(mockShelf)
+      discoveryService.findShelf.mockResolvedValue(mockShelf)
 
       const reply = mockFastifyReply()
       const result = await shelvesController.getTopRated(6, reply)
 
       expect(result).toEqual(mockShelf)
-      expect(gamesService.findShelf).toHaveBeenCalledWith('top-rated', 6)
+      expect(discoveryService.findShelf).toHaveBeenCalledWith('top-rated', 6)
     })
 
     it('getRecentReleases should return ShelfDto', async () => {
@@ -140,13 +153,13 @@ describe('Games & Shelves Controllers', () => {
         title: 'Recent Releases',
         items: [],
       }
-      gamesService.findShelf.mockResolvedValue(mockShelf)
+      discoveryService.findShelf.mockResolvedValue(mockShelf)
 
       const reply = mockFastifyReply()
       const result = await shelvesController.getRecentReleases(8, reply)
 
       expect(result).toEqual(mockShelf)
-      expect(gamesService.findShelf).toHaveBeenCalledWith('recent-releases', 8)
+      expect(discoveryService.findShelf).toHaveBeenCalledWith('recent-releases', 8)
     })
   })
 })

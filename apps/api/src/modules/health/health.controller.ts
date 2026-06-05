@@ -2,7 +2,7 @@ import { Controller, Get, Res } from '@nestjs/common'
 import { ApiOperation, ApiTags } from '@nestjs/swagger'
 import { InjectQueue } from '@nestjs/bullmq'
 import type { Queue } from 'bullmq'
-import type { PrismaService } from '../../common/prisma/prisma.service'
+import { PrismaService } from '../../common/prisma/prisma.service'
 import { Public } from '../auth/decorators/public.decorator'
 import type { FastifyReply } from 'fastify'
 import {

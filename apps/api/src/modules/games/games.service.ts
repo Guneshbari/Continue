@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import type { Prisma } from '@prisma/client'
-import type { PrismaService } from '../../common/prisma/prisma.service'
+import { PrismaService } from '../../common/prisma/prisma.service'
 import type { CreateGameDto, GamesQueryDto, PaginatedResponseDto, GameSummaryDto, ShelfDto } from './dto/games.dto'
-import type { GameMapper } from './game.mapper'
+import { GameMapper } from './game.mapper'
 
 const MEDIA_ASSET_SELECT = {
   variants: {

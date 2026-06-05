@@ -17,6 +17,10 @@ const envSchema = z
     TWITCH_CLIENT_ID: z.string().optional(),
     TWITCH_CLIENT_SECRET: z.string().optional(),
     IGDB_OFFLINE_MODE: z.enum(['true', 'false']).default('false'),
+    DISCOVERY_TRENDING_RECENCY_DECAY: z.coerce.number().default(1.5),
+    DISCOVERY_TOP_RATED_MIN_REVIEWS: z.coerce.number().int().min(0).default(1),
+    DISCOVERY_HIDDEN_GEMS_MAX_REVIEWS: z.coerce.number().int().min(0).default(10),
+    DISCOVERY_SHELF_DEFAULT_LIMIT: z.coerce.number().int().min(1).default(12),
   })
   .superRefine((env, ctx) => {
     if (env.NODE_ENV !== 'production') return
