@@ -1,16 +1,16 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import axios from 'axios'
-import type { TwitchOauthResponse } from './igdb.types'
+import { TwitchOauthResponse } from './igdb.types'
 
 @Injectable()
 export class IgdbAuthService {
   private readonly logger = new Logger(IgdbAuthService.name)
-  
+
   private readonly clientId: string | null
   private readonly clientSecret: string | null
   private readonly offlineMode: boolean
-  
+
   private cachedToken: string | null = null
   private expiresAt: number | null = null // timestamp in milliseconds
   private refreshPromise: Promise<void> | null = null
@@ -18,7 +18,10 @@ export class IgdbAuthService {
   constructor(private readonly config: ConfigService) {
     this.clientId = this.config.get<string>('TWITCH_CLIENT_ID') ?? null
     this.clientSecret = this.config.get<string>('TWITCH_CLIENT_SECRET') ?? null
-    this.offlineMode = this.config.get<string>('IGDB_OFFLINE_MODE') === 'true' || !this.clientId || !this.clientSecret
+    this.offlineMode =
+      this.config.get<string>('IGDB_OFFLINE_MODE') === 'true' ||
+      !this.clientId ||
+      !this.clientSecret
 
     if (this.offlineMode) {
       this.logger.warn(
@@ -89,7 +92,9 @@ export class IgdbAuthService {
     }
 
     if (!this.clientId || !this.clientSecret) {
-      throw new Error('Twitch Client ID and Client Secret must be configured for authenticated mode.')
+      throw new Error(
+        'Twitch Client ID and Client Secret must be configured for authenticated mode.',
+      )
     }
 
     try {
@@ -107,7 +112,7 @@ export class IgdbAuthService {
 
       const { access_token, expires_in } = response.data
       this.cachedToken = access_token
-      
+
       // Store expiresAt with a 5-minute (300,000ms) safety buffer to prevent race conditions
       const bufferMs = 300_000
       this.expiresAt = Date.now() + expires_in * 1000 - bufferMs

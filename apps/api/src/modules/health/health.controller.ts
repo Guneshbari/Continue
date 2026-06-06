@@ -20,7 +20,7 @@ export class HealthController {
     @InjectQueue(GAME_SYNC_QUEUE) private readonly gameSyncQueue: Queue,
     @InjectQueue(MEDIA_PROCESSING_QUEUE) private readonly mediaQueue: Queue,
     @InjectQueue(MAINTENANCE_QUEUE) private readonly maintenanceQueue: Queue,
-    @InjectQueue(DEAD_LETTER_QUEUE) private readonly deadLetterQueue: Queue
+    @InjectQueue(DEAD_LETTER_QUEUE) private readonly deadLetterQueue: Queue,
   ) {}
 
   @Public()
@@ -93,16 +93,24 @@ export class HealthController {
 
       // Populate Game sync queue backlog warnings
       if (gameSyncWaiting > 2000) {
-        warnings.push(`Game sync queue backlog is critical. Waiting jobs: ${gameSyncWaiting} (Threshold: 2000)`)
+        warnings.push(
+          `Game sync queue backlog is critical. Waiting jobs: ${gameSyncWaiting} (Threshold: 2000)`,
+        )
       } else if (gameSyncWaiting > 1000) {
-        warnings.push(`Game sync queue backlog is high. Waiting jobs: ${gameSyncWaiting} (Threshold: 1000)`)
+        warnings.push(
+          `Game sync queue backlog is high. Waiting jobs: ${gameSyncWaiting} (Threshold: 1000)`,
+        )
       }
 
       // Populate Media processing queue backlog warnings
       if (mediaWaiting > 10000) {
-        warnings.push(`Media processing queue backlog is critical. Waiting jobs: ${mediaWaiting} (Threshold: 10000)`)
+        warnings.push(
+          `Media processing queue backlog is critical. Waiting jobs: ${mediaWaiting} (Threshold: 10000)`,
+        )
       } else if (mediaWaiting > 5000) {
-        warnings.push(`Media processing queue backlog is high. Waiting jobs: ${mediaWaiting} (Threshold: 5000)`)
+        warnings.push(
+          `Media processing queue backlog is high. Waiting jobs: ${mediaWaiting} (Threshold: 5000)`,
+        )
       }
 
       const payload = {
@@ -130,4 +138,3 @@ export class HealthController {
     }
   }
 }
-

@@ -47,28 +47,40 @@ export class FacetAggregationService {
     ])
 
     // Map counts
-    const genreCountsMap = genreGroups.reduce((acc, curr) => {
-      acc[curr.genreId] = curr._count.gameId
-      return acc
-    }, {} as Record<string, number>)
+    const genreCountsMap = genreGroups.reduce(
+      (acc, curr) => {
+        acc[curr.genreId] = curr._count.gameId
+        return acc
+      },
+      {} as Record<string, number>,
+    )
 
-    const platformCountsMap = platformGroups.reduce((acc, curr) => {
-      acc[curr.platformId] = curr._count.gameId
-      return acc
-    }, {} as Record<string, number>)
+    const platformCountsMap = platformGroups.reduce(
+      (acc, curr) => {
+        acc[curr.platformId] = curr._count.gameId
+        return acc
+      },
+      {} as Record<string, number>,
+    )
 
-    const themeCountsMap = themeGroups.reduce((acc, curr) => {
-      acc[curr.themeId] = curr._count.gameId
-      return acc
-    }, {} as Record<string, number>)
+    const themeCountsMap = themeGroups.reduce(
+      (acc, curr) => {
+        acc[curr.themeId] = curr._count.gameId
+        return acc
+      },
+      {} as Record<string, number>,
+    )
 
-    const yearCountsMap = gamesWithDates.reduce((acc, curr) => {
-      if (curr.releaseDate) {
-        const year = curr.releaseDate.getFullYear()
-        acc[year] = (acc[year] || 0) + 1
-      }
-      return acc
-    }, {} as Record<number, number>)
+    const yearCountsMap = gamesWithDates.reduce(
+      (acc, curr) => {
+        if (curr.releaseDate) {
+          const year = curr.releaseDate.getFullYear()
+          acc[year] = (acc[year] || 0) + 1
+        }
+        return acc
+      },
+      {} as Record<number, number>,
+    )
 
     // Build lists sorted by count desc, then alphabetically/numerically
     const genres = genresList
@@ -87,7 +99,7 @@ export class FacetAggregationService {
         name: p.name,
         count: platformCountsMap[p.id] || 0,
       }))
-      .sort((a, b) => b.count - a.count || a.name.localeCompare(p.name))
+      .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name))
 
     const themes = themesList
       .map((t) => ({

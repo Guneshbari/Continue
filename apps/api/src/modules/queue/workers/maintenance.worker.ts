@@ -1,5 +1,5 @@
 import { Processor, WorkerHost, InjectQueue } from '@nestjs/bullmq'
-import type { Job, Queue } from 'bullmq'
+import { Job, Queue } from 'bullmq'
 import { Logger } from '@nestjs/common'
 import { PrismaService } from '../../../common/prisma/prisma.service'
 import { MediaStorageService } from '../../media/services/media-storage.service'
@@ -20,7 +20,7 @@ export class MaintenanceWorker extends WorkerHost {
     private readonly prisma: PrismaService,
     private readonly storage: MediaStorageService,
     @InjectQueue(GAME_SYNC_QUEUE) private readonly gameSyncQueue: Queue,
-    @InjectQueue(MEDIA_PROCESSING_QUEUE) private readonly mediaQueue: Queue
+    @InjectQueue(MEDIA_PROCESSING_QUEUE) private readonly mediaQueue: Queue,
   ) {
     super()
   }
@@ -39,7 +39,7 @@ export class MaintenanceWorker extends WorkerHost {
             jobId: `sync-popular-games:${new Date().toISOString().split('T')[0]}`, // daily idempotency
             attempts: 3,
             backoff: { type: 'exponential', delay: 5000 },
-          }
+          },
         )
         return { status: 'delegated', limit }
       }
@@ -68,7 +68,7 @@ export class MaintenanceWorker extends WorkerHost {
               jobId: `game-sync:stale:${game.slug}`, // prevent duplicate active syncs
               attempts: 3,
               backoff: { type: 'exponential', delay: 5000 },
-            }
+            },
           )
         }
         return { status: 'enqueued', count: staleGames.length }
@@ -85,7 +85,9 @@ export class MaintenanceWorker extends WorkerHost {
           select: { id: true },
         })
 
-        this.logger.log(`Found ${failedAssets.length} failed media assets with retries left. Re-enqueueing...`)
+        this.logger.log(
+          `Found ${failedAssets.length} failed media assets with retries left. Re-enqueueing...`,
+        )
         for (const asset of failedAssets) {
           await this.mediaQueue.add(
             PROCESS_MEDIA_JOB,
@@ -94,7 +96,7 @@ export class MaintenanceWorker extends WorkerHost {
               jobId: `media:retry:${asset.id}`,
               attempts: 3,
               backoff: { type: 'exponential', delay: 5000 },
-            }
+            },
           )
         }
         return { status: 'retried', count: failedAssets.length }
@@ -110,11 +112,13 @@ export class MaintenanceWorker extends WorkerHost {
 
         let integrityBreaches = 0
         this.logger.log(`Verifying disk integrity for ${assets.length} READY media assets...`)
-        
+
         for (const asset of assets) {
           const exists = await this.storage.originalExists(asset.id)
           if (!exists) {
-            this.logger.warn(`⚠️ Media Asset ${asset.id} file is missing from disk! Re-enqueueing for processing.`)
+            this.logger.warn(
+              `⚠️ Media Asset ${asset.id} file is missing from disk! Re-enqueueing for processing.`,
+            )
             integrityBreaches++
 
             // Reset asset to PENDING in database
@@ -131,13 +135,19 @@ export class MaintenanceWorker extends WorkerHost {
                 jobId: `media:integrity-reset:${asset.id}`,
                 attempts: 3,
                 backoff: { type: 'exponential', delay: 5000 },
-              }
+              },
             )
           }
         }
 
-        this.logger.log(`Disk integrity checks completed. Breaches detected & enqueued: ${integrityBreaches}`)
-        return { status: 'checked', totalChecked: assets.length, breachesDetected: integrityBreaches }
+        this.logger.log(
+          `Disk integrity checks completed. Breaches detected & enqueued: ${integrityBreaches}`,
+        )
+        return {
+          status: 'checked',
+          totalChecked: assets.length,
+          breachesDetected: integrityBreaches,
+        }
       }
 
       default:

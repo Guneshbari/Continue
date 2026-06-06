@@ -2,11 +2,15 @@ import { Injectable } from '@nestjs/common'
 import { PrismaService } from '../../../common/prisma/prisma.service'
 import { ConfigService } from '@nestjs/config'
 import { ShelfRankingStrategy } from './shelf-ranking.strategy'
-import { GAME_SUMMARY_SELECT } from '../discovery.constants'
+import { GAME_SUMMARY_SELECT, GameSummaryRecord } from '../discovery.constants'
 
 @Injectable()
 export class TrendingStrategy implements ShelfRankingStrategy {
-  async fetch(prisma: PrismaService, config: ConfigService, limit: number): Promise<any[]> {
+  async fetch(
+    prisma: PrismaService,
+    config: ConfigService,
+    limit: number,
+  ): Promise<GameSummaryRecord[]> {
     const decay = config.get<number>('DISCOVERY_TRENDING_RECENCY_DECAY') ?? 1.5
     const now = new Date()
 
@@ -26,7 +30,7 @@ export class TrendingStrategy implements ShelfRankingStrategy {
       const avgRating = game.avgRating || 0
       const ratingCount = game.ratingCount || 0
       const releaseDate = game.releaseDate ? new Date(game.releaseDate) : new Date(0)
-      
+
       const ageInMs = Math.max(0, now.getTime() - releaseDate.getTime())
       const ageInDays = ageInMs / (1000 * 60 * 60 * 24)
 

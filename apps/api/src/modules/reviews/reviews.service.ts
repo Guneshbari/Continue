@@ -1,8 +1,11 @@
 import {
-  Injectable, NotFoundException, ForbiddenException, ConflictException,
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+  ConflictException,
 } from '@nestjs/common'
 import { PrismaService } from '../../common/prisma/prisma.service'
-import type { CreateReviewDto, UpdateReviewDto } from './dto/review.dto'
+import { CreateReviewDto, UpdateReviewDto } from './dto/review.dto'
 import { getVariantUrl } from '../../common/utils/media'
 
 @Injectable()
@@ -76,7 +79,9 @@ export class ReviewsService {
 
     return this.prisma.review.create({
       data: { userId, gameId, ...dto, status: dto.status ?? 'PUBLISHED' },
-      include: { user: { select: { id: true, username: true, displayName: true, avatarUrl: true } } },
+      include: {
+        user: { select: { id: true, username: true, displayName: true, avatarUrl: true } },
+      },
     })
   }
 
@@ -86,7 +91,9 @@ export class ReviewsService {
       take: limit + 1,
       ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
       orderBy: { createdAt: 'desc' },
-      include: { user: { select: { id: true, username: true, displayName: true, avatarUrl: true } } },
+      include: {
+        user: { select: { id: true, username: true, displayName: true, avatarUrl: true } },
+      },
     })
 
     const hasNext = reviews.length > limit
@@ -104,7 +111,9 @@ export class ReviewsService {
     return this.prisma.review.update({
       where: { id: review.id },
       data: dto,
-      include: { user: { select: { id: true, username: true, displayName: true, avatarUrl: true } } },
+      include: {
+        user: { select: { id: true, username: true, displayName: true, avatarUrl: true } },
+      },
     })
   }
 
@@ -125,7 +134,8 @@ export class ReviewsService {
 
   private async assertGameExists(gameId: string) {
     const game = await this.prisma.game.findFirst({
-      where: { id: gameId, deletedAt: null }, select: { id: true },
+      where: { id: gameId, deletedAt: null },
+      select: { id: true },
     })
     if (!game) throw new NotFoundException('Game not found')
   }

@@ -1,7 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
-import type { Prisma } from '@prisma/client'
+import { Prisma } from '@prisma/client'
 import { PrismaService } from '../../common/prisma/prisma.service'
-import type { CreateGameDto, GamesQueryDto, PaginatedResponseDto, GameSummaryDto, ShelfDto } from './dto/games.dto'
+import {
+  CreateGameDto,
+  GamesQueryDto,
+  PaginatedResponseDto,
+  GameSummaryDto,
+  ShelfDto,
+} from './dto/games.dto'
 import { GameMapper } from './game.mapper'
 
 const MEDIA_ASSET_SELECT = {
@@ -134,7 +140,11 @@ export class GamesService {
     ])
 
     const years = Array.from(
-      new Set(gamesWithDates.flatMap((game) => (game.releaseDate ? [game.releaseDate.getFullYear()] : []))),
+      new Set(
+        gamesWithDates.flatMap((game) =>
+          game.releaseDate ? [game.releaseDate.getFullYear()] : [],
+        ),
+      ),
     ).sort((a, b) => b - a)
 
     return {
@@ -175,15 +185,7 @@ export class GamesService {
   }
 
   private async buildWhere(query: GamesQueryDto): Promise<Prisma.GameWhereInput> {
-    const {
-      q,
-      genre,
-      platform,
-      year,
-      minRating,
-      maxRating,
-      minReviewCount,
-    } = query
+    const { q, genre, platform, year, minRating, maxRating, minReviewCount } = query
 
     const gameIdsWithMinReviews = await this.gameIdsWithMinReviews(minReviewCount)
     const hasMinRating = minRating !== undefined && minRating !== null

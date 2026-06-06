@@ -17,9 +17,7 @@ export class FeaturedReviewsController {
   @Get('featured')
   @ApiOperation({ summary: 'Get featured reviews for homepage discovery' })
   @ApiQuery({ name: 'limit', required: false, example: 3 })
-  findFeatured(
-    @Query('limit', new DefaultValuePipe(3), ParseIntPipe) limit: number,
-  ) {
+  findFeatured(@Query('limit', new DefaultValuePipe(3), ParseIntPipe) limit: number) {
     return this.svc.findFeatured(Math.min(limit, 10))
   }
 }

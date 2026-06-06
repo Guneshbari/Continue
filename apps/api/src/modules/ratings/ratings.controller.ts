@@ -1,9 +1,7 @@
-import {
-  Controller, Put, Delete, Get, Param, Body, HttpCode, HttpStatus,
-} from '@nestjs/common'
+import { Controller, Put, Delete, Get, Param, Body, HttpCode, HttpStatus } from '@nestjs/common'
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger'
 import { RatingsService } from './ratings.service'
-import type { UpsertRatingDto } from './dto/rating.dto'
+import { UpsertRatingDto } from './dto/rating.dto'
 import { CurrentUser } from '../auth/decorators/current-user.decorator'
 import { Public } from '../auth/decorators/public.decorator'
 
@@ -22,10 +20,7 @@ export class RatingsController {
 
   @Get('me')
   @ApiOperation({ summary: 'Get my rating for a game' })
-  myRating(
-    @CurrentUser('id') userId: string,
-    @Param('gameId') gameId: string,
-  ) {
+  myRating(@CurrentUser('id') userId: string, @Param('gameId') gameId: string) {
     return this.svc.findUserRating(userId, gameId)
   }
 
@@ -42,10 +37,7 @@ export class RatingsController {
   @Delete()
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: 'Delete my rating' })
-  remove(
-    @CurrentUser('id') userId: string,
-    @Param('gameId') gameId: string,
-  ) {
+  remove(@CurrentUser('id') userId: string, @Param('gameId') gameId: string) {
     return this.svc.remove(userId, gameId)
   }
 }

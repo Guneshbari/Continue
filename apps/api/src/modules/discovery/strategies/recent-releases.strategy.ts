@@ -2,11 +2,15 @@ import { Injectable } from '@nestjs/common'
 import { PrismaService } from '../../../common/prisma/prisma.service'
 import { ConfigService } from '@nestjs/config'
 import { ShelfRankingStrategy } from './shelf-ranking.strategy'
-import { GAME_SUMMARY_SELECT } from '../discovery.constants'
+import { GAME_SUMMARY_SELECT, GameSummaryRecord } from '../discovery.constants'
 
 @Injectable()
 export class RecentReleasesStrategy implements ShelfRankingStrategy {
-  async fetch(prisma: PrismaService, config: ConfigService, limit: number): Promise<any[]> {
+  async fetch(
+    prisma: PrismaService,
+    config: ConfigService,
+    limit: number,
+  ): Promise<GameSummaryRecord[]> {
     const now = new Date()
 
     return prisma.game.findMany({
@@ -14,10 +18,7 @@ export class RecentReleasesStrategy implements ShelfRankingStrategy {
         deletedAt: null,
         releaseDate: { lte: now },
       },
-      orderBy: [
-        { releaseDate: 'desc' },
-        { title: 'asc' },
-      ],
+      orderBy: [{ releaseDate: 'desc' }, { title: 'asc' }],
       take: limit,
       select: GAME_SUMMARY_SELECT,
     })

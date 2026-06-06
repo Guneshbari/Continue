@@ -1,8 +1,11 @@
 import {
-  Injectable, NotFoundException, ForbiddenException, ConflictException,
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+  ConflictException,
 } from '@nestjs/common'
 import { PrismaService } from '../../common/prisma/prisma.service'
-import type { CreateListDto, UpdateListDto, AddListItemDto, ReorderListItemsDto } from './dto/list.dto'
+import { CreateListDto, UpdateListDto, AddListItemDto, ReorderListItemsDto } from './dto/list.dto'
 import { getVariantUrl } from '../../common/utils/media'
 
 function slugify(title: string): string {
@@ -18,8 +21,19 @@ function slugify(title: string): string {
   }
 
   const RESERVED_SLUGS = [
-    'discovery', 'create', 'edit', 'settings', 'admin',
-    'new', 'popular', 'trending', 'api', 'auth', 'u', 'games', 'lists'
+    'discovery',
+    'create',
+    'edit',
+    'settings',
+    'admin',
+    'new',
+    'popular',
+    'trending',
+    'api',
+    'auth',
+    'u',
+    'games',
+    'lists',
   ]
 
   if (RESERVED_SLUGS.includes(base)) {
@@ -210,9 +224,7 @@ export class ListsService {
     })
     if (!user) throw new NotFoundException('User not found')
 
-    const visibilityFilter = requesterId === user.id
-      ? {}
-      : { visibility: 'PUBLIC' as const }
+    const visibilityFilter = requesterId === user.id ? {} : { visibility: 'PUBLIC' as const }
 
     const lists = await this.prisma.list.findMany({
       where: { userId: user.id, deletedAt: null, ...visibilityFilter },
@@ -365,7 +377,7 @@ export class ListsService {
       this.prisma.listItem.update({
         where: { listId_gameId: { listId, gameId } },
         data: { position: index },
-      })
+      }),
     )
 
     await this.prisma.$transaction(updates)
@@ -405,4 +417,3 @@ export class ListsService {
     if (list.userId !== userId) throw new ForbiddenException()
   }
 }
-

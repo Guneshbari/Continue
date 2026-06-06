@@ -54,10 +54,7 @@ export class SearchService {
         ],
       },
       take: limit,
-      orderBy: [
-        { ratingCount: 'desc' },
-        { avgRating: 'desc' },
-      ],
+      orderBy: [{ ratingCount: 'desc' }, { avgRating: 'desc' }],
       select: {
         id: true,
         slug: true,
@@ -112,10 +109,7 @@ export class SearchService {
         ],
       },
       take: limit * 2,
-      orderBy: [
-        { ratingCount: 'desc' },
-        { avgRating: 'desc' },
-      ],
+      orderBy: [{ ratingCount: 'desc' }, { avgRating: 'desc' }],
       select: {
         id: true,
         slug: true,
@@ -169,4 +163,3 @@ export class SearchService {
     }))
   }
 }
-

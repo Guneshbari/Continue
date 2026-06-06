@@ -49,7 +49,7 @@ export class MediaProcessingService {
     private readonly storage: MediaStorageService,
     private readonly placeholders: BlurPlaceholderService,
     private readonly generator: VariantGeneratorService,
-    private readonly config: ConfigService
+    private readonly config: ConfigService,
   ) {
     // 1. Memory Pressure Governance: Disable sharp heavy memory caches
     sharp.cache(false)
@@ -65,7 +65,7 @@ export class MediaProcessingService {
       cropStrategy: 'centre',
       compression: {
         webp: { quality: 80, effort: 4 },
-        avif: { quality: 80, effort: 4 }
+        avif: { quality: 80, effort: 4 },
       },
       variantConfigs: {
         COVER_SM: { width: 120, height: 180 },
@@ -76,8 +76,8 @@ export class MediaProcessingService {
         THUMBNAIL_BLUR: { width: 64, height: 64 },
         AVATAR_SM: { width: 48, height: 48 },
         AVATAR_MD: { width: 96, height: 96 },
-        LOGO_TRANSPARENT: { width: 512, height: 512 }
-      }
+        LOGO_TRANSPARENT: { width: 512, height: 512 },
+      },
     }
     this.settingsFingerprint = crypto
       .createHash('sha256')
@@ -112,7 +112,9 @@ export class MediaProcessingService {
       asset.processingState === MediaProcessingState.READY &&
       asset.transformationFingerprint === this.settingsFingerprint
     ) {
-      this.logger.log(`⏭️ MediaAsset ${assetId} is already optimized and settings match. Skipping processing.`)
+      this.logger.log(
+        `⏭️ MediaAsset ${assetId} is already optimized and settings match. Skipping processing.`,
+      )
       return
     }
 
@@ -176,7 +178,12 @@ export class MediaProcessingService {
       // 4. Resolve visual roles to generate
       const targetRoles: MediaRole[] = []
       if (asset.coverGames.length > 0) {
-        targetRoles.push(MediaRole.COVER_SM, MediaRole.COVER_MD, MediaRole.COVER_LG, MediaRole.THUMBNAIL_BLUR)
+        targetRoles.push(
+          MediaRole.COVER_SM,
+          MediaRole.COVER_MD,
+          MediaRole.COVER_LG,
+          MediaRole.THUMBNAIL_BLUR,
+        )
       }
       if (asset.backdropGames.length > 0) {
         targetRoles.push(MediaRole.BACKDROP_HERO, MediaRole.THUMBNAIL_BLUR)
@@ -199,12 +206,12 @@ export class MediaProcessingService {
         for (const role of uniqueRoles) {
           for (const format of ['webp', 'avif'] as const) {
             this.logger.debug(`🎨 Transforming variant: [${role} | ${format}]`)
-            
-            const { data: variantBuffer, width, height } = await this.generator.generateVariant(
-              rawBuffer,
-              role,
-              format
-            )
+
+            const {
+              data: variantBuffer,
+              width,
+              height,
+            } = await this.generator.generateVariant(rawBuffer, role, format)
 
             // Save optimized variant binary to disk
             const publicUrl = await this.storage.saveVariant(assetId, role, format, variantBuffer)
@@ -266,7 +273,7 @@ export class MediaProcessingService {
           // Composite hero score
           const heroScore = brightnessScore * 0.4 + contrastScore * 0.6
           this.logger.log(
-            `📈 Calculated Hero Score: ${heroScore.toFixed(4)} (Luminance: ${avgLuminance.toFixed(2)}, StDev: ${avgStdev.toFixed(2)})`
+            `📈 Calculated Hero Score: ${heroScore.toFixed(4)} (Luminance: ${avgLuminance.toFixed(2)}, StDev: ${avgStdev.toFixed(2)})`,
           )
 
           // 1. Update this specific screenshot record with its score
@@ -306,7 +313,9 @@ export class MediaProcessingService {
             }
           }
         } catch (scoringErr: any) {
-          this.logger.warn(`⚠️ Failed to compute hero score for asset ${assetId}: ${scoringErr.message}`)
+          this.logger.warn(
+            `⚠️ Failed to compute hero score for asset ${assetId}: ${scoringErr.message}`,
+          )
         }
       }
 
@@ -336,14 +345,14 @@ export class MediaProcessingService {
       })
 
       this.logger.log(`✅ MediaAsset ${assetId} fully optimized in ${durationMs}ms (State: READY)`)
-
     } catch (err: any) {
       const durationMs = Date.now() - startTime
       const failReason = err.message || 'Unknown media transformation failure'
       this.logger.error(`❌ Media transformation failed for asset ${assetId}: ${failReason}`)
 
       const currentRetry = asset.retryCount + 1
-      const nextState = currentRetry >= 3 ? MediaProcessingState.FAILED : MediaProcessingState.PENDING
+      const nextState =
+        currentRetry >= 3 ? MediaProcessingState.FAILED : MediaProcessingState.PENDING
 
       await this.prisma.mediaAsset.update({
         where: { id: assetId },
@@ -357,7 +366,7 @@ export class MediaProcessingService {
       })
 
       this.logger.warn(
-        `⚠️ Asset ${assetId} moved to state [${nextState}] (Retry: ${currentRetry}/3)`
+        `⚠️ Asset ${assetId} moved to state [${nextState}] (Retry: ${currentRetry}/3)`,
       )
     }
   }

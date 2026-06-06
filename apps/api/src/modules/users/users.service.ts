@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { PrismaService } from '../../common/prisma/prisma.service'
-import type { UpdateUserDto } from './dto/update-user.dto'
+import { UpdateUserDto } from './dto/update-user.dto'
 import { getVariantUrl } from '../../common/utils/media'
 
 @Injectable()
@@ -77,7 +77,7 @@ export class UsersService {
     })
     const hasNext = reviews.length > limit
     const data = hasNext ? reviews.slice(0, limit) : reviews
-    
+
     const mappedData = data.map((r) => ({
       ...r,
       game: {
@@ -149,7 +149,11 @@ export class UsersService {
       where: { userId: user.id, visibility: 'PUBLIC', deletedAt: null },
       orderBy: { updatedAt: 'desc' },
       select: {
-        id: true, slug: true, title: true, description: true, visibility: true,
+        id: true,
+        slug: true,
+        title: true,
+        description: true,
+        visibility: true,
         _count: { select: { items: true } },
       },
     })

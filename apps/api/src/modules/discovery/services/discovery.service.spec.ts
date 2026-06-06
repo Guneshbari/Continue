@@ -1,4 +1,5 @@
-import { Test, TestingModule } from '@nestjs/testing'
+import { TestingModule } from '@nestjs/testing'
+import { Test } from '@nestjs/testing'
 import { DiscoveryService } from './discovery.service'
 import { PrismaService } from '../../../common/prisma/prisma.service'
 import { ConfigService } from '@nestjs/config'
@@ -14,8 +15,6 @@ import { HiddenGemsStrategy } from '../strategies/hidden-gems.strategy'
 
 describe('DiscoveryService & Search Engine', () => {
   let discoveryService: DiscoveryService
-  let prisma: PrismaService
-  let config: ConfigService
 
   // Mock datasets
   const mockGamesList = [
@@ -71,6 +70,19 @@ describe('DiscoveryService & Search Engine', () => {
       genres: [],
       platforms: [],
     },
+    {
+      id: 'game-5',
+      slug: 'cpp-quest',
+      title: 'C++ Quest',
+      releaseDate: new Date('2025-01-01'),
+      avgRating: 8.9,
+      ratingCount: 60,
+      createdAt: new Date('2025-01-01'),
+      deletedAt: null,
+      cover: null,
+      genres: [],
+      platforms: [],
+    },
   ]
 
   const mockPrisma = {
@@ -79,8 +91,12 @@ describe('DiscoveryService & Search Engine', () => {
         let list = [...mockGamesList]
         if (args?.where?.OR) {
           // simple term matching mock
-          const term = args.where.OR[0].title.contains.toLowerCase()
-          list = list.filter((g) => g.title.toLowerCase().includes(term) || g.slug.toLowerCase().includes(term))
+          const titleTerm = args.where.OR[0].title.contains.toLowerCase()
+          const slugTerm = args.where.OR[1].slug.contains.toLowerCase()
+          list = list.filter(
+            (g) =>
+              g.title.toLowerCase().includes(titleTerm) || g.slug.toLowerCase().includes(slugTerm),
+          )
         }
         if (args?.where?.avgRating?.gte !== undefined) {
           list = list.filter((g) => g.avgRating >= args.where.avgRating.gte)
@@ -96,13 +112,28 @@ describe('DiscoveryService & Search Engine', () => {
         }
         return Promise.resolve(list.slice(0, args?.take || 100))
       }),
-      count: jest.fn().mockResolvedValue(mockGamesList.length),
+      count: jest.fn().mockImplementation((args) => {
+        if (!args?.where?.OR) {
+          return Promise.resolve(mockGamesList.length)
+        }
+        const titleTerm = args.where.OR[0].title.contains.toLowerCase()
+        const slugTerm = args.where.OR[1].slug.contains.toLowerCase()
+        return Promise.resolve(
+          mockGamesList.filter(
+            (g) =>
+              g.title.toLowerCase().includes(titleTerm) || g.slug.toLowerCase().includes(slugTerm),
+          ).length,
+        )
+      }),
     },
     gameGenre: {
       groupBy: jest.fn().mockResolvedValue([{ genreId: 'genre-rpg', _count: { gameId: 45 } }]),
     },
     gamePlatform: {
-      groupBy: jest.fn().mockResolvedValue([{ platformId: 'platform-pc', _count: { gameId: 80 } }]),
+      groupBy: jest.fn().mockResolvedValue([
+        { platformId: 'platform-playstation', _count: { gameId: 80 } },
+        { platformId: 'platform-pc', _count: { gameId: 80 } },
+      ]),
     },
     gameTheme: {
       groupBy: jest.fn().mockResolvedValue([{ themeId: 'theme-fantasy', _count: { gameId: 30 } }]),
@@ -111,10 +142,15 @@ describe('DiscoveryService & Search Engine', () => {
       findMany: jest.fn().mockResolvedValue([{ id: 'genre-rpg', slug: 'rpg', name: 'RPG' }]),
     },
     platform: {
-      findMany: jest.fn().mockResolvedValue([{ id: 'platform-pc', slug: 'pc', name: 'PC' }]),
+      findMany: jest.fn().mockResolvedValue([
+        { id: 'platform-playstation', slug: 'playstation', name: 'PlayStation' },
+        { id: 'platform-pc', slug: 'pc', name: 'PC' },
+      ]),
     },
     theme: {
-      findMany: jest.fn().mockResolvedValue([{ id: 'theme-fantasy', slug: 'fantasy', name: 'Fantasy' }]),
+      findMany: jest
+        .fn()
+        .mockResolvedValue([{ id: 'theme-fantasy', slug: 'fantasy', name: 'Fantasy' }]),
     },
   }
 
@@ -146,8 +182,6 @@ describe('DiscoveryService & Search Engine', () => {
     }).compile()
 
     discoveryService = module.get<DiscoveryService>(DiscoveryService)
-    prisma = module.get<PrismaService>(PrismaService)
-    config = module.get<ConfigService>(ConfigService)
   })
 
   it('should be defined', () => {
@@ -157,18 +191,20 @@ describe('DiscoveryService & Search Engine', () => {
   describe('Search and Autocomplete', () => {
     it('should normalize, perform search, and rank exact matches first', async () => {
       const result = await discoveryService.search({ q: 'elden-ring', limit: 10, page: 1 })
-      
+
       // Contract snapshot validation
       expect(result).toHaveProperty('items')
       expect(result).toHaveProperty('total')
       expect(result.items.length).toBeGreaterThan(0)
-      
+
       // Exact title match should be first
-      expect(result.items[0].slug).toBe('elden-ring')
+      const firstResult = result.items[0]
+      if (!firstResult) throw new Error('Expected at least one search result')
+      expect(firstResult.slug).toBe('elden-ring')
       // Highlight should be injected
-      expect(result.items[0]).toHaveProperty('highlights')
-      expect(result.items[0].highlights?.[0].field).toBe('title')
-      expect(result.items[0].highlights?.[0].snippet).toContain('<em>Elden Ring</em>')
+      expect(firstResult).toHaveProperty('highlights')
+      expect(firstResult.highlights?.[0]?.field).toBe('title')
+      expect(firstResult.highlights?.[0]?.snippet).toContain('<em>Elden Ring</em>')
     })
 
     it('should return autocomplete suggestions with COVER_MD', async () => {
@@ -179,12 +215,21 @@ describe('DiscoveryService & Search Engine', () => {
       expect(suggestions[0]).toHaveProperty('slug')
       expect(suggestions[0]).toHaveProperty('coverUrl')
     })
+
+    it('should safely highlight search terms containing regex symbols', async () => {
+      const result = await discoveryService.search({ q: 'C++', limit: 10, page: 1 })
+
+      const firstResult = result.items[0]
+      if (!firstResult) throw new Error('Expected C++ search result')
+      expect(firstResult.slug).toBe('cpp-quest')
+      expect(firstResult.highlights?.[0]?.snippet).toBe('<em>C++</em> Quest')
+    })
   })
 
   describe('Facet Aggregation Metadata', () => {
     it('should generate filter metadata with counts', async () => {
       const metadata = await discoveryService.findFilters()
-      
+
       // Snapshot schema validation
       expect(metadata).toHaveProperty('genres')
       expect(metadata).toHaveProperty('platforms')
@@ -197,6 +242,7 @@ describe('DiscoveryService & Search Engine', () => {
         name: 'RPG',
         count: 45,
       })
+      expect(metadata.platforms.map((platform) => platform.slug)).toEqual(['pc', 'playstation'])
       expect(metadata.releaseYears.length).toBeGreaterThan(0)
     })
   })
@@ -204,13 +250,15 @@ describe('DiscoveryService & Search Engine', () => {
   describe('Shelf Ranking Strategies', () => {
     it('trending strategy should rank recent games higher than old games with decay', async () => {
       const trendingShelf = await discoveryService.findShelf('trending', 5)
-      
+
       expect(trendingShelf).toHaveProperty('id', 'trending')
       expect(trendingShelf.items.length).toBeGreaterThan(0)
-      
+
       // Shadow of the Erdtree (2024) should rank higher than Witcher 3 (2015) despite lower ratingCount
-      const shadowedIndex = trendingShelf.items.findIndex(i => i.slug === 'elden-ring-shadow-erdtree')
-      const witcherIndex = trendingShelf.items.findIndex(i => i.slug === 'witcher-3')
+      const shadowedIndex = trendingShelf.items.findIndex(
+        (i) => i.slug === 'elden-ring-shadow-erdtree',
+      )
+      const witcherIndex = trendingShelf.items.findIndex((i) => i.slug === 'witcher-3')
       expect(shadowedIndex).toBeLessThan(witcherIndex)
     })
 
@@ -218,7 +266,7 @@ describe('DiscoveryService & Search Engine', () => {
       const topRatedShelf = await discoveryService.findShelf('top-rated', 5)
       expect(topRatedShelf.items.length).toBeGreaterThan(0)
       // Hidden indie game only has 4 reviews, minReviews is 5, so it must not be in the shelf
-      const hasHiddenIndie = topRatedShelf.items.some(i => i.slug === 'hidden-indie')
+      const hasHiddenIndie = topRatedShelf.items.some((i) => i.slug === 'hidden-indie')
       expect(hasHiddenIndie).toBe(false)
     })
 
@@ -226,7 +274,7 @@ describe('DiscoveryService & Search Engine', () => {
       const hiddenGemsShelf = await discoveryService.findShelf('hidden-gems', 5)
       expect(hiddenGemsShelf.items.length).toBeGreaterThan(0)
       // Must contain Hidden Indie (has 4 reviews, max allowed is 10)
-      const hasHiddenIndie = hiddenGemsShelf.items.some(i => i.slug === 'hidden-indie')
+      const hasHiddenIndie = hiddenGemsShelf.items.some((i) => i.slug === 'hidden-indie')
       expect(hasHiddenIndie).toBe(true)
     })
   })

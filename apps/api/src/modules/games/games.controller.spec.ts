@@ -1,4 +1,4 @@
-import type { TestingModule } from '@nestjs/testing';
+import type { TestingModule } from '@nestjs/testing'
 import { Test } from '@nestjs/testing'
 import { GamesController } from './games.controller'
 import { ShelvesController } from './shelves.controller'
@@ -92,7 +92,12 @@ describe('Games & Shelves Controllers', () => {
         genres: [],
         platforms: [],
         screenshots: [],
-        rating: { averageRating: 9.0, ratingCount: 10, externalRating: null, externalRatingCount: null },
+        rating: {
+          averageRating: 9.0,
+          ratingCount: 10,
+          externalRating: null,
+          externalRatingCount: null,
+        },
         metadata: { developers: [], publishers: [], themes: [], tags: [] },
       }
       gamesService.findBySlug.mockResolvedValue(mockDetail)
@@ -103,14 +108,17 @@ describe('Games & Shelves Controllers', () => {
     })
 
     it('filters should return available taxonomies and set cache control headers', async () => {
-      const mockFilters = { genres: [], platforms: [], years: [], ratings: [] }
+      const mockFilters = { genres: [], platforms: [], themes: [], releaseYears: [] }
       discoveryService.findFilters.mockResolvedValue(mockFilters)
 
       const reply = mockFastifyReply()
       const result = await gamesController.filters(reply)
 
       expect(result).toEqual(mockFilters)
-      expect(reply.header).toHaveBeenCalledWith('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=600')
+      expect(reply.header).toHaveBeenCalledWith(
+        'Cache-Control',
+        'public, s-maxage=3600, stale-while-revalidate=600',
+      )
       expect(discoveryService.findFilters).toHaveBeenCalled()
     })
   })
@@ -128,7 +136,10 @@ describe('Games & Shelves Controllers', () => {
       const result = await shelvesController.getTrending(12, reply)
 
       expect(result).toEqual(mockShelf)
-      expect(reply.header).toHaveBeenCalledWith('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=60')
+      expect(reply.header).toHaveBeenCalledWith(
+        'Cache-Control',
+        'public, s-maxage=300, stale-while-revalidate=60',
+      )
       expect(discoveryService.findShelf).toHaveBeenCalledWith('trending', 12)
     })
 

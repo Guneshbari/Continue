@@ -1,8 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common'
 import axios from 'axios'
 import { IgdbAuthService } from './igdb-auth.service'
-import type { ProviderGame, ProviderTrailer } from '../contracts/provider.contracts'
-import type { RawIgdbGame } from '../normalizers/igdb-normalizer';
+import { ProviderGame, ProviderTrailer } from '../contracts/provider.contracts'
+import { RawIgdbGame } from '../normalizers/igdb-normalizer'
 import { normalizeIgdbGame } from '../normalizers/igdb-normalizer'
 import { ScenarioRegistryService } from '../../fixtures/scenario-registry.service'
 
@@ -30,7 +30,9 @@ export class IgdbApiService {
         this.logger.log('🔌 Circuit breaker cooldown complete. Resuming outgoing IGDB requests.')
       } else {
         const remainingSeconds = Math.ceil((this.breakerCooldownUntil - Date.now()) / 1000)
-        throw new Error(`IGDB API provider suspended due to too many consecutive failures. Cooldown active for: ${remainingSeconds}s.`)
+        throw new Error(
+          `IGDB API provider suspended due to too many consecutive failures. Cooldown active for: ${remainingSeconds}s.`,
+        )
       }
     }
   }
@@ -40,7 +42,9 @@ export class IgdbApiService {
     if (this.consecutiveFailures >= 5) {
       this.breakerState = 'OPEN'
       this.breakerCooldownUntil = Date.now() + 60_000 // 60-second suspension window
-      this.logger.error(`🔌 Circuit breaker tripped! Suspending all outgoing IGDB API requests for 60s.`)
+      this.logger.error(
+        `🔌 Circuit breaker tripped! Suspending all outgoing IGDB API requests for 60s.`,
+      )
     }
   }
 
@@ -74,7 +78,7 @@ export class IgdbApiService {
     const fields = this.getGameFieldsQuery()
     const queryBody = `fields ${fields}; where id = ${id};`
     const rawGames = await this.postRequest<RawIgdbGame[]>('/games', queryBody)
-    
+
     if (!rawGames || rawGames.length === 0) return null
     const first = rawGames[0]
     return first ? normalizeIgdbGame(first) : null
@@ -153,18 +157,14 @@ export class IgdbApiService {
     const clientId = this.authService.getClientId() ?? ''
 
     try {
-      const response = await axios.post<T>(
-        `${this.baseUrl}${endpoint}`,
-        queryBody,
-        {
-          timeout: 10000, // Enforce a 10s request timeout limit
-          headers: {
-            'Client-ID': clientId,
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'text/plain',
-          },
+      const response = await axios.post<T>(`${this.baseUrl}${endpoint}`, queryBody, {
+        timeout: 10000, // Enforce a 10s request timeout limit
+        headers: {
+          'Client-ID': clientId,
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'text/plain',
         },
-      )
+      })
 
       this.handleBreakerSuccess()
       this.checkRateLimits(response.headers)
@@ -173,7 +173,9 @@ export class IgdbApiService {
     } catch (error: any) {
       // 1. Handle HTTP 401 Unauthorized - retry once with refreshed token
       if (error.response?.status === 401 && !isRetry) {
-        this.logger.warn('⚠️ IGDB request returned 401 Unauthorized. Clearing Twitch token cache and retrying...')
+        this.logger.warn(
+          '⚠️ IGDB request returned 401 Unauthorized. Clearing Twitch token cache and retrying...',
+        )
         await this.authService.refreshAccessToken()
         return this.postRequest<T>(endpoint, queryBody, true)
       }
@@ -216,7 +218,7 @@ export class IgdbApiService {
   private getRealisticFixtureDataset(): ProviderGame[] {
     const fixtureGames = this.fixtureRegistry.resolveDataset('realistic')
     return fixtureGames.map((game, index) => ({
-      externalId: game.igdbId ?? (1000 + index),
+      externalId: game.igdbId ?? 1000 + index,
       slug: game.slug,
       title: game.title,
       description: game.description,
@@ -242,12 +244,11 @@ export class IgdbApiService {
     this.logger.log(`[Offline-Mode] Simulating game search for query: "${query}"`)
     const dataset = this.getRealisticFixtureDataset()
     const cleanQuery = query.toLowerCase().trim()
-    
+
     return dataset
       .filter(
         (g) =>
-          g.title.toLowerCase().includes(cleanQuery) ||
-          g.slug.toLowerCase().includes(cleanQuery),
+          g.title.toLowerCase().includes(cleanQuery) || g.slug.toLowerCase().includes(cleanQuery),
       )
       .slice(0, limit)
   }
@@ -261,8 +262,6 @@ export class IgdbApiService {
   private simulateOfflinePopular(limit: number): ProviderGame[] {
     this.logger.log(`[Offline-Mode] Simulating popular games listing...`)
     const dataset = this.getRealisticFixtureDataset()
-    return dataset
-      .sort((a, b) => (b.igdbRating ?? 0) - (a.igdbRating ?? 0))
-      .slice(0, limit)
+    return dataset.sort((a, b) => (b.igdbRating ?? 0) - (a.igdbRating ?? 0)).slice(0, limit)
   }
 }

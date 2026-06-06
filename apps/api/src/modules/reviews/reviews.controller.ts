@@ -1,10 +1,20 @@
 import {
-  Controller, Get, Post, Patch, Delete, Param, Body,
-  Query, ParseIntPipe, DefaultValuePipe, HttpCode, HttpStatus,
+  Controller,
+  Get,
+  Post,
+  Patch,
+  Delete,
+  Param,
+  Body,
+  Query,
+  ParseIntPipe,
+  DefaultValuePipe,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common'
 import { ApiTags, ApiBearerAuth, ApiOperation, ApiQuery } from '@nestjs/swagger'
 import { ReviewsService } from './reviews.service'
-import type { CreateReviewDto, UpdateReviewDto } from './dto/review.dto'
+import { CreateReviewDto, UpdateReviewDto } from './dto/review.dto'
 import { CurrentUser } from '../auth/decorators/current-user.decorator'
 import { Public } from '../auth/decorators/public.decorator'
 
@@ -39,21 +49,14 @@ export class ReviewsController {
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update my review' })
-  update(
-    @CurrentUser('id') userId: string,
-    @Param('id') id: string,
-    @Body() dto: UpdateReviewDto,
-  ) {
+  update(@CurrentUser('id') userId: string, @Param('id') id: string, @Body() dto: UpdateReviewDto) {
     return this.svc.update(id, userId, dto)
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: 'Delete my review' })
-  remove(
-    @CurrentUser('id') userId: string,
-    @Param('id') id: string,
-  ) {
+  remove(@CurrentUser('id') userId: string, @Param('id') id: string) {
     return this.svc.remove(id, userId)
   }
 }

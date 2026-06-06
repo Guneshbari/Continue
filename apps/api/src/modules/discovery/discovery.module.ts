@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common'
+import { Module, forwardRef } from '@nestjs/common'
 import { GamesModule } from '../games/games.module'
 import { SEARCH_PROVIDER } from './providers/search-provider.interface'
 import { PrismaSearchProvider } from './providers/prisma-search.provider'
@@ -11,7 +11,7 @@ import { NewlyAddedStrategy } from './strategies/newly-added.strategy'
 import { HiddenGemsStrategy } from './strategies/hidden-gems.strategy'
 
 @Module({
-  imports: [GamesModule],
+  imports: [forwardRef(() => GamesModule)],
   providers: [
     {
       provide: SEARCH_PROVIDER,

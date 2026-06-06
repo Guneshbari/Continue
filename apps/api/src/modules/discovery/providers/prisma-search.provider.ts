@@ -5,30 +5,10 @@ import { SearchProvider } from './search-provider.interface'
 import { SearchQueryDto, SearchSuggestionsQueryDto } from '../dto/search-query.dto'
 import { SearchResultDto, SearchSuggestionDto } from '../dto/search-response.dto'
 import { getVariantUrl } from '../../../common/utils/media'
+import { GAME_SUMMARY_SELECT, MEDIA_ASSET_SELECT } from '../discovery.constants'
+import type { Prisma } from '@prisma/client'
 
-const MEDIA_ASSET_SELECT = {
-  variants: {
-    select: {
-      role: true,
-      url: true,
-      width: true,
-      height: true,
-      blurPlaceholder: true,
-    },
-  },
-} as const
-
-const GAME_SUMMARY_SELECT = {
-  id: true,
-  slug: true,
-  title: true,
-  cover: { select: MEDIA_ASSET_SELECT },
-  releaseDate: true,
-  avgRating: true,
-  ratingCount: true,
-  genres: { select: { genre: { select: { id: true, slug: true, name: true } } } },
-  platforms: { select: { platform: { select: { id: true, slug: true, name: true } } } },
-} as const
+const SEARCH_CANDIDATE_LIMIT = 500
 
 @Injectable()
 export class PrismaSearchProvider implements SearchProvider {
@@ -40,27 +20,28 @@ export class PrismaSearchProvider implements SearchProvider {
   async search(query: SearchQueryDto): Promise<{ items: SearchResultDto[]; total: number }> {
     // Query Normalization Layer: trim, lowercase, remove consecutive hyphens/spaces
     const rawTerm = query.q || ''
-    const normalizedTerm = rawTerm.trim().toLowerCase().replace(/[\s-]+/g, ' ')
+    const normalizedTerm = rawTerm
+      .trim()
+      .toLowerCase()
+      .replace(/[\s-]+/g, ' ')
     if (normalizedTerm.length < 2) {
       return { items: [], total: 0 }
     }
 
     const page = Math.max(query.page ?? 1, 1)
     const limit = Math.min(Math.max(query.limit ?? 20, 1), 100)
+    const where = this.buildSearchWhere(normalizedTerm)
+    const take = Math.min(Math.max(page * limit * 3, limit), SEARCH_CANDIDATE_LIMIT)
 
-    // We fetch a candidate pool of matches to rank exact/prefix matches first in memory
-    const candidates = await this.prisma.game.findMany({
-      where: {
-        deletedAt: null,
-        OR: [
-          { title: { contains: normalizedTerm, mode: 'insensitive' } },
-          { slug: { contains: normalizedTerm, mode: 'insensitive' } },
-        ],
-      },
-      select: GAME_SUMMARY_SELECT,
-    })
-
-    const total = candidates.length
+    const [candidates, total] = await Promise.all([
+      this.prisma.game.findMany({
+        where,
+        orderBy: [{ ratingCount: 'desc' }, { avgRating: 'desc' }, { title: 'asc' }],
+        take,
+        select: GAME_SUMMARY_SELECT,
+      }),
+      this.prisma.game.count({ where }),
+    ])
 
     // Ranking Foundation: exact matches -> prefix matches -> popularity desc
     const sorted = candidates.sort((a, b) => {
@@ -100,8 +81,8 @@ export class PrismaSearchProvider implements SearchProvider {
       const titleLower = game.title.toLowerCase()
       const matchIndex = titleLower.indexOf(normalizedTerm)
       if (matchIndex !== -1) {
-        const originalMatch = game.title.substring(matchIndex, matchIndex + normalizedTerm.length)
-        const snippet = game.title.replace(new RegExp(normalizedTerm, 'ig'), `<em>${originalMatch}</em>`)
+        const endIndex = matchIndex + normalizedTerm.length
+        const snippet = `${game.title.slice(0, matchIndex)}<em>${game.title.slice(matchIndex, endIndex)}</em>${game.title.slice(endIndex)}`
         result.highlights = [{ field: 'title', snippet }]
       }
 
@@ -113,21 +94,21 @@ export class PrismaSearchProvider implements SearchProvider {
 
   async suggest(query: SearchSuggestionsQueryDto): Promise<SearchSuggestionDto[]> {
     const rawTerm = query.q || ''
-    const normalizedTerm = rawTerm.trim().toLowerCase().replace(/[\s-]+/g, ' ')
+    const normalizedTerm = rawTerm
+      .trim()
+      .toLowerCase()
+      .replace(/[\s-]+/g, ' ')
     if (normalizedTerm.length < 2) {
       return []
     }
 
     const limit = Math.min(Math.max(query.limit ?? 5, 1), 20)
+    const where = this.buildSearchWhere(normalizedTerm)
 
     const candidates = await this.prisma.game.findMany({
-      where: {
-        deletedAt: null,
-        OR: [
-          { title: { contains: normalizedTerm, mode: 'insensitive' } },
-          { slug: { contains: normalizedTerm, mode: 'insensitive' } },
-        ],
-      },
+      where,
+      orderBy: [{ ratingCount: 'desc' }, { title: 'asc' }],
+      take: Math.min(limit * 4, SEARCH_CANDIDATE_LIMIT),
       select: {
         id: true,
         slug: true,
@@ -160,5 +141,17 @@ export class PrismaSearchProvider implements SearchProvider {
       title: game.title,
       coverUrl: getVariantUrl(game.cover, 'COVER_MD') || null,
     }))
+  }
+
+  private buildSearchWhere(normalizedTerm: string): Prisma.GameWhereInput {
+    const slugTerm = normalizedTerm.replace(/\s+/g, '-')
+
+    return {
+      deletedAt: null,
+      OR: [
+        { title: { contains: normalizedTerm, mode: 'insensitive' } },
+        { slug: { contains: slugTerm, mode: 'insensitive' } },
+      ],
+    }
   }
 }

@@ -15,12 +15,14 @@ export default tseslint.config(
     },
   },
   {
-    ignores: [
-      '**/node_modules/**',
-      '**/dist/**',
-      '**/.next/**',
-      '**/build/**',
-      '**/coverage/**',
-    ],
+    ignores: ['**/node_modules/**', '**/dist/**', '**/.next/**', '**/build/**', '**/coverage/**'],
+  },
+  {
+    files: ['apps/api/src/**/*.ts'],
+    rules: {
+      // Nest constructor injection relies on emitted decorator metadata, so
+      // service/controller imports must stay available as runtime values.
+      '@typescript-eslint/consistent-type-imports': 'off',
+    },
   },
 )

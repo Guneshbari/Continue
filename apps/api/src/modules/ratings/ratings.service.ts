@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { PrismaService } from '../../common/prisma/prisma.service'
-import type { UpsertRatingDto } from './dto/rating.dto'
+import { UpsertRatingDto } from './dto/rating.dto'
 
 @Injectable()
 export class RatingsService {

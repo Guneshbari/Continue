@@ -1,13 +1,9 @@
 import { Processor, WorkerHost, InjectQueue } from '@nestjs/bullmq'
-import type { Job, Queue } from 'bullmq'
+import { Job, Queue } from 'bullmq'
 import { Logger } from '@nestjs/common'
 import { MediaProcessingService } from '../../media/services/media-processing.service'
-import {
-  MEDIA_PROCESSING_QUEUE,
-  DEAD_LETTER_QUEUE,
-  PROCESS_MEDIA_JOB,
-} from '../queue.constants'
-import type { ProcessMediaPayload } from '../queue.types'
+import { MEDIA_PROCESSING_QUEUE, DEAD_LETTER_QUEUE, PROCESS_MEDIA_JOB } from '../queue.constants'
+import { ProcessMediaPayload } from '../queue.types'
 
 @Processor(MEDIA_PROCESSING_QUEUE)
 export class MediaProcessingWorker extends WorkerHost {
@@ -15,14 +11,16 @@ export class MediaProcessingWorker extends WorkerHost {
 
   constructor(
     private readonly mediaProcessor: MediaProcessingService,
-    @InjectQueue(DEAD_LETTER_QUEUE) private readonly deadLetterQueue: Queue
+    @InjectQueue(DEAD_LETTER_QUEUE) private readonly deadLetterQueue: Queue,
   ) {
     super()
   }
 
   async process(job: Job<any, any, string>): Promise<any> {
     const startTime = Date.now()
-    this.logger.log(`📥 Starting media-processing job: [${job.name}] | Job ID: ${job.id} | Attempt: ${job.attemptsMade + 1}`)
+    this.logger.log(
+      `📥 Starting media-processing job: [${job.name}] | Job ID: ${job.id} | Attempt: ${job.attemptsMade + 1}`,
+    )
 
     try {
       switch (job.name) {
@@ -46,7 +44,9 @@ export class MediaProcessingWorker extends WorkerHost {
       // Intercept permanent failures to store in Dead Letter Queue (DLQ)
       const maxAttempts = job.opts.attempts || 3
       if (job.attemptsMade + 1 >= maxAttempts) {
-        this.logger.warn(`⚠️ Media job ${job.id} permanently failed. Enqueueing to Dead Letter Queue (DLQ).`)
+        this.logger.warn(
+          `⚠️ Media job ${job.id} permanently failed. Enqueueing to Dead Letter Queue (DLQ).`,
+        )
         try {
           await this.deadLetterQueue.add(
             'FailedJob',
@@ -60,10 +60,12 @@ export class MediaProcessingWorker extends WorkerHost {
             },
             {
               jobId: `dlq:media-processing:${job.id}`, // ensure idempotency in the DLQ itself
-            }
+            },
           )
         } catch (dlqErr: any) {
-          this.logger.error(`❌ Failed to route job ${job.id} to Dead Letter Queue: ${dlqErr.message}`)
+          this.logger.error(
+            `❌ Failed to route job ${job.id} to Dead Letter Queue: ${dlqErr.message}`,
+          )
         }
       }
 

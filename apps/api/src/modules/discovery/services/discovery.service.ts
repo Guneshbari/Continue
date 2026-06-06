@@ -3,20 +3,24 @@ import type { Prisma } from '@prisma/client'
 import { PrismaService } from '../../../common/prisma/prisma.service'
 import { ConfigService } from '@nestjs/config'
 import { GameMapper } from '../../games/game.mapper'
-import { SearchProvider, SEARCH_PROVIDER } from '../providers/search-provider.interface'
+import type { SearchProvider } from '../providers/search-provider.interface'
+import { SEARCH_PROVIDER } from '../providers/search-provider.interface'
 import { FacetAggregationService } from './facet-aggregation.service'
-import { ShelfRankingStrategy } from '../strategies/shelf-ranking.strategy'
+import type { ShelfRankingStrategy } from '../strategies/shelf-ranking.strategy'
 import { TrendingStrategy } from '../strategies/trending.strategy'
 import { TopRatedStrategy } from '../strategies/top-rated.strategy'
 import { RecentReleasesStrategy } from '../strategies/recent-releases.strategy'
 import { NewlyAddedStrategy } from '../strategies/newly-added.strategy'
 import { HiddenGemsStrategy } from '../strategies/hidden-gems.strategy'
-import { DiscoveryQueryDto } from '../dto/discovery-query.dto'
-import { SearchQueryDto, SearchSuggestionsQueryDto } from '../dto/search-query.dto'
+import type { DiscoveryQueryDto } from '../dto/discovery-query.dto'
+import type { SearchQueryDto, SearchSuggestionsQueryDto } from '../dto/search-query.dto'
 import { GAME_SUMMARY_SELECT } from '../discovery.constants'
-import { ShelfDto } from '../../games/dto/shelf.dto'
-import { PaginatedResponseDto } from '../../games/dto/pagination.dto'
-import { GameSummaryDto } from '../../games/dto/game-summary.dto'
+import type { ShelfDto } from '../../games/dto/shelf.dto'
+import type { PaginatedResponseDto } from '../../games/dto/pagination.dto'
+import type { GameSummaryDto } from '../../games/dto/game-summary.dto'
+import type { GamesQueryDto } from '../../games/dto/games.dto'
+
+type DiscoveryListQuery = DiscoveryQueryDto | GamesQueryDto
 
 @Injectable()
 export class DiscoveryService {
@@ -45,7 +49,7 @@ export class DiscoveryService {
     return this.facets.getFacets()
   }
 
-  async findAll(query: DiscoveryQueryDto): Promise<PaginatedResponseDto<GameSummaryDto>> {
+  async findAll(query: DiscoveryListQuery): Promise<PaginatedResponseDto<GameSummaryDto>> {
     const page = Math.max(query.page ?? 1, 1)
     const limit = Math.min(Math.max(query.limit ?? 24, 1), 100)
     const where = this.buildWhere(query)
@@ -129,13 +133,17 @@ export class DiscoveryService {
     return items.map((item) => this.mapper.toSummaryDto(item))
   }
 
-  private buildWhere(query: any): Prisma.GameWhereInput {
+  private buildWhere(query: DiscoveryListQuery): Prisma.GameWhereInput {
     const genre = query.genre
     const platform = query.platform
-    const theme = query.theme
-    const releaseYear = query.releaseYear ?? query.year
-    const ratingMin = query.ratingMin ?? query.minRating
-    const ratingMax = query.ratingMax ?? query.maxRating
+    const theme = 'theme' in query ? query.theme : undefined
+    const search = 'q' in query ? query.q?.trim() : undefined
+    const gamesQuery = query as GamesQueryDto
+    const discoveryQuery = query as DiscoveryQueryDto
+    const releaseYear = 'year' in query ? gamesQuery.year : discoveryQuery.releaseYear
+    const ratingMin = 'minRating' in query ? gamesQuery.minRating : discoveryQuery.ratingMin
+    const ratingMax = 'maxRating' in query ? gamesQuery.maxRating : discoveryQuery.ratingMax
+    const minReviewCount = 'minReviewCount' in query ? query.minReviewCount : undefined
     const hasMinRating = ratingMin !== undefined && ratingMin !== null
     const hasMaxRating = ratingMax !== undefined && ratingMax !== null
 
@@ -144,6 +152,12 @@ export class DiscoveryService {
       ...(genre && { genres: { some: { genre: { slug: genre } } } }),
       ...(platform && { platforms: { some: { platform: { slug: platform } } } }),
       ...(theme && { themes: { some: { theme: { slug: theme } } } }),
+      ...(search && {
+        OR: [
+          { title: { contains: search, mode: 'insensitive' as const } },
+          { slug: { contains: search.replace(/\s+/g, '-'), mode: 'insensitive' as const } },
+        ],
+      }),
       ...(releaseYear && {
         releaseDate: {
           gte: new Date(releaseYear, 0, 1),
@@ -156,19 +170,29 @@ export class DiscoveryService {
           ...(hasMaxRating && { lte: ratingMax }),
         },
       }),
+      ...(minReviewCount !== undefined && { ratingCount: { gte: minReviewCount } }),
     }
   }
 
   private resolveOrderBy(sort?: string): Prisma.GameOrderByWithRelationInput[] {
     switch (sort) {
       case 'rating':
+      case 'top-rated':
         return [{ avgRating: 'desc' }, { ratingCount: 'desc' }, { title: 'asc' }]
       case 'release_date':
+      case 'recently-released':
         return [{ releaseDate: 'desc' }, { title: 'asc' }]
       case 'recently_added':
+      case 'newest':
+      case 'new':
         return [{ createdAt: 'desc' }, { title: 'asc' }]
+      case 'upcoming':
+        return [{ releaseDate: 'asc' }, { title: 'asc' }]
       case 'title':
         return [{ title: 'asc' }]
+      case 'most-reviewed':
+        return [{ ratingCount: 'desc' }, { title: 'asc' }]
+      case 'trending':
       case 'popular':
       default:
         return [{ ratingCount: 'desc' }, { avgRating: 'desc' }, { title: 'asc' }]
