@@ -1,9 +1,9 @@
 import { Suspense } from 'react'
 import type { Metadata } from 'next'
-import { gamesApi } from '@/lib/api/games'
-import type { GamesListParams } from '@/lib/api/games'
+import { gamesApi } from '@/lib/api/games-api'
+import type { GamesListParams } from '@/lib/api/games-api'
 import { GameCard, GameCardSkeleton } from '@/components/game/GameCard'
-import { TRENDING_GAMES } from '@/lib/data/seed'
+import { TRENDING_GAMES } from '@/test-fixtures/seed'
 import type { GameSummary } from '@continue/types'
 import { getSkeletonKeys } from '@/lib/skeletonKeys'
 

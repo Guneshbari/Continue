@@ -53,17 +53,21 @@ function LenisProvider({ children }: { children: React.ReactNode }) {
   return <>{children}</>
 }
 
+import { QueryProvider } from '@/lib/query/query-provider'
+
 /* ── Root providers composition ───────────────────────────────────── */
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
-    <ThemeProvider
-      attribute="class"
-      defaultTheme="dark"
-      enableSystem={false}
-      disableTransitionOnChange
-    >
-      <LenisProvider>{children}</LenisProvider>
-    </ThemeProvider>
+    <QueryProvider>
+      <ThemeProvider
+        attribute="class"
+        defaultTheme="dark"
+        enableSystem={false}
+        disableTransitionOnChange
+      >
+        <LenisProvider>{children}</LenisProvider>
+      </ThemeProvider>
+    </QueryProvider>
   )
 }

@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { Layers } from 'lucide-react'
-import type { SeedCollection } from '@/lib/data/seed'
+import type { SeedCollection } from '@/test-fixtures/seed'
 
 type CommunityCollectionsSectionProps = Readonly<{
   collections: SeedCollection[]

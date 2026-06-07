@@ -1,15 +1,9 @@
 import { Suspense } from 'react'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { gamesApi } from '@/lib/api/games'
-import type { GamesListParams } from '@/lib/api/games'
-import { DiscoverySidebar } from '@/components/game/DiscoverySidebar'
-import { DiscoveryFilterBar } from '@/components/game/DiscoveryFilterBar'
-import { ResponsiveGameGrid } from '@/components/game/ResponsiveGameGrid'
-import { PaginationLoader } from '@/components/game/PaginationLoader'
-import { GameCardSkeleton } from '@/components/game/GameCard'
-import { getSkeletonKeys } from '@/lib/skeletonKeys'
+import { DiscoverSortClient } from '@/components/game/DiscoverSortClient'
 import { ResponsiveContainer } from '@/components/ui/ResponsiveContainer'
+import type { GamesListParams } from '@/lib/api/games-api'
 
 export const revalidate = 300
 
@@ -71,69 +65,12 @@ export async function generateMetadata({
   }
 }
 
-async function FilteredGameView({
-  sortKey,
-  genre,
-  platform,
-  year,
-  rating,
-  maxRating,
-  minReviewCount,
-  cursor,
-}: {
-  sortKey: string
-  genre?: string | undefined
-  platform?: string | undefined
-  year?: string | undefined
-  rating?: string | undefined
-  maxRating?: string | undefined
-  minReviewCount?: string | undefined
-  cursor?: string | undefined
-}) {
-  const apiSort = SORT_MAP[sortKey]
-  if (!apiSort) notFound()
-
-  let gamesResponse
-  try {
-    gamesResponse = await gamesApi.list({
-      sort: apiSort,
-      genre,
-      platform,
-      year: year ? parseInt(year, 10) : undefined,
-      minRating: rating ? parseInt(rating, 10) : undefined,
-      maxRating: maxRating ? parseInt(maxRating, 10) : undefined,
-      minReviewCount: minReviewCount ? parseInt(minReviewCount, 10) : undefined,
-      cursor,
-      limit: 24,
-    })
-  } catch (err) {
-    console.error('Failed to load deep discovery games list:', err)
-    gamesResponse = { data: [], meta: { nextCursor: null } }
-  }
-
-  return (
-    <div className="discovery-results-wrapper">
-      <ResponsiveGameGrid games={gamesResponse.data} />
-      <PaginationLoader nextCursor={gamesResponse.meta?.nextCursor ?? null} />
-    </div>
-  )
-}
-
-export default async function DiscoverSortPage({ params, searchParams }: PageProps) {
+export default async function DiscoverSortPage({ params }: PageProps) {
   const resolvedParams = await params
-  const resolvedQueryParams = await searchParams
   const sortKey = resolvedParams.sort
 
   if (!SORT_MAP[sortKey]) {
     notFound()
-  }
-
-  // Load active filters dynamically so selects render dynamically
-  let filters
-  try {
-    filters = await gamesApi.filters()
-  } catch {
-    filters = { genres: [], platforms: [], years: [], ratings: [] }
   }
 
   const title = TITLE_MAP[sortKey]
@@ -149,39 +86,15 @@ export default async function DiscoverSortPage({ params, searchParams }: PagePro
         </div>
       </div>
 
-      <div className="discovery-grid-layout">
-        {/* Left hand Sidebar */}
-        <DiscoverySidebar />
-
-        {/* Right hand Content */}
-        <div className="discovery-main-content">
-          <DiscoveryFilterBar filters={filters} />
-
-          <Suspense fallback={
-            <div className="discovery-results-wrapper">
-              <div className="grid-switcher-placeholder" style={{ height: '2rem', marginBottom: '1.5rem' }} />
-              <ul className="games-grid" style={{ padding: 0, margin: 0, listStyle: 'none' }}>
-                {getSkeletonKeys(12).map((skeletonKey) => (
-                  <li key={skeletonKey}>
-                    <GameCardSkeleton />
-                  </li>
-                ))}
-              </ul>
-            </div>
-          }>
-            <FilteredGameView
-              sortKey={sortKey}
-              genre={resolvedQueryParams.genre}
-              platform={resolvedQueryParams.platform}
-              year={resolvedQueryParams.year}
-              rating={resolvedQueryParams.rating}
-              maxRating={resolvedQueryParams.maxRating}
-              minReviewCount={resolvedQueryParams.minReviewCount}
-              cursor={resolvedQueryParams.cursor}
-            />
-          </Suspense>
+      <Suspense fallback={
+        <div className="discovery-grid-layout" style={{ opacity: 0.5 }}>
+          <div className="discovery-main-content">
+            <div className="discovery-filter-bar-skeleton" style={{ height: '2.5rem', marginBottom: '1.5rem', background: 'var(--color-bg-tertiary)', borderRadius: 'var(--radius-md)' }} />
+          </div>
         </div>
-      </div>
+      }>
+        <DiscoverSortClient sortKey={sortKey} />
+      </Suspense>
     </ResponsiveContainer>
   )
 }

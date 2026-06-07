@@ -1,26 +1,37 @@
-import { Suspense } from 'react'
-import type { Metadata } from 'next'
-import { gamesApi } from '@/lib/api/games'
+'use client'
+
+import { useDiscoverDashboard } from '@/hooks/api/useDiscoverDashboard'
 import { DiscoverySidebar } from '@/components/game/DiscoverySidebar'
 import { GameCard } from '@/components/game/GameCard'
 import { Compass } from 'lucide-react'
 import Link from 'next/link'
 import { ResponsiveContainer } from '@/components/ui/ResponsiveContainer'
+import { GlobalErrorState } from '@/components/ui/GlobalErrorState'
 
-export const revalidate = 300
+function DiscoverDashboardContent() {
+  const { data, isLoading, isError, refetch } = useDiscoverDashboard(6)
 
-export const metadata: Metadata = {
-  title: 'Curated Discover Hub — Continue',
-  description: 'Explore the latest trending, top-rated, recently released, and upcoming releases.',
-}
+  if (isLoading) {
+    return (
+      <div className="discovery-dashboard-skeleton">
+        {[1, 2].map((s) => (
+          <div key={s} className="discover-dashboard-section" style={{ marginBottom: '4rem' }}>
+            <div className="skeleton-line skeleton-line--title" style={{ width: '200px', height: '1.5rem', marginBottom: '1.5rem' }} />
+            <div className="games-grid">
+              {[1, 2, 3, 4, 5, 6].map((k) => (
+                <div key={k} className="game-card game-card--skeleton" style={{ padding: 0 }}>
+                  <div className="game-card__cover skeleton-pulse" style={{ aspectRatio: '3/4' }} />
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    )
+  }
 
-async function DiscoverDashboard() {
-  let data
-  try {
-    data = await gamesApi.discover(6)
-  } catch (err) {
-    console.error('Failed to fetch discovery dashboard:', err)
-    data = { trending: [], newReleases: [], topRated: [], upcoming: [] }
+  if (isError) {
+    return <GlobalErrorState onRetry={refetch} />
   }
 
   const sections = [
@@ -84,24 +95,7 @@ export default function DiscoverPage() {
 
         {/* Dashboard Content */}
         <div className="discovery-main-content">
-          <Suspense fallback={
-            <div className="discovery-dashboard-skeleton">
-              {[1, 2].map((s) => (
-                <div key={s} className="discover-dashboard-section" style={{ marginBottom: '4rem' }}>
-                  <div className="skeleton-line skeleton-line--title" style={{ width: '200px', height: '1.5rem', marginBottom: '1.5rem' }} />
-                  <div className="games-grid">
-                    {[1, 2, 3, 4, 5, 6].map((k) => (
-                      <div key={k} className="game-card game-card--skeleton">
-                        <div className="game-card__cover skeleton-pulse" style={{ aspectRatio: '3/4' }} />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          }>
-            <DiscoverDashboard />
-          </Suspense>
+          <DiscoverDashboardContent />
         </div>
       </div>
     </ResponsiveContainer>

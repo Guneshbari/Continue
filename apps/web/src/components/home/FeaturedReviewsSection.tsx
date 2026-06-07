@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { Star, Quote } from 'lucide-react'
-import type { SeedReview } from '@/lib/data/seed'
+import type { SeedReview } from '@/test-fixtures/seed'
 
 type FeaturedReviewsSectionProps = Readonly<{
   reviews: SeedReview[]

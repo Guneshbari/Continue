@@ -17,10 +17,11 @@ import {
   COMMUNITY_COLLECTIONS,
   type SeedReview,
   type SeedCollection,
-} from '@/lib/data/seed'
+} from '@/test-fixtures/seed'
 import { env } from '@/lib/env'
 import type { Metadata } from 'next'
-import type { GameSummary, GameDetail, FeaturedReview, DiscoveryCollection } from '@continue/types'
+import type { GameDetail, FeaturedReview, DiscoveryCollection } from '@continue/types'
+import type { GameShelf } from '@/lib/api/shelves-api'
 
 export const metadata: Metadata = {
   title: 'Continue — Discover Your Next Game',
@@ -81,27 +82,30 @@ function adaptCollections(apiCollections: DiscoveryCollection[]): SeedCollection
 // ─── Main data loader — all fetches run in parallel ──────────────────────────
 
 async function getHomeData() {
-  const [trending, newReleases, topRated, featuredReviews, collections] =
+  const [trendingShelf, recentReleasesShelf, topRatedShelf, featuredReviews, collections] =
     await Promise.all([
-      fetchDiscovery<GameSummary[]>('/games/trending?limit=6'),
-      fetchDiscovery<GameSummary[]>('/games/new-releases?limit=6'),
-      fetchDiscovery<GameSummary[]>('/games/top-rated?limit=6'),
+      fetchDiscovery<GameShelf>('/shelves/trending?limit=6'),
+      fetchDiscovery<GameShelf>('/shelves/recent-releases?limit=6'),
+      fetchDiscovery<GameShelf>('/shelves/top-rated?limit=6'),
       fetchDiscovery<FeaturedReview[]>('/reviews/featured?limit=3'),
       fetchDiscovery<DiscoveryCollection[]>('/lists/discovery?limit=3'),
     ])
 
-  const hasLiveGames = (trending?.length ?? 0) > 0
-  const liveGames = trending ?? []
+  const trending = trendingShelf?.items ?? []
+  const newReleases = recentReleasesShelf?.items ?? []
+  const topRated = topRatedShelf?.items ?? []
+
+  const hasLiveGames = trending.length > 0
 
   return {
     // Hero takes GameDetail[] — cast from GameSummary if live data available
     featured: hasLiveGames
-      ? (liveGames.slice(0, 3) as unknown as GameDetail[])
+      ? (trending.slice(0, 3) as unknown as GameDetail[])
       : FEATURED_GAMES,
 
-    trending: hasLiveGames ? liveGames : TRENDING_GAMES,
-    newReleases: (newReleases?.length ?? 0) > 0 ? (newReleases ?? []) : NEW_RELEASES,
-    topRated: (topRated?.length ?? 0) > 0 ? (topRated ?? []) : TOP_RATED,
+    trending: hasLiveGames ? trending : TRENDING_GAMES,
+    newReleases: newReleases.length > 0 ? newReleases : NEW_RELEASES,
+    topRated: topRated.length > 0 ? topRated : TOP_RATED,
 
     reviews:
       (featuredReviews?.length ?? 0) > 0

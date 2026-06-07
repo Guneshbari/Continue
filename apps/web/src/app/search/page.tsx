@@ -5,55 +5,42 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { Search, Star, X, Loader2 } from 'lucide-react'
-import { searchApi, type SearchResultItem } from '@/lib/api/search'
-import { FEATURED_GAMES, NEW_RELEASES } from '@/lib/data/seed'
-import type { GameSummary } from '@continue/types'
+import { useSearch } from '@/hooks/api/useSearch'
+import { useSearchSuggestions } from '@/hooks/api/useSearchSuggestions'
+import { useDebouncedValue } from '@/hooks/useDebouncedValue'
 import { SearchSuggestionsDropdown } from '@/components/game/SearchSuggestionsDropdown'
 import { SearchEmptyState } from '@/components/game/SearchEmptyState'
 import { MetadataBadge, MetadataBadgeGroup } from '@/components/ui/MetadataBadgeSystem'
-
-// Seed fallback search — client-side filter over seed data
-function searchSeed(q: string): SearchResultItem[] {
-  const all: GameSummary[] = [...FEATURED_GAMES, ...NEW_RELEASES]
-  const term = q.toLowerCase()
-  const seen = new Set<string>()
-  return all
-    .filter((g) => {
-      if (seen.has(g.id)) return false
-      seen.add(g.id)
-      return (
-        g.title.toLowerCase().includes(term) ||
-        g.genres?.some((genre) => genre.name.toLowerCase().includes(term))
-      )
-    })
-    .map((g) => ({ ...g, type: 'game' as const }))
-}
-
-function useDebounce<T>(value: T, ms: number): T {
-  const [debounced, setDebounced] = useState(value)
-  useEffect(() => {
-    const t = setTimeout(() => setDebounced(value), ms)
-    return () => clearTimeout(t)
-  }, [value, ms])
-  return debounced
-}
+import { GlobalErrorState } from '@/components/ui/GlobalErrorState'
 
 export default function SearchPage() {
   const router = useRouter()
   const [query, setQuery] = useState('')
-  const [results, setResults] = useState<SearchResultItem[]>([])
-  const [loading, setLoading] = useState(false)
-  const [searched, setSearched] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
-  const debouncedQ = useDebounce(query, 300)
+  const debouncedQ = useDebouncedValue(query, 300)
 
   // Autocomplete / suggest states
   const [dropdownOpen, setDropdownOpen] = useState(false)
-  const [suggestions, setSuggestions] = useState<GameSummary[]>([])
-  const [suggestsLoading, setSuggestsLoading] = useState(false)
   const [highlightedIndex, setHighlightedIndex] = useState(-1)
   const [recentSearches, setRecentSearches] = useState<string[]>([])
+
+  // Fetch results and suggestions using hooks
+  const {
+    data: searchResponse,
+    isLoading: loading,
+    isError: isSearchError,
+    refetch: refetchSearch,
+  } = useSearch(debouncedQ, 20)
+
+  const {
+    data: suggestionsResponse,
+    isLoading: suggestsLoading,
+  } = useSearchSuggestions(debouncedQ, 5)
+
+  const results = searchResponse?.data ?? []
+  const suggestions = suggestionsResponse?.data ?? []
+  const searched = debouncedQ.trim().length >= 2
 
   // Autofocus on mount
   useEffect(() => {
@@ -97,47 +84,16 @@ export default function SearchPage() {
     loadRecentSearches()
   }
 
-  const doSearch = useCallback(async (q: string) => {
-    if (q.trim().length < 2) {
-      setResults([])
-      setSearched(false)
-      return
+  const handleSelectSuggestion = (title: string, slug?: string) => {
+    saveRecentSearch(title)
+    if (slug) {
+      setDropdownOpen(false)
+      router.push(`/games/${slug}`)
+    } else {
+      setQuery(title)
+      setDropdownOpen(false)
     }
-    setLoading(true)
-    setSearched(true)
-    try {
-      const res = await searchApi.search(q)
-      setResults(res.data.length > 0 ? res.data : searchSeed(q))
-    } catch {
-      setResults(searchSeed(q))
-    } finally {
-      setLoading(false)
-    }
-  }, [])
-
-  useEffect(() => {
-    doSearch(debouncedQ)
-  }, [debouncedQ, doSearch])
-
-  // Fetch dynamic suggestions debounced
-  useEffect(() => {
-    const fetchSuggests = async () => {
-      if (debouncedQ.trim().length < 2) {
-        setSuggestions([])
-        return
-      }
-      setSuggestsLoading(true)
-      try {
-        const res = await searchApi.suggestions(debouncedQ, 5)
-        setSuggestions(res.data)
-      } catch {
-        setSuggestions([])
-      } finally {
-        setSuggestsLoading(false)
-      }
-    }
-    fetchSuggests()
-  }, [debouncedQ])
+  }
 
   // Keyboard navigation handler
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -177,18 +133,6 @@ export default function SearchPage() {
         saveRecentSearch(query)
         setDropdownOpen(false)
       }
-    }
-  }
-
-  const handleSelectSuggestion = (title: string, slug?: string) => {
-    saveRecentSearch(title)
-    if (slug) {
-      setDropdownOpen(false)
-      router.push(`/games/${slug}`)
-    } else {
-      setQuery(title)
-      setDropdownOpen(false)
-      doSearch(title)
     }
   }
 
@@ -268,7 +212,13 @@ export default function SearchPage() {
           <p className="search-page__hint">Type to search — results appear instantly.</p>
         )}
 
-        {searched && !loading && results.length === 0 && (
+        {isSearchError && searched && (
+          <div style={{ marginTop: '2rem' }}>
+            <GlobalErrorState onRetry={refetchSearch} />
+          </div>
+        )}
+
+        {searched && !loading && !isSearchError && results.length === 0 && (
           <SearchEmptyState
             query={query}
             onClear={() => {
@@ -278,7 +228,7 @@ export default function SearchPage() {
           />
         )}
 
-        {results.length > 0 && (
+        {searched && !isSearchError && results.length > 0 && (
           <>
             <p className="search-page__count">
               {results.length} {results.length === 1 ? 'result' : 'results'}
