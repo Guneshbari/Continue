@@ -4634,3 +4634,117 @@
     }
   }
 }
+
+/* ─── Library Status Dropdown ────────────────────────────────────────────── */
+.library-status-selector {
+  position: relative;
+  width: 100%;
+}
+
+.catalog-toggles-dropdown {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.catalog-trigger-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.55rem 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-sunken);
+  font-family: var(--font-ui);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all 120ms;
+  width: 100%;
+}
+
+.catalog-trigger-btn:hover {
+  background-color: var(--color-surface-overlay);
+  border-color: var(--color-border-strong);
+  color: var(--color-text-primary);
+}
+
+.catalog-trigger-btn--active {
+  background-color: oklch(35% 0.15 150 / 0.15);
+  border-color: var(--color-success);
+  color: oklch(80% 0.15 150);
+}
+
+.catalog-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: 4px;
+  background-color: var(--color-surface-raised);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  z-index: 50;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.catalog-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 0.8rem;
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+  font-family: var(--font-ui);
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all 100ms;
+}
+
+.catalog-dropdown-item:hover {
+  background-color: var(--color-surface-overlay);
+  color: var(--color-text-primary);
+}
+
+.catalog-dropdown-item--active {
+  color: var(--color-success);
+  font-weight: 600;
+  background-color: oklch(35% 0.15 150 / 0.08);
+}
+
+.catalog-dropdown-item-check {
+  margin-left: auto;
+  color: var(--color-success);
+}
+
+.catalog-dropdown-item--remove {
+  border-top: 1px solid var(--color-border-subtle);
+  color: var(--color-error);
+}
+
+.catalog-dropdown-item--remove:hover {
+  background-color: oklch(62% 0.25 20 / 0.08);
+  color: var(--color-error);
+}
+
+.library-status-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+  padding: 0.55rem;
+  border: 1px dashed var(--color-border);
+  border-radius: 8px;
+}
+

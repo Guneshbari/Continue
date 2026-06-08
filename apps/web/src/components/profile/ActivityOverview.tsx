@@ -1,9 +1,9 @@
-import { Star, MessageSquare, Layers, Calendar } from 'lucide-react'
+import { Star, MessageSquare, Layers, Calendar, Bookmark, Plus } from 'lucide-react'
 import Link from 'next/link'
 
 interface ActivityItem {
   id: string
-  type: 'RATING' | 'REVIEW' | 'LIST'
+  type: 'RATING' | 'REVIEW' | 'LIST' | 'LIBRARY_CHANGE' | 'LIST_ADD'
   title: string
   subtitle?: string | null
   gameTitle?: string
@@ -22,11 +22,10 @@ interface ActivityOverviewProps {
 }
 
 export function ActivityOverview({ ratings, reviews, lists, username: _username, isOwner: _isOwner }: ActivityOverviewProps) {
-  // Aggregate recent events into a single sorted chronological list of max 4 items
   const activities: ActivityItem[] = []
 
   // Add ratings
-  ratings.slice(0, 3).forEach((r) => {
+  ratings.slice(0, 4).forEach((r) => {
     activities.push({
       id: `rating-${r.id}`,
       type: 'RATING',
@@ -39,7 +38,7 @@ export function ActivityOverview({ ratings, reviews, lists, username: _username,
   })
 
   // Add reviews
-  reviews.slice(0, 3).forEach((rev) => {
+  reviews.slice(0, 4).forEach((rev) => {
     activities.push({
       id: `review-${rev.id}`,
       type: 'REVIEW',
@@ -51,8 +50,8 @@ export function ActivityOverview({ ratings, reviews, lists, username: _username,
     })
   })
 
-  // Add lists
-  lists.slice(0, 3).forEach((l) => {
+  // Add lists, list additions and library changes
+  lists.forEach((l) => {
     activities.push({
       id: `list-${l.id}`,
       type: 'LIST',
@@ -60,12 +59,47 @@ export function ActivityOverview({ ratings, reviews, lists, username: _username,
       slug: l.slug,
       date: l.createdAt,
     })
+
+    const isStatusList = ['playing', 'completed', 'dropped', 'backlog', 'wishlist'].includes(l.slug)
+
+    if (l.items && Array.isArray(l.items)) {
+      l.items.forEach((item: any) => {
+        if (!item || !item.game) return
+
+        if (isStatusList) {
+          let actionText = `Moved ${item.game.title} to ${l.title}`
+          if (l.slug === 'playing') actionText = `Started playing ${item.game.title}`
+          if (l.slug === 'completed') actionText = `Completed ${item.game.title}`
+          if (l.slug === 'dropped') actionText = `Dropped ${item.game.title}`
+          if (l.slug === 'backlog') actionText = `Added ${item.game.title} to backlog`
+          if (l.slug === 'wishlist') actionText = `Added ${item.game.title} to wishlist`
+
+          activities.push({
+            id: `library-${l.id}-${item.game.id}`,
+            type: 'LIBRARY_CHANGE',
+            title: actionText,
+            gameTitle: item.game.title,
+            gameSlug: item.game.slug,
+            date: item.createdAt || l.updatedAt,
+          })
+        } else {
+          activities.push({
+            id: `list-add-${l.id}-${item.game.id}`,
+            type: 'LIST_ADD',
+            title: `Added ${item.game.title} to collection "${l.title}"`,
+            gameTitle: item.game.title,
+            gameSlug: item.game.slug,
+            date: item.createdAt || l.updatedAt,
+          })
+        }
+      })
+    }
   })
 
   // Sort chronological
   const sortedActivities = activities
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    .slice(0, 4)
+    .slice(0, 6)
 
   if (sortedActivities.length === 0) {
     return (
@@ -79,6 +113,8 @@ export function ActivityOverview({ ratings, reviews, lists, username: _username,
     RATING: <Star size={12} className="text-warning" />,
     REVIEW: <MessageSquare size={12} className="text-accent" />,
     LIST: <Layers size={12} className="text-success" />,
+    LIBRARY_CHANGE: <Bookmark size={12} className="text-accent" />,
+    LIST_ADD: <Plus size={12} className="text-success" />,
   }
 
   return (
@@ -123,6 +159,14 @@ export function ActivityOverview({ ratings, reviews, lists, username: _username,
                     <Link href={`/lists/${act.slug}`} className="hover:text-accent underline decoration-border-strong transition-colors">
                       {act.title.replace('Created collection ', '')}
                     </Link>
+                  </>
+                ) : (act.type === 'LIBRARY_CHANGE' || act.type === 'LIST_ADD') && act.gameSlug ? (
+                  <>
+                    {act.title.split(act.gameTitle ?? '')[0]}
+                    <Link href={`/games/${act.gameSlug}`} className="hover:text-accent underline decoration-border-strong transition-colors">
+                      {act.gameTitle}
+                    </Link>
+                    {act.title.split(act.gameTitle ?? '')[1]}
                   </>
                 ) : (
                   act.title

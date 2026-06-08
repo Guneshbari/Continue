@@ -20,4 +20,18 @@ export const queryKeys = {
     all: ['discover'] as const,
     metadata: () => [...queryKeys.discover.all, 'metadata'] as const,
   },
+  users: {
+    all: ['users'] as const,
+    profile: (username: string) => [...queryKeys.users.all, 'profile', username] as const,
+    ratings: (username: string) => [...queryKeys.users.all, 'ratings', username] as const,
+    reviews: (username: string) => [...queryKeys.users.all, 'reviews', username] as const,
+    lists: (username: string) => [...queryKeys.users.all, 'lists', username] as const,
+  },
+  ratings: {
+    me: (gameId: string) => ['ratings', 'me', gameId] as const,
+  },
+  reviews: {
+    list: (gameId: string) => ['reviews', 'list', gameId] as const,
+  },
 }
+

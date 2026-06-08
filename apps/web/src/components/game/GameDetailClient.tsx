@@ -170,6 +170,7 @@ export function GameDetailClient({ slug }: GameDetailClientProps) {
             {/* Interactive sidebar card (Rating picker, lists buttons) */}
             <GameDetailInteractive
               gameId={g.id}
+              slug={slug}
               gameTitle={g.title}
               initialAvgRating={g.avgRating}
               initialRatingCount={g.ratingCount}

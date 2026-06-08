@@ -1,90 +1,51 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import type { KeyboardEvent } from 'react'
 import { Star, X, Loader2 } from 'lucide-react'
-import { useAuth } from '@/lib/auth/AuthContext'
-import { ratingsApi } from '@/lib/api/interactions'
+import { useInteractionPermissions } from '@/hooks/useInteractionPermissions'
+import { useMyRating } from '@/hooks/api/useMyRating'
+import { useRateGame } from '@/hooks/api/useRateGame'
 
 const STAR_VALUES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] as const
 
 interface RatingSelectorProps {
   gameId: string
-  onRatingChanged?: (newAvgRating: number, newCount: number) => void
+  slug: string
 }
 
-export function RatingSelector({ gameId, onRatingChanged: _onRatingChanged }: RatingSelectorProps) {
-  const { user, token } = useAuth()
+export function RatingSelector({ gameId, slug }: RatingSelectorProps) {
+  const { guardAction, token, isAuthenticated } = useInteractionPermissions()
+  const { data: myRating, isLoading: loading } = useMyRating(gameId, token)
+  const { rateGame, isRating, deleteRating, isDeleting } = useRateGame(gameId, slug, token)
+
   const [hovered, setHovered] = useState(0)
-  const [selected, setSelected] = useState(0)
-  const [loading, setLoading] = useState(false)
-  const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  // Load user rating if logged in
-  useEffect(() => {
-    if (!token) return
-    setLoading(true)
-    ratingsApi
-      .myRating(gameId, token)
-      .then((res) => {
-        if (res) setSelected(res.score)
-      })
-      .catch(() => {
-        // Silent catch for loaded states
-      })
-      .finally(() => {
-        setLoading(false)
-      })
-  }, [gameId, token])
+  const selected = myRating?.score ?? 0
+  const saving = isRating || isDeleting
 
   const handleRate = async (score: number) => {
-    if (!user) {
-      window.location.href = '/login'
-      return
-    }
-    if (!token) return
-    const prevSelected = selected
-    setSaving(true)
     setError(null)
-    
-    // Optimistic Update
-    setSelected(score)
-
-    try {
-      const res = await ratingsApi.upsert(gameId, score, token)
-      setSelected(res.score)
-    } catch {
-      // Rollback on error
-      setSelected(prevSelected)
-      setError('Failed to save rating.')
-    } finally {
-      setSaving(false)
-    }
+    guardAction(async () => {
+      try {
+        await rateGame(score)
+      } catch {
+        setError('Failed to save rating.')
+      }
+    })
   }
 
   const handleClear = async () => {
-    if (!user) {
-      window.location.href = '/login'
-      return
-    }
-    if (!token || selected === 0) return
-    const prevSelected = selected
-    setSaving(true)
+    if (selected === 0) return
     setError(null)
-
-    // Optimistic Update
-    setSelected(0)
-
-    try {
-      await ratingsApi.remove(gameId, token)
-    } catch {
-      // Rollback on error
-      setSelected(prevSelected)
-      setError('Failed to remove rating.')
-    } finally {
-      setSaving(false)
-    }
+    guardAction(async () => {
+      try {
+        await deleteRating()
+      } catch {
+        setError('Failed to remove rating.')
+      }
+    })
   }
 
   const handleKeyDown = (e: KeyboardEvent<HTMLButtonElement>, val: number) => {
@@ -116,7 +77,7 @@ export function RatingSelector({ gameId, onRatingChanged: _onRatingChanged }: Ra
 
       {loading ? (
         <div className="rating-selector__loading">
-          <Loader2 size={16} className="rating-selector__spinner" />
+          <Loader2 size={16} className="rating-selector__spinner search-spin" style={{ animation: 'search-spin 0.8s linear infinite' }} />
           <span>Fetching rating...</span>
         </div>
       ) : (
@@ -162,7 +123,7 @@ export function RatingSelector({ gameId, onRatingChanged: _onRatingChanged }: Ra
       )}
 
       {error && <span className="rating-selector__error" role="alert">{error}</span>}
-      {!user && (
+      {!isAuthenticated && (
         <span className="rating-selector__guest-hint" style={{ fontSize: '0.72rem', color: 'var(--color-text-muted)', textAlign: 'center', marginTop: '0.25rem', fontWeight: 500 }}>
           Click a star to sign in and rate
         </span>

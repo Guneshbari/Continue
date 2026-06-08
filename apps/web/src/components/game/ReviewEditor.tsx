@@ -2,14 +2,15 @@
 
 import { useState, useEffect } from 'react'
 import { X, Loader2, Save } from 'lucide-react'
-import { useAuth } from '@/lib/auth/AuthContext'
-import { reviewsApi } from '@/lib/api/interactions'
+import { useInteractionPermissions } from '@/hooks/useInteractionPermissions'
+import { useCreateReview } from '@/hooks/api/useCreateReview'
+import { useUpdateReview } from '@/hooks/api/useUpdateReview'
+import { draftStorageService } from '@/services/draft-storage.service'
 
-interface ReviewComposerProps {
+interface ReviewEditorProps {
   gameId: string
   isOpen: boolean
   onClose: () => void
-  onSuccess: (review: any) => void
   editingReview?: {
     id: string
     title: string | null
@@ -19,36 +20,34 @@ interface ReviewComposerProps {
   } | undefined
 }
 
-export function ReviewComposer({
+export function ReviewEditor({
   gameId,
   isOpen,
   onClose,
-  onSuccess,
   editingReview,
-}: ReviewComposerProps) {
-  const { token } = useAuth()
+}: ReviewEditorProps) {
+  const { token } = useInteractionPermissions()
+  const createMutation = useCreateReview(gameId, token)
+  const updateMutation = useUpdateReview(gameId, token)
+
   const [title, setTitle] = useState('')
   const [body, setBody] = useState('')
   const [status, setStatus] = useState<'PUBLISHED' | 'DRAFT'>('PUBLISHED')
   const [isSpoiler, setIsSpoiler] = useState(false)
-  const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  // Load draft from sessionStorage if not editing
+  const submitting = createMutation.isPending || updateMutation.isPending
+
+  // Load draft from storage if not editing
   useEffect(() => {
     if (!isOpen) return
     if (!editingReview) {
-      const saved = sessionStorage.getItem(`draft-review-${gameId}`)
+      const saved = draftStorageService.getDraft(gameId)
       if (saved) {
-        try {
-          const parsed = JSON.parse(saved)
-          setTitle(parsed.title ?? '')
-          setBody(parsed.body ?? '')
-          setStatus(parsed.status ?? 'PUBLISHED')
-          setIsSpoiler(parsed.isSpoiler ?? false)
-        } catch {
-          // ignore invalid draft
-        }
+        setTitle(saved.title ?? '')
+        setBody(saved.body ?? '')
+        setStatus(saved.status ?? 'PUBLISHED')
+        setIsSpoiler(saved.isSpoiler ?? false)
       } else {
         setTitle('')
         setBody('')
@@ -67,8 +66,7 @@ export function ReviewComposer({
   // Persist draft on changes if not editing
   useEffect(() => {
     if (isOpen && !editingReview) {
-      const draft = { title, body, status, isSpoiler }
-      sessionStorage.setItem(`draft-review-${gameId}`, JSON.stringify(draft))
+      draftStorageService.saveDraft(gameId, { title, body, status, isSpoiler })
     }
   }, [title, body, status, isSpoiler, gameId, editingReview, isOpen])
 
@@ -80,45 +78,32 @@ export function ReviewComposer({
       return
     }
 
-    setSubmitting(true)
     setError(null)
-
     const finalTitle = title.trim()
     const finalBody = body.trim()
 
     try {
+      const payload: any = {
+        body: finalBody,
+        status,
+        isSpoiler,
+      }
+      if (finalTitle) {
+        payload.title = finalTitle
+      }
+
       if (editingReview) {
-        const res = await reviewsApi.update<any>(
-          gameId,
-          editingReview.id,
-          {
-            title: finalTitle || undefined,
-            body: finalBody,
-            status,
-            isSpoiler,
-          },
-          token,
-        )
-        onSuccess(res)
+        await updateMutation.mutateAsync({
+          reviewId: editingReview.id,
+          payload,
+        })
       } else {
-        const res = await reviewsApi.create<any>(
-          gameId,
-          {
-            title: finalTitle || undefined,
-            body: finalBody,
-            status,
-            isSpoiler,
-          },
-          token,
-        )
-        sessionStorage.removeItem(`draft-review-${gameId}`)
-        onSuccess(res)
+        await createMutation.mutateAsync(payload)
+        draftStorageService.clearDraft(gameId)
       }
       onClose()
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'An error occurred while saving.')
-    } finally {
-      setSubmitting(false)
     }
   }
 
@@ -207,7 +192,7 @@ export function ReviewComposer({
                 <span>Contain Spoilers</span>
               </label>
               <span className="composer-checkbox-hint">
-                Adds a premium click-to-reveal blur card to protect other players.
+                Adds a premium blur card to protect other players from spoilers.
               </span>
             </div>
           </div>
@@ -228,7 +213,7 @@ export function ReviewComposer({
               disabled={submitting || body.trim().length < 10}
             >
               {submitting ? (
-                <Loader2 size={16} className="add-to-list__spinner" />
+                <Loader2 size={16} className="spinner search-spin" style={{ animation: 'search-spin 0.8s linear infinite' }} />
               ) : (
                 <Save size={16} />
               )}
@@ -240,4 +225,3 @@ export function ReviewComposer({
     </dialog>
   )
 }
-

@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { Edit2, Trash2, ShieldAlert } from 'lucide-react'
 import { useAuth } from '@/lib/auth/AuthContext'
 
-interface ReviewPreviewCardProps {
+interface ReviewCardProps {
   review: {
     id: string
     title: string | null
@@ -18,7 +18,7 @@ interface ReviewPreviewCardProps {
   onDelete: () => void
 }
 
-export function ReviewPreviewCard({ review, onEdit, onDelete }: ReviewPreviewCardProps) {
+export function ReviewCard({ review, onEdit, onDelete }: ReviewCardProps) {
   const { user } = useAuth()
   const [revealed, setRevealed] = useState(false)
 

@@ -2,8 +2,8 @@
 
 import { useState } from 'react'
 import { GameActionPanel } from './GameActionPanel'
-import { ReviewsSection } from './ReviewsSection'
-import { ReviewComposer } from './ReviewComposer'
+import { ReviewList } from './ReviewList'
+import { ReviewEditor } from './ReviewEditor'
 
 interface Review {
   id: string
@@ -16,6 +16,7 @@ interface Review {
 
 interface GameDetailInteractiveProps {
   gameId: string
+  slug: string
   gameTitle: string
   initialAvgRating: number | null
   initialRatingCount: number
@@ -23,6 +24,7 @@ interface GameDetailInteractiveProps {
 
 export function GameDetailInteractive({
   gameId,
+  slug,
   gameTitle,
   initialAvgRating,
   initialRatingCount,
@@ -30,10 +32,6 @@ export function GameDetailInteractive({
   const [hasReviewed, setHasReviewed] = useState(false)
   const [userReview, setUserReview] = useState<Review | undefined>(undefined)
   const [composerOpen, setComposerOpen] = useState(false)
-
-  // Averages local states (for real-time optimistic update support in future)
-  const avgRating = initialAvgRating
-  const ratingCount = initialRatingCount
 
   const handleReviewStateChanged = (reviewed: boolean, myReview?: Review) => {
     setHasReviewed(reviewed)
@@ -44,19 +42,16 @@ export function GameDetailInteractive({
     setComposerOpen(true)
   }
 
-  const handleComposerSuccess = (savedReview: Review) => {
-    window.dispatchEvent(new CustomEvent('review-saved', { detail: savedReview }))
-  }
-
   return (
     <div className="game-detail__interactive-grid">
       {/* Sidebar with all catalog/rating/lists controls */}
       <aside className="game-detail__aside">
         <GameActionPanel
           gameId={gameId}
+          slug={slug}
           gameTitle={gameTitle}
-          avgRating={avgRating}
-          ratingCount={ratingCount}
+          avgRating={initialAvgRating}
+          ratingCount={initialRatingCount}
           onWriteReview={handleWriteOrEditReview}
           hasReviewed={hasReviewed}
         />
@@ -64,18 +59,17 @@ export function GameDetailInteractive({
 
       {/* Reviews feed at the bottom fold */}
       <div className="game-detail__interactive-content">
-        <ReviewsSection
+        <ReviewList
           gameId={gameId}
           onReviewStateChanged={handleReviewStateChanged}
         />
       </div>
 
       {/* Shared review modal */}
-      <ReviewComposer
+      <ReviewEditor
         gameId={gameId}
         isOpen={composerOpen}
         onClose={() => setComposerOpen(false)}
-        onSuccess={handleComposerSuccess}
         editingReview={userReview}
       />
     </div>

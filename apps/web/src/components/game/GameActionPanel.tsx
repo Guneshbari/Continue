@@ -1,13 +1,15 @@
 'use client'
 
-import { useState } from 'react'
-import { Star, CheckCircle, Flame, Heart } from 'lucide-react'
+import { Star, Heart } from 'lucide-react'
 import { useAuth } from '@/lib/auth/AuthContext'
 import { RatingSelector } from './RatingSelector'
+import { LibraryStatusSelector } from './LibraryStatusSelector'
 import { AddToListButton } from '../lists/AddToListButton'
+import { useState } from 'react'
 
 interface GameActionPanelProps {
   gameId: string
+  slug: string
   gameTitle: string
   avgRating: number | null
   ratingCount: number
@@ -15,10 +17,9 @@ interface GameActionPanelProps {
   hasReviewed: boolean
 }
 
-type PlayStatus = 'backlog' | 'playing' | 'played' | 'none'
-
 export function GameActionPanel({
   gameId,
+  slug,
   gameTitle,
   avgRating,
   ratingCount,
@@ -26,18 +27,9 @@ export function GameActionPanel({
   hasReviewed,
 }: GameActionPanelProps) {
   const { user } = useAuth()
-  const [playStatus, setPlayStatus] = useState<PlayStatus>('none')
   const [isFavorite, setIsFavorite] = useState(false)
 
   const formattedAvg = avgRating ? avgRating.toFixed(1) : '—'
-
-  const handleStatusChange = (status: PlayStatus) => {
-    if (!user) {
-      window.location.href = '/login'
-      return
-    }
-    setPlayStatus((prev) => (prev === status ? 'none' : status))
-  }
 
   const handleFavoriteClick = () => {
     if (!user) {
@@ -75,7 +67,7 @@ export function GameActionPanel({
       <div className="action-panel__content">
         {/* Rating picker */}
         <div className="action-panel__section">
-          <RatingSelector gameId={gameId} />
+          <RatingSelector gameId={gameId} slug={slug} />
         </div>
 
         {/* List adder */}
@@ -84,29 +76,10 @@ export function GameActionPanel({
           <AddToListButton gameId={gameId} gameTitle={gameTitle} />
         </div>
 
-        {/* Play status toggles */}
+        {/* Catalog status selector */}
         <div className="action-panel__section">
           <span className="metadata-label metadata-label--panel">Your Catalog</span>
-          <div className="catalog-toggles">
-            <button
-              type="button"
-              onClick={() => handleStatusChange('played')}
-              className={`catalog-btn ${playStatus === 'played' ? 'catalog-btn--active' : ''}`}
-              title="Mark Played"
-            >
-              <CheckCircle size={16} />
-              <span>Played</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => handleStatusChange('playing')}
-              className={`catalog-btn ${playStatus === 'playing' ? 'catalog-btn--active' : ''}`}
-              title="Currently Playing"
-            >
-              <Flame size={16} />
-              <span>Playing</span>
-            </button>
-          </div>
+          <LibraryStatusSelector gameId={gameId} />
         </div>
 
         {/* Favoriting and Review trigger */}
