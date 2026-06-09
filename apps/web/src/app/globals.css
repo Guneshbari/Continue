@@ -11,10 +11,18 @@
   --tracking-wide-meta: 0.05em;
   --leading-display: 0.95;
 
-  /* Transition timings */
-  --transition-micro: all 150ms ease-out;
-  --transition-surface: all 300ms ease-out;
-  --transition-fade: all 350ms ease-out;
+  /* Transition timings & Easing */
+  --transition-micro: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-surface: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-fade: all 350ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Motion Tokens */
+  --motion-fast: 150ms;
+  --motion-standard: 300ms;
+  --motion-slow: 500ms;
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-decelerate: cubic-bezier(0, 0, 0.2, 1);
+  --ease-accelerate: cubic-bezier(0.4, 0, 1, 1);
 
   /* Cinematic dark surfaces */
   --color-surface-base:    oklch(8% 0.01 260);
