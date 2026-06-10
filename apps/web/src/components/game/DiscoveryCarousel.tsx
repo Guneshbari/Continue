@@ -24,6 +24,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { GameCard, GameCardSkeleton } from '@/components/game/GameCard'
 import { getSkeletonKeys } from '@/lib/skeletonKeys'
 import type { GameSummary } from '@continue/types'
+import { MotionFade, MotionStagger, MotionStaggerItem, MotionScale } from '@/components/motion'
 
 type DiscoveryCarouselProps = Readonly<{
   title: string
@@ -64,9 +65,11 @@ export function DiscoveryCarousel({
         </li>
       ))
     : games.map((game) => (
-        <li key={game.id} className="discovery-carousel__slide">
-          <GameCard game={game} variant="discovery" />
-        </li>
+        <MotionStaggerItem key={game.id} className="discovery-carousel__slide">
+          <MotionScale hoverScale={1.02} tapScale={0.98}>
+            <GameCard game={game} variant="discovery" />
+          </MotionScale>
+        </MotionStaggerItem>
       ))
 
   return (
@@ -76,7 +79,7 @@ export function DiscoveryCarousel({
       aria-labelledby={sectionId}
     >
       {/* Section header */}
-      <div className="discovery-carousel__header">
+      <MotionFade direction="none" className="discovery-carousel__header">
         <h2 className="discovery-section__title" id={sectionId}>
           {title}
         </h2>
@@ -101,13 +104,13 @@ export function DiscoveryCarousel({
             <ChevronRight size={16} aria-hidden="true" />
           </button>
         </div>
-      </div>
+      </MotionFade>
 
       {/* Embla viewport — only render slides when in view */}
       <div className="discovery-carousel__viewport" ref={emblaRef}>
-        <ul className="discovery-carousel__track" aria-live="polite">
+        <MotionStagger preset="standard" className="discovery-carousel__track">
           {inView || loading ? slides : null}
-        </ul>
+        </MotionStagger>
       </div>
     </section>
   )

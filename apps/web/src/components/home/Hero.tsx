@@ -6,6 +6,8 @@ import Link from 'next/link'
 import { ChevronLeft, ChevronRight, Play } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { GameDetail } from '@continue/types'
+import { AmbientGlow, MotionFade, MotionReveal, MotionScale } from '@/components/motion'
+import { Button } from '@/components/ui/Button'
 
 type HeroProps = Readonly<{
   featured: GameDetail[]
@@ -46,6 +48,7 @@ export function Hero({ featured }: HeroProps) {
     >
       {/* Background */}
       <div className="hero__bg" aria-hidden="true">
+        <AmbientGlow intensity="medium" className="opacity-40" />
         {featured.map((game, i) => (
           <div
             key={game.id}
@@ -69,54 +72,59 @@ export function Hero({ featured }: HeroProps) {
       {/* Content */}
       <div className="hero__content">
         <div className="hero__meta" aria-live="polite" aria-atomic="true">
-          {/* Genres */}
-          {active.genres?.length > 0 && (
-            <ul className="hero__genres" aria-label="Genres">
-              {active.genres.slice(0, 3).map((g) => (
-                <li key={g.id} className="hero__genre-tag">{g.name}</li>
-              ))}
-            </ul>
-          )}
+          {/* Keyed container forces React to remount/reanimate on slide change */}
+          <div key={activeIdx}>
+            {/* Genres */}
+            {active.genres?.length > 0 && (
+              <ul className="hero__genres" aria-label="Genres">
+                {active.genres.slice(0, 3).map((g) => (
+                  <li key={g.id} className="hero__genre-tag">{g.name}</li>
+                ))}
+              </ul>
+            )}
 
-          {/* Title */}
-          <h1 className="hero__title">{active.title}</h1>
+            {/* Title */}
+            <MotionReveal duration={0.8}>
+              <h1 className="hero__title">{active.title}</h1>
+            </MotionReveal>
 
-          {/* Description */}
-          {active.description && (
-            <p className="hero__description">
-              {active.description.slice(0, 180)}
-              {active.description.length > 180 ? '...' : ''}
-            </p>
-          )}
+            {/* Description */}
+            {active.description && (
+              <MotionFade direction="up" delay={0.1} duration={0.5}>
+                <p className="hero__description">
+                  {active.description.slice(0, 180)}
+                  {active.description.length > 180 ? '...' : ''}
+                </p>
+              </MotionFade>
+            )}
 
-          {/* CTAs */}
-          <div className="hero__ctas">
-            <Link
-              href="/games"
-              className="hero__cta-primary"
-            >
-              <Play size={16} aria-hidden="true" fill="currentColor" />
-              Discover Games
-            </Link>
-            <Link
-              href={`/games/${active.slug}`}
-              className="hero__cta-secondary"
-            >
-              Browse Reviews
-            </Link>
+            {/* CTAs */}
+            <MotionFade direction="up" delay={0.2} duration={0.5}>
+              <div className="hero__ctas">
+                <Button as={Link} href="/games" variant="primary">
+                  <Play size={16} aria-hidden="true" fill="currentColor" />
+                  Discover Games
+                </Button>
+                <Button as={Link} href={`/games/${active.slug}`} variant="secondary">
+                  Browse Reviews
+                </Button>
+              </div>
+            </MotionFade>
           </div>
         </div>
 
         {/* Cover thumbnail */}
         {active.coverUrl && (
           <div className="hero__cover" aria-hidden="true">
-            <Image
-              src={active.coverUrl}
-              alt={`${active.title} cover`}
-              width={220}
-              height={300}
-              className="hero__cover-img"
-            />
+            <MotionScale hoverScale={1.03}>
+              <Image
+                src={active.coverUrl}
+                alt={`${active.title} cover`}
+                width={220}
+                height={300}
+                className="hero__cover-img"
+              />
+            </MotionScale>
           </div>
         )}
       </div>

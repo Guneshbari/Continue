@@ -23,7 +23,7 @@ import { durations, easings } from '@/components/motion/motion-config'
 
 type RouteTransitionProps = Readonly<{
   children: ReactNode
-  className?: string
+  className?: string | undefined
 }>
 
 export function RouteTransition({ children, className }: RouteTransitionProps) {

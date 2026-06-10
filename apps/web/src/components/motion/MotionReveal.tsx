@@ -20,9 +20,9 @@ import { motion, useReducedMotion } from 'motion/react'
 import { durations, easings, viewportDefaults } from '@/components/motion/motion-config'
 
 type MotionRevealProps = Readonly<{
-  delay?: number
-  duration?: number
-  className?: string
+  delay?: number | undefined
+  duration?: number | undefined
+  className?: string | undefined
   children: ReactNode
 }>
 

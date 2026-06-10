@@ -5,9 +5,9 @@ import { Hero } from '@/components/home/Hero'
 import { DiscoveryCarousel } from '@/components/game/DiscoveryCarousel'
 import { FeaturedReviewsSection } from '@/components/home/FeaturedReviewsSection'
 import { CommunityCollectionsSection } from '@/components/home/CommunityCollectionsSection'
-import { AnimatedSection } from '@/components/ui/AnimatedSection'
 import { ResponsiveContainer } from '@/components/ui/ResponsiveContainer'
 import { EditorialSectionWrapper } from '@/components/ui/EditorialSectionWrapper'
+import { RouteTransition, MotionFade } from '@/components/motion'
 import {
   FEATURED_GAMES,
   TRENDING_GAMES,
@@ -126,56 +126,58 @@ export default async function HomePage() {
     await getHomeData()
 
   return (
-    <main id="main-content">
-      <a href="#main-content" className="skip-link">
-        Skip to main content
-      </a>
+    <RouteTransition>
+      <main id="main-content">
+        <a href="#main-content" className="skip-link">
+          Skip to main content
+        </a>
 
-      <Hero featured={featured} />
+        <Hero featured={featured} />
 
-      <ResponsiveContainer className="pb-16 md:pb-24">
-        <AnimatedSection delay={0}>
-          <EditorialSectionWrapper hasDivider>
-            <DiscoveryCarousel
-              title="Trending Now"
-              games={trending}
-              viewAllHref="/games?sort=trending"
-            />
-          </EditorialSectionWrapper>
-        </AnimatedSection>
+        <ResponsiveContainer className="pb-16 md:pb-24">
+          <MotionFade direction="up" delay={0}>
+            <EditorialSectionWrapper hasDivider>
+              <DiscoveryCarousel
+                title="Trending Now"
+                games={trending}
+                viewAllHref="/games?sort=trending"
+              />
+            </EditorialSectionWrapper>
+          </MotionFade>
 
-        <AnimatedSection delay={0.05}>
-          <EditorialSectionWrapper hasDivider>
-            <DiscoveryCarousel
-              title="New Releases"
-              games={newReleases}
-              viewAllHref="/games?sort=new"
-            />
-          </EditorialSectionWrapper>
-        </AnimatedSection>
+          <MotionFade direction="up" delay={0.05}>
+            <EditorialSectionWrapper hasDivider>
+              <DiscoveryCarousel
+                title="New Releases"
+                games={newReleases}
+                viewAllHref="/games?sort=new"
+              />
+            </EditorialSectionWrapper>
+          </MotionFade>
 
-        <AnimatedSection delay={0.05}>
-          <EditorialSectionWrapper hasDivider>
-            <DiscoveryCarousel
-              title="Top Rated"
-              games={topRated}
-              viewAllHref="/games?sort=top-rated"
-            />
-          </EditorialSectionWrapper>
-        </AnimatedSection>
+          <MotionFade direction="up" delay={0.1}>
+            <EditorialSectionWrapper hasDivider>
+              <DiscoveryCarousel
+                title="Top Rated"
+                games={topRated}
+                viewAllHref="/games?sort=top-rated"
+              />
+            </EditorialSectionWrapper>
+          </MotionFade>
 
-        <AnimatedSection delay={0.05}>
-          <EditorialSectionWrapper hasDivider>
-            <FeaturedReviewsSection reviews={reviews} />
-          </EditorialSectionWrapper>
-        </AnimatedSection>
+          <MotionFade direction="up" delay={0.15}>
+            <EditorialSectionWrapper hasDivider>
+              <FeaturedReviewsSection reviews={reviews} />
+            </EditorialSectionWrapper>
+          </MotionFade>
 
-        <AnimatedSection delay={0.05}>
-          <EditorialSectionWrapper>
-            <CommunityCollectionsSection collections={collections} />
-          </EditorialSectionWrapper>
-        </AnimatedSection>
-      </ResponsiveContainer>
-    </main>
+          <MotionFade direction="up" delay={0.2}>
+            <EditorialSectionWrapper>
+              <CommunityCollectionsSection collections={collections} />
+            </EditorialSectionWrapper>
+          </MotionFade>
+        </ResponsiveContainer>
+      </main>
+    </RouteTransition>
   )
 }

@@ -21,7 +21,7 @@ import { durations, easings } from '@/components/motion/motion-config'
 
 type MotionPresenceProps = Readonly<{
   show: boolean
-  className?: string
+  className?: string | undefined
   children: ReactNode
 }>
 

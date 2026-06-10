@@ -1,3 +1,5 @@
+'use client'
+
 import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { cva, type VariantProps } from 'class-variance-authority'
@@ -26,13 +28,13 @@ export const gameArtworkVariants = cva(
 export interface GameArtworkProps
   extends React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof gameArtworkVariants> {
-  src?: string | null
+  src?: string | null | undefined
   alt: string
-  priority?: boolean
-  imageClassName?: string
-  sizes?: string
+  priority?: boolean | undefined
+  imageClassName?: string | undefined
+  sizes?: string | undefined
   /** Enable premium hover effects (scale, saturate, shadow). @default true */
-  hoverable?: boolean
+  hoverable?: boolean | undefined
 }
 
 export const GameArtwork = React.forwardRef<HTMLDivElement, GameArtworkProps>(

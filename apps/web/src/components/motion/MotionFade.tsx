@@ -22,12 +22,12 @@ import { durations, easings, viewportDefaults } from '@/components/motion/motion
 type Direction = 'up' | 'down' | 'left' | 'right' | 'none'
 
 type MotionFadeProps = Readonly<{
-  direction?: Direction
-  delay?: number
-  duration?: number
-  distance?: number
-  viewportMargin?: string
-  className?: string
+  direction?: Direction | undefined
+  delay?: number | undefined
+  duration?: number | undefined
+  distance?: number | undefined
+  viewportMargin?: string | undefined
+  className?: string | undefined
   children: ReactNode
 }>
 

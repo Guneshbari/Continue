@@ -1,9 +1,9 @@
 import type { GameSummary } from '@continue/types'
 import Link from 'next/link'
-import Image from 'next/image'
 import { Star } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { MetadataBadge, MetadataBadgeGroup } from '@/components/ui/MetadataBadgeSystem'
+import { GameArtwork } from '@/components/ui/GameArtwork'
 
 type GameCardProps = Readonly<{
   game: GameSummary
@@ -25,17 +25,13 @@ export function GameCard({ game, variant = 'discovery', className }: GameCardPro
         aria-label={ariaLabel}
       >
         <div className="game-card__cover-list">
-          {game.coverUrl ? (
-            <Image
-              src={game.coverUrl}
-              alt={`${game.title} cover`}
-              fill
-              sizes="90px"
-              className="game-card__img"
-            />
-          ) : (
-            <div className="game-card__cover-placeholder" aria-hidden="true" />
-          )}
+          <GameArtwork
+            src={game.coverUrl}
+            alt={game.title}
+            variant="cover-sm"
+            hoverable={false}
+            sizes="90px"
+          />
         </div>
         <div className="game-card__info-list">
           <div className="game-card__main-list">
@@ -75,22 +71,18 @@ export function GameCard({ game, variant = 'discovery', className }: GameCardPro
     >
       {/* Cover image */}
       <div className="game-card__cover">
-        {game.coverUrl ? (
-          <Image
-            src={game.coverUrl}
-            alt={`${game.title} cover`}
-            fill
-            sizes={
-              variant === 'hero'
-                ? '(max-width: 768px) 100vw, 50vw'
-                : '(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw'
-            }
-            className="game-card__img"
-            priority={variant === 'hero'}
-          />
-        ) : (
-          <div className="game-card__cover-placeholder" aria-hidden="true" />
-        )}
+        <GameArtwork
+          src={game.coverUrl}
+          alt={game.title}
+          variant={variant === 'hero' ? 'backdrop' : 'cover-md'}
+          hoverable={false}
+          priority={variant === 'hero'}
+          sizes={
+            variant === 'hero'
+              ? '(max-width: 768px) 100vw, 50vw'
+              : '(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw'
+          }
+        />
 
         {/* Rating badge */}
         {game.avgRating !== null && (

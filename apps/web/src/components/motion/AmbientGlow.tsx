@@ -24,9 +24,9 @@ type Intensity = 'subtle' | 'medium'
 
 type AmbientGlowProps = Readonly<{
   /** Controls orb opacity and drift range. @default 'subtle' */
-  intensity?: Intensity
+  intensity?: Intensity | undefined
   /** Additional CSS classes applied to the container. */
-  className?: string
+  className?: string | undefined
 }>
 
 /** Opacity per intensity level */

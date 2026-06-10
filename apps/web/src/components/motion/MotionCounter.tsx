@@ -29,12 +29,12 @@ import {
 import { durations, easings } from '@/components/motion/motion-config'
 
 type MotionCounterProps = Readonly<{
-  from?: number
+  from?: number | undefined
   to: number
-  duration?: number
-  locale?: string
-  formatOptions?: Intl.NumberFormatOptions
-  className?: string
+  duration?: number | undefined
+  locale?: string | undefined
+  formatOptions?: Intl.NumberFormatOptions | undefined
+  className?: string | undefined
 }>
 
 export function MotionCounter({

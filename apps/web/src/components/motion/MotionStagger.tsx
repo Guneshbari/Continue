@@ -29,14 +29,14 @@ import { durations, easings, staggerPresets, viewportDefaults } from '@/componen
 type StaggerPreset = keyof typeof staggerPresets
 
 type MotionStaggerProps = Readonly<{
-  preset?: StaggerPreset
-  viewportMargin?: string
-  className?: string
+  preset?: StaggerPreset | undefined
+  viewportMargin?: string | undefined
+  className?: string | undefined
   children: ReactNode
 }>
 
 type MotionStaggerItemProps = Readonly<{
-  className?: string
+  className?: string | undefined
   children: ReactNode
 }>
 

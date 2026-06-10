@@ -20,9 +20,9 @@ import { motion, useReducedMotion } from 'motion/react'
 import { springPresets } from '@/components/motion/motion-config'
 
 type MotionScaleProps = Readonly<{
-  hoverScale?: number
-  tapScale?: number
-  className?: string
+  hoverScale?: number | undefined
+  tapScale?: number | undefined
+  className?: string | undefined
   children: ReactNode
 }>
 

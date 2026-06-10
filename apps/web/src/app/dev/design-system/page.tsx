@@ -36,6 +36,8 @@ export default function DesignSystemPage() {
   const [artworkSrc, setArtworkSrc] = useState<string | null>(
     'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600&auto=format&fit=crop&q=80'
   )
+  const [showPresence, setShowPresence] = useState(false)
+  const [showStressTest, setShowStressTest] = useState(false)
 
   const colors = [
     { name: '--color-surface-base', desc: 'Main background', val: 'oklch(8% 0.01 260)' },
@@ -824,6 +826,264 @@ export default function DesignSystemPage() {
                   </span>
                 </div>
               </CinematicSurface>
+            </div>
+          </div>
+        </div>
+      </section>
+      {/* ─── SECTION 9: Motion System ────────────────────────────────────── */}
+      <section id="motion">
+        <EditorialSectionHeader
+          title="Motion System"
+          subtitle="Motion / Animation Primitives"
+          description="Reusable motion primitives built on Motion (React) and GSAP. All respect prefers-reduced-motion, animate only GPU-composited properties (transform/opacity), and trigger once on viewport entry."
+          variant="large"
+        />
+
+        <div className="flex flex-col gap-12">
+          {/* Demo A: MotionFade — All 5 directions */}
+          <div>
+            <EditorialSectionHeader
+              title="MotionFade — Directional Viewport Fade"
+              subtitle="Motion / MotionFade"
+              description='Workhorse animation: fades content from a direction when scrolled into view. 5 directions: up, down, left, right, none.'
+              variant="minimal"
+            />
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+              {(['up', 'down', 'left', 'right', 'none'] as const).map((dir) => (
+                <MotionFade key={dir} direction={dir} delay={0.05}>
+                  <CinematicSurface elevation="raised" className="p-4 text-center">
+                    <code className="text-[10px] text-[var(--color-text-muted)] font-mono block mb-1">
+                      direction="{dir}"
+                    </code>
+                    <div className="h-16 flex items-center justify-center">
+                      <span className="text-sm font-bold text-[var(--color-text-primary)]">
+                        {dir.toUpperCase()}
+                      </span>
+                    </div>
+                  </CinematicSurface>
+                </MotionFade>
+              ))}
+            </div>
+          </div>
+
+          {/* Demo B: MotionStagger — Card Grid */}
+          <div>
+            <EditorialSectionHeader
+              title="MotionStagger — Orchestrated Child Reveal"
+              subtitle="Motion / MotionStagger"
+              description='Container that staggers child animation. Uses fast/standard/editorial presets. Children use MotionStaggerItem wrappers.'
+              variant="minimal"
+            />
+            <div className="grid md:grid-cols-3 gap-6">
+              {(['fast', 'standard', 'editorial'] as const).map((preset) => (
+                <div key={preset}>
+                  <code className="text-[9px] text-[var(--color-text-muted)] font-mono block mb-2">
+                    preset="{preset}"
+                  </code>
+                  <MotionStagger preset={preset} className="grid grid-cols-2 gap-2">
+                    {Array.from({ length: 4 }).map((_, i) => (
+                      <MotionStaggerItem key={i}>
+                        <CinematicSurface elevation="raised" className="p-3 text-center">
+                          <span className="text-xs font-bold text-[var(--color-text-secondary)]">
+                            Item {i + 1}
+                          </span>
+                        </CinematicSurface>
+                      </MotionStaggerItem>
+                    ))}
+                  </MotionStagger>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Demo C: MotionPresence — Toggle */}
+          <div>
+            <EditorialSectionHeader
+              title="MotionPresence — Mount/Unmount Animation"
+              subtitle="Motion / MotionPresence"
+              description='AnimatePresence wrapper for conditional rendering. Fades + scales on enter/exit.'
+              variant="minimal"
+            />
+            <div className="flex flex-col items-start gap-4">
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => setShowPresence((prev) => !prev)}
+              >
+                {showPresence ? 'Hide Element' : 'Show Element'}
+              </Button>
+              <MotionPresence show={showPresence}>
+                <CinematicSurface elevation="overlay" className="p-6 max-w-sm">
+                  <h4 className="font-ui text-sm font-bold text-[var(--color-text-primary)] mb-2">
+                    I appear with animation!
+                  </h4>
+                  <p className="text-xs text-[var(--color-text-secondary)]">
+                    This element fades in with scale 0.96→1 on mount and reverses on unmount.
+                  </p>
+                </CinematicSurface>
+              </MotionPresence>
+            </div>
+          </div>
+
+          {/* Demo D: MotionReveal — Editorial */}
+          <div>
+            <EditorialSectionHeader
+              title="MotionReveal — Premium Editorial Reveal"
+              subtitle="Motion / MotionReveal"
+              description='Transform-based reveal with editorial easing (no clip-path). Designed for hero text, section headers, and editorial content.'
+              variant="minimal"
+            />
+            <MotionReveal>
+              <div className="max-w-[var(--measure-hero)]">
+                <h2 className="font-display text-[var(--font-size-display-lg)] leading-[var(--line-height-display)] text-[var(--color-text-primary)]">
+                  CINEMATIC EDITORIAL REVEAL
+                </h2>
+                <p className="font-ui text-sm text-[var(--color-text-secondary)] mt-3">
+                  This text appears with editorial easing — a smooth, decelerating curve
+                  (cubic-bezier 0.16, 1, 0.3, 1) that feels premium and intentional.
+                </p>
+              </div>
+            </MotionReveal>
+          </div>
+
+          {/* Demo E: MotionScale — Hover Interaction */}
+          <div>
+            <EditorialSectionHeader
+              title="MotionScale — Hover/Tap Interaction"
+              subtitle="Motion / MotionScale"
+              description='Spring-based scale on hover (1.02) and tap (0.98). Uses snappy spring physics for tactile feedback.'
+              variant="minimal"
+            />
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              {[1.01, 1.02, 1.04, 1.06].map((scale) => (
+                <MotionScale key={scale} hoverScale={scale} tapScale={0.96}>
+                  <CinematicSurface elevation="raised" className="p-5 text-center cursor-pointer">
+                    <code className="text-[9px] text-[var(--color-text-muted)] font-mono block mb-1">
+                      hover: {scale}x
+                    </code>
+                    <span className="text-sm font-bold text-[var(--color-text-primary)]">
+                      Hover me
+                    </span>
+                  </CinematicSurface>
+                </MotionScale>
+              ))}
+            </div>
+          </div>
+
+          {/* Demo F: MotionCounter — Animated Statistics */}
+          <div>
+            <EditorialSectionHeader
+              title="MotionCounter — Animated Number Counter"
+              subtitle="Motion / MotionCounter"
+              description='Viewport-triggered counter with Intl.NumberFormat locale support. Numbers animate from 0 to target value.'
+              variant="minimal"
+            />
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              {[
+                { label: 'Total Games', to: 12847 },
+                { label: 'Active Users', to: 3215 },
+                { label: 'Avg Rating', to: 8.4, formatOptions: { minimumFractionDigits: 1, maximumFractionDigits: 1 } },
+                { label: 'Reviews', to: 24903 },
+              ].map((stat) => (
+                <CinematicSurface key={stat.label} elevation="raised" className="p-5 flex flex-col">
+                  <span className="text-[10px] text-[var(--color-text-muted)] font-bold uppercase tracking-wider">
+                    {stat.label}
+                  </span>
+                  <MotionCounter
+                    to={stat.to}
+                    formatOptions={stat.formatOptions}
+                    className="font-display text-[var(--font-size-display-md)] text-[var(--color-text-primary)] mt-1"
+                  />
+                </CinematicSurface>
+              ))}
+            </div>
+          </div>
+
+          {/* Demo G: AmbientGlow — GSAP Atmospheric Background */}
+          <div>
+            <EditorialSectionHeader
+              title="AmbientGlow — GSAP Atmospheric Background"
+              subtitle="Motion / AmbientGlow (GSAP)"
+              description='Floating gradient orbs with lazy-loaded GSAP. Only transform is animated. Subtle and medium intensity.'
+              variant="minimal"
+            />
+            <div className="grid md:grid-cols-2 gap-6">
+              {(['subtle', 'medium'] as const).map((intensity) => (
+                <div
+                  key={intensity}
+                  className="relative overflow-hidden rounded-[var(--radius-surface)] border border-[var(--color-border-subtle)] min-h-[200px] flex items-center justify-center"
+                >
+                  <AmbientGlow intensity={intensity} />
+                  <div className="relative z-10 text-center">
+                    <code className="text-[10px] text-[var(--color-text-muted)] font-mono block mb-1">
+                      intensity="{intensity}"
+                    </code>
+                    <span className="text-sm font-bold text-[var(--color-text-primary)]">
+                      {intensity === 'subtle' ? '2 orbs, 6% opacity' : '3 orbs, 12% opacity'}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Demo H: Stress Test — 100 card stagger */}
+          <div>
+            <div className="flex items-center justify-between gap-4 mb-4">
+              <EditorialSectionHeader
+                title="Stagger Stress Test — 100 Items"
+                subtitle="Performance / Stress Test"
+                description='Tests stagger performance with 100 simultaneously animating cards. Toggle to render.'
+                variant="minimal"
+                className="mb-0 pb-0"
+              />
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => setShowStressTest((prev) => !prev)}
+              >
+                {showStressTest ? 'Hide 100 Cards' : 'Load 100 Cards'}
+              </Button>
+            </div>
+            {showStressTest && (
+              <MotionStagger preset="fast" className="grid grid-cols-5 sm:grid-cols-8 md:grid-cols-10 gap-2">
+                {Array.from({ length: 100 }).map((_, i) => (
+                  <MotionStaggerItem key={i}>
+                    <CinematicSurface elevation="raised" className="p-2 text-center aspect-square flex items-center justify-center">
+                      <span className="text-[9px] font-bold text-[var(--color-text-muted)] font-mono">
+                        {i + 1}
+                      </span>
+                    </CinematicSurface>
+                  </MotionStaggerItem>
+                ))}
+              </MotionStagger>
+            )}
+          </div>
+
+          {/* Demo I: Hover Interaction Matrix */}
+          <div>
+            <EditorialSectionHeader
+              title="Hover Interaction Matrix"
+              subtitle="Performance / Interactions"
+              description='Tests multiple hover interactions simultaneously. Each card uses MotionScale with different parameters.'
+              variant="minimal"
+            />
+            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
+              {Array.from({ length: 12 }).map((_, i) => {
+                const hoverScale = 1 + (i + 1) * 0.005
+                return (
+                  <MotionScale key={i} hoverScale={hoverScale} tapScale={0.95}>
+                    <CinematicSurface elevation="raised" className="p-3 text-center cursor-pointer aspect-square flex flex-col items-center justify-center">
+                      <span className="text-[8px] text-[var(--color-text-muted)] font-mono">
+                        {hoverScale.toFixed(3)}x
+                      </span>
+                      <span className="text-sm font-bold text-[var(--color-accent)] mt-1">
+                        {i + 1}
+                      </span>
+                    </CinematicSurface>
+                  </MotionScale>
+                )
+              })}
             </div>
           </div>
         </div>
