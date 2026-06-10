@@ -20,6 +20,16 @@ import { EditorialSectionHeader } from '@/components/ui/EditorialSectionHeader'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { ErrorState } from '@/components/ui/ErrorState'
 import { SuccessState } from '@/components/ui/SuccessState'
+import {
+  MotionFade,
+  MotionStagger,
+  MotionStaggerItem,
+  MotionPresence,
+  MotionReveal,
+  MotionScale,
+  MotionCounter,
+  AmbientGlow,
+} from '@/components/motion'
 
 export default function DesignSystemPage() {
   const [buttonsLoading, setButtonsLoading] = useState(false)

@@ -31,10 +31,12 @@ export interface GameArtworkProps
   priority?: boolean
   imageClassName?: string
   sizes?: string
+  /** Enable premium hover effects (scale, saturate, shadow). @default true */
+  hoverable?: boolean
 }
 
 export const GameArtwork = React.forwardRef<HTMLDivElement, GameArtworkProps>(
-  ({ className, variant, src, alt, priority = false, imageClassName, sizes, ...props }, ref) => {
+  ({ className, variant, src, alt, priority = false, imageClassName, sizes, hoverable = true, ...props }, ref) => {
     const [isLoaded, setIsLoaded] = useState(false)
     const [hasError, setHasError] = useState(false)
 
@@ -47,11 +49,36 @@ export const GameArtwork = React.forwardRef<HTMLDivElement, GameArtworkProps>(
     const showPlaceholder = !src || hasError
     const isAvatar = variant === 'avatar'
 
+    // Hover effects apply only when hoverable, image is loaded, and not showing placeholder
+    const canHover = hoverable && isLoaded && !showPlaceholder
+
     return (
       <div
         ref={ref}
         className={cn(gameArtworkVariants({ variant, className }))}
+        style={{
+          ...(canHover && {
+            transition: 'transform var(--motion-standard) var(--ease-standard), box-shadow var(--motion-standard) var(--ease-standard), filter var(--motion-standard) var(--ease-standard)',
+          }),
+          ...props.style,
+        }}
         {...props}
+        onMouseEnter={(e) => {
+          if (canHover && e.currentTarget instanceof HTMLElement) {
+            e.currentTarget.style.transform = 'scale(1.03)'
+            e.currentTarget.style.filter = 'saturate(1.1) brightness(1.05)'
+            e.currentTarget.style.boxShadow = '0 8px 32px oklch(0% 0 0 / 0.4)'
+          }
+          props.onMouseEnter?.(e)
+        }}
+        onMouseLeave={(e) => {
+          if (canHover && e.currentTarget instanceof HTMLElement) {
+            e.currentTarget.style.transform = ''
+            e.currentTarget.style.filter = ''
+            e.currentTarget.style.boxShadow = ''
+          }
+          props.onMouseLeave?.(e)
+        }}
       >
         {/* Loading Skeleton underneath */}
         {!isLoaded && !showPlaceholder && (

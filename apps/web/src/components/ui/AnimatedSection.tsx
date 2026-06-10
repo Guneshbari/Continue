@@ -1,6 +1,6 @@
 'use client'
 
-import { motion, useReducedMotion } from 'framer-motion'
+import { MotionFade } from '@/components/motion'
 import type { ReactNode } from 'react'
 
 type AnimatedSectionProps = Readonly<{
@@ -11,27 +11,22 @@ type AnimatedSectionProps = Readonly<{
 }>
 
 /**
- * Lightweight viewport-triggered entrance animation wrapper.
- * Respects prefers-reduced-motion — no animation if user prefers reduced motion.
- * Triggers once on scroll-into-view, never replays.
- * No parallax, no GPU-heavy effects, no scroll-jacking.
+ * @deprecated Use `MotionFade` directly for more control.
+ * Thin backward-compatible wrapper around MotionFade.
+ *
+ * @example
+ * ```tsx
+ * // Before (still works):
+ * <AnimatedSection delay={0.1}><Content /></AnimatedSection>
+ *
+ * // Preferred:
+ * <MotionFade direction="up" delay={0.1}><Content /></MotionFade>
+ * ```
  */
 export function AnimatedSection({ children, className, delay = 0 }: AnimatedSectionProps) {
-  const shouldReduceMotion = useReducedMotion()
-
-  if (shouldReduceMotion) {
-    return <div className={className}>{children}</div>
-  }
-
   return (
-    <motion.div
-      className={className}
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-80px' }}
-      transition={{ duration: 0.45, ease: 'easeOut', delay }}
-    >
+    <MotionFade direction="up" delay={delay} className={className}>
       {children}
-    </motion.div>
+    </MotionFade>
   )
 }
