@@ -7,7 +7,7 @@ import { DiscoverySidebar } from '@/components/game/DiscoverySidebar'
 import { DiscoveryFilterBar } from '@/components/game/DiscoveryFilterBar'
 import { ResponsiveGameGrid } from '@/components/game/ResponsiveGameGrid'
 import { PaginationLoader } from '@/components/game/PaginationLoader'
-import { GameCardSkeleton } from '@/components/game/GameCard'
+import { GameCardBaseSkeleton } from '@/components/game/GameCardBase'
 import { getSkeletonKeys } from '@/lib/skeletonKeys'
 import { GlobalErrorState } from '@/components/ui/GlobalErrorState'
 import type { GamesListParams } from '@/lib/api/games-api'
@@ -89,7 +89,7 @@ export function DiscoverSortClient({ sortKey }: DiscoverSortClientProps) {
             <ul className="games-grid" style={{ padding: 0, margin: 0, listStyle: 'none' }}>
               {getSkeletonKeys(12).map((skeletonKey) => (
                 <li key={skeletonKey}>
-                  <GameCardSkeleton />
+                  <GameCardBaseSkeleton />
                 </li>
               ))}
             </ul>

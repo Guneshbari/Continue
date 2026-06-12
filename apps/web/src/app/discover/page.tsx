@@ -2,7 +2,7 @@
 
 import { useDiscoverDashboard } from '@/hooks/api/useDiscoverDashboard'
 import { DiscoverySidebar } from '@/components/game/DiscoverySidebar'
-import { GameCard } from '@/components/game/GameCard'
+import { GameCardBase } from '@/components/game/GameCardBase'
 import { Compass } from 'lucide-react'
 import Link from 'next/link'
 import { ResponsiveContainer } from '@/components/ui/ResponsiveContainer'
@@ -62,7 +62,7 @@ function DiscoverDashboardContent() {
             <ul className="games-grid" style={{ padding: 0, margin: 0, listStyle: 'none' }}>
               {sec.games.map((game) => (
                 <li key={game.id}>
-                  <GameCard game={game} />
+                  <GameCardBase game={game} />
                 </li>
               ))}
             </ul>

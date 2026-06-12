@@ -21,7 +21,7 @@ import useEmblaCarousel from 'embla-carousel-react'
 import { useInView } from 'react-intersection-observer'
 import Link from 'next/link'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
-import { GameCard, GameCardSkeleton } from '@/components/game/GameCard'
+import { GameCardBase, GameCardBaseSkeleton } from '@/components/game/GameCardBase'
 import { getSkeletonKeys } from '@/lib/skeletonKeys'
 import type { GameSummary } from '@continue/types'
 import { MotionFade, MotionStagger, MotionStaggerItem, MotionScale } from '@/components/motion'
@@ -61,13 +61,13 @@ export function DiscoveryCarousel({
   const slides = loading
     ? getSkeletonKeys(skeletonCount).map((key) => (
         <li key={key} className="discovery-carousel__slide">
-          <GameCardSkeleton variant="discovery" />
+          <GameCardBaseSkeleton variant="discovery" />
         </li>
       ))
     : games.map((game) => (
         <MotionStaggerItem key={game.id} className="discovery-carousel__slide">
           <MotionScale hoverScale={1.02} tapScale={0.98}>
-            <GameCard game={game} variant="discovery" />
+            <GameCardBase game={game} variant="discovery" />
           </MotionScale>
         </MotionStaggerItem>
       ))

@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import type { GameSummary } from '@continue/types'
-import { GameCard, GameCardSkeleton } from '@/components/game/GameCard'
+import { GameCardBase, GameCardBaseSkeleton } from '@/components/game/GameCardBase'
 import { cn } from '@/lib/utils'
 import { getSkeletonKeys } from '@/lib/skeletonKeys'
 
@@ -25,12 +25,12 @@ export function DiscoverySection({
   const skeletonItems = loading
     ? getSkeletonKeys(skeletonCount).map((skeletonKey) => (
         <li key={skeletonKey}>
-          <GameCardSkeleton variant="discovery" />
+          <GameCardBaseSkeleton variant="discovery" />
         </li>
       ))
     : games.map((game) => (
         <li key={game.id}>
-          <GameCard game={game} variant="discovery" />
+          <GameCardBase game={game} variant="discovery" />
         </li>
       ))
 

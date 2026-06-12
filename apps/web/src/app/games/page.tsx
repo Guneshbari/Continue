@@ -2,7 +2,7 @@ import { Suspense } from 'react'
 import type { Metadata } from 'next'
 import { gamesApi } from '@/lib/api/games-api'
 import type { GamesListParams } from '@/lib/api/games-api'
-import { GameCard, GameCardSkeleton } from '@/components/game/GameCard'
+import { GameCardBase, GameCardBaseSkeleton } from '@/components/game/GameCardBase'
 import { TRENDING_GAMES } from '@/test-fixtures/seed'
 import type { GameSummary } from '@continue/types'
 import { getSkeletonKeys } from '@/lib/skeletonKeys'
@@ -40,7 +40,7 @@ async function GameGrid({ sort, genre, platform, q }: {
     <ul className="games-grid">
       {games.map((game) => (
         <li key={game.id}>
-          <GameCard game={game} />
+          <GameCardBase game={game} />
         </li>
       ))}
     </ul>
@@ -81,7 +81,7 @@ export default async function GamesPage({ searchParams }: PageProps) {
         <ul className="games-grid">
           {getSkeletonKeys(12).map((skeletonKey) => (
             <li key={skeletonKey}>
-              <GameCardSkeleton />
+              <GameCardBaseSkeleton />
             </li>
           ))}
         </ul>

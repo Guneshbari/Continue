@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { LayoutGrid, List } from 'lucide-react'
 import { useRouter, usePathname } from 'next/navigation'
-import { GameCard } from './GameCard'
+import { GameCardBase } from './GameCardBase'
 import { DiscoveryEmptyState } from './DiscoveryEmptyState'
 import type { GameSummary } from '@continue/types'
 
@@ -49,7 +49,7 @@ export function ResponsiveGameGrid({ games, onClearFilters }: ResponsiveGameGrid
         <ul className={view === 'grid' ? 'games-grid' : 'games-list-view'}>
           {games.map((game) => (
             <li key={game.id} style={{ listStyle: 'none' }}>
-              <GameCard game={game} variant={view === 'grid' ? 'discovery' : 'list'} />
+              <GameCardBase game={game} variant={view === 'grid' ? 'discovery' : 'list'} />
             </li>
           ))}
         </ul>

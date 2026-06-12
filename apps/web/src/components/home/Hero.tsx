@@ -1,24 +1,3 @@
-/**
- * EditorialHero — homepage hero, server component
- *
- * Premium editorial hero with split layout:
- * - Left: genre tags, display title, description, metadata badges, dual CTAs
- * - Right: large 2:3 cover artwork with entry animation
- * - Background: faint blurred banner image as ambient backdrop
- * - AmbientGlow: single instance, subtle intensity (< 10% opacity)
- *
- * Architecture decisions:
- * - Server component — no autoplay, no setInterval, no client state
- * - Hero candidate = game with highest avgRating in the featured array
- * - Respects SSR — all data flows from props, zero client fetches
- * - Motion is handled by MotionReveal/MotionFade (client islands)
- *
- * @example
- * ```tsx
- * <EditorialHero featured={featuredGames} />
- * ```
- */
-
 import Image from 'next/image'
 import Link from 'next/link'
 import { Star, Calendar, Monitor, Play, BookOpen } from 'lucide-react'
@@ -29,23 +8,10 @@ import { MetadataBadge, MetadataBadgeGroup } from '@/components/ui/MetadataBadge
 import { GameArtwork } from '@/components/ui/GameArtwork'
 
 type EditorialHeroProps = Readonly<{
-  featured: GameDetail[]
+  game: GameDetail | null
 }>
 
-/** Select the best hero candidate: highest avgRating, or first as fallback */
-function selectHeroGame(games: GameDetail[]): GameDetail | null {
-  if (games.length === 0) return null
-  const first = games[0]
-  if (!first) return null
-  return games.reduce<GameDetail>((best, game) => {
-    const bestRating = best.avgRating ?? 0
-    const gameRating = game.avgRating ?? 0
-    return gameRating > bestRating ? game : best
-  }, first)
-}
-
-export function EditorialHero({ featured }: EditorialHeroProps) {
-  const game = selectHeroGame(featured)
+export function EditorialHero({ game }: EditorialHeroProps) {
   if (!game) return null
 
   const year = game.releaseDate ? new Date(game.releaseDate).getFullYear() : null
@@ -57,9 +23,9 @@ export function EditorialHero({ featured }: EditorialHeroProps) {
 
   return (
     <section className="editorial-hero" aria-label={`Featured game: ${game.title}`}>
-      {/* Ambient background — blurred banner at low opacity */}
+      {/* 1. Backdrop image layer (delay 0s) */}
       {game.bannerUrl && (
-        <div className="editorial-hero__bg" aria-hidden="true">
+        <MotionFade direction="none" delay={0} duration={0.8} className="editorial-hero__bg">
           <Image
             src={game.bannerUrl}
             alt=""
@@ -68,20 +34,24 @@ export function EditorialHero({ featured }: EditorialHeroProps) {
             sizes="100vw"
             className="editorial-hero__bg-img"
           />
+          {/* 2. Dark gradient overlay */}
           <div className="editorial-hero__bg-gradient" />
-        </div>
+        </MotionFade>
       )}
 
-      {/* Ambient glow — max 1 instance, opacity < 10% */}
+      {/* 3. Static noise texture layer (static PNG blend-mode, cached) */}
+      <div className="editorial-hero__noise" aria-hidden="true" />
+
+      {/* 4. Ambient glow layer (delay 0.1s) */}
       <AmbientGlow intensity="subtle" className="editorial-hero__glow" />
 
-      {/* Main content */}
+      {/* 5. Content */}
       <div className="editorial-hero__content">
         {/* LEFT — editorial text */}
         <div className="editorial-hero__left">
-          {/* Genre tags */}
+          {/* Genre tags / metadata (delay 0.2s) */}
           {genresToShow.length > 0 && (
-            <MotionFade direction="none" delay={0}>
+            <MotionFade direction="none" delay={0.2} duration={0.4}>
               <ul className="editorial-hero__genres" aria-label="Genres">
                 {genresToShow.map((g) => (
                   <li key={g.id}>
@@ -94,20 +64,20 @@ export function EditorialHero({ featured }: EditorialHeroProps) {
             </MotionFade>
           )}
 
-          {/* Title */}
-          <MotionReveal duration={0.7}>
+          {/* Title (delay 0.3s) */}
+          <MotionReveal delay={0.3} duration={0.7}>
             <h1 className="editorial-hero__title">{game.title}</h1>
           </MotionReveal>
 
-          {/* Editorial description */}
+          {/* Editorial description (delay 0.4s) */}
           {description && (
-            <MotionFade direction="up" delay={0.1} duration={0.5}>
+            <MotionFade direction="up" delay={0.4} duration={0.5}>
               <p className="editorial-hero__description">{description}</p>
             </MotionFade>
           )}
 
-          {/* Metadata row — rating, year, platforms */}
-          <MotionFade direction="up" delay={0.15} duration={0.5}>
+          {/* Metadata row — rating, year, platforms (delay 0.45s) */}
+          <MotionFade direction="up" delay={0.45} duration={0.5}>
             <MetadataBadgeGroup className="editorial-hero__metadata">
               {game.avgRating !== null && (
                 <MetadataBadge
@@ -144,8 +114,8 @@ export function EditorialHero({ featured }: EditorialHeroProps) {
             </MetadataBadgeGroup>
           </MotionFade>
 
-          {/* CTAs */}
-          <MotionFade direction="up" delay={0.22} duration={0.5}>
+          {/* CTAs / Actions (delay 0.5s) */}
+          <MotionFade direction="up" delay={0.5} duration={0.5}>
             <div className="editorial-hero__ctas">
               <Button
                 as={Link}
@@ -171,9 +141,9 @@ export function EditorialHero({ featured }: EditorialHeroProps) {
           </MotionFade>
         </div>
 
-        {/* RIGHT — hero artwork */}
+        {/* RIGHT — hero artwork (delay 0.6s) */}
         <div className="editorial-hero__right" aria-hidden="true">
-          <MotionFade direction="left" delay={0.05} duration={0.7}>
+          <MotionFade direction="left" delay={0.6} duration={0.7}>
             <div className="editorial-hero__artwork-wrap">
               <GameArtwork
                 src={game.coverUrl}
