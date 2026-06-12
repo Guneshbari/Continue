@@ -7,21 +7,24 @@ import { MetadataBadge } from '@/components/ui/MetadataBadgeSystem'
 
 type CommunityCollectionsSectionProps = Readonly<{
   collections: SeedCollection[]
+  hideHeader?: boolean | undefined
 }>
 
-export function CommunityCollectionsSection({ collections }: CommunityCollectionsSectionProps) {
+export function CommunityCollectionsSection({ collections, hideHeader = false }: CommunityCollectionsSectionProps) {
   if (collections.length === 0) return null
 
   return (
     <section className="community-collections" aria-labelledby="community-collections-title">
-      <MotionFade direction="none" className="community-collections__header">
-        <h2 className="community-collections__title" id="community-collections-title">
-          Community Collections
-        </h2>
-        <Link href="/lists" className="discovery-section__view-all">
-          Browse all lists
-        </Link>
-      </MotionFade>
+      {!hideHeader && (
+        <MotionFade direction="none" className="community-collections__header">
+          <h2 className="community-collections__title" id="community-collections-title">
+            Community Collections
+          </h2>
+          <Link href="/lists" className="discovery-section__view-all">
+            Browse all lists
+          </Link>
+        </MotionFade>
+      )}
 
       <MotionStagger preset="standard" className="community-collections__list">
         {collections.map((collection) => (

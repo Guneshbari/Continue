@@ -1,12 +1,12 @@
 // SSR homepage — server component, no client JS needed for initial paint
-// Phase 2: parallel discovery fetches with ISR revalidation + graceful fallback
+// Phase 2.6.2: editorial hero redesign + premium shelf architecture
 
-import { Hero } from '@/components/home/Hero'
-import { DiscoveryCarousel } from '@/components/game/DiscoveryCarousel'
+import { EditorialHero } from '@/components/home/Hero'
+import { HomeShelf } from '@/components/home/HomeShelf'
 import { FeaturedReviewsSection } from '@/components/home/FeaturedReviewsSection'
 import { CommunityCollectionsSection } from '@/components/home/CommunityCollectionsSection'
+import { EditorialSectionHeader } from '@/components/ui/EditorialSectionHeader'
 import { ResponsiveContainer } from '@/components/ui/ResponsiveContainer'
-import { EditorialSectionWrapper } from '@/components/ui/EditorialSectionWrapper'
 import { RouteTransition, MotionFade } from '@/components/motion'
 import {
   FEATURED_GAMES,
@@ -22,6 +22,8 @@ import { env } from '@/lib/env'
 import type { Metadata } from 'next'
 import type { GameDetail, FeaturedReview, DiscoveryCollection } from '@continue/types'
 import type { GameShelf } from '@/lib/api/shelves-api'
+import Link from 'next/link'
+import { ArrowRight } from 'lucide-react'
 
 export const metadata: Metadata = {
   title: 'Continue — Discover Your Next Game',
@@ -79,14 +81,23 @@ function adaptCollections(apiCollections: DiscoveryCollection[]): SeedCollection
   }))
 }
 
+// ─── Hero candidate selection ─────────────────────────────────────────────────
+// Hero game = highest avgRating among candidates, not a random pick.
+// Falls back to first item if no ratings exist.
+
+function selectHeroCandidates(games: GameDetail[]): GameDetail[] {
+  if (games.length === 0) return FEATURED_GAMES
+  return [...games].sort((a, b) => (b.avgRating ?? 0) - (a.avgRating ?? 0))
+}
+
 // ─── Main data loader — all fetches run in parallel ──────────────────────────
 
 async function getHomeData() {
   const [trendingShelf, recentReleasesShelf, topRatedShelf, featuredReviews, collections] =
     await Promise.all([
-      fetchDiscovery<GameShelf>('/shelves/trending?limit=6'),
-      fetchDiscovery<GameShelf>('/shelves/recent-releases?limit=6'),
-      fetchDiscovery<GameShelf>('/shelves/top-rated?limit=6'),
+      fetchDiscovery<GameShelf>('/shelves/trending?limit=10'),
+      fetchDiscovery<GameShelf>('/shelves/recent-releases?limit=10'),
+      fetchDiscovery<GameShelf>('/shelves/top-rated?limit=10'),
       fetchDiscovery<FeaturedReview[]>('/reviews/featured?limit=3'),
       fetchDiscovery<DiscoveryCollection[]>('/lists/discovery?limit=3'),
     ])
@@ -97,11 +108,14 @@ async function getHomeData() {
 
   const hasLiveGames = trending.length > 0
 
+  // Hero candidates: use live trending games (cast to GameDetail) or seed fallback
+  const heroCandidates = hasLiveGames
+    ? (trending.slice(0, 5) as unknown as GameDetail[])
+    : FEATURED_GAMES
+
   return {
-    // Hero takes GameDetail[] — cast from GameSummary if live data available
-    featured: hasLiveGames
-      ? (trending.slice(0, 3) as unknown as GameDetail[])
-      : FEATURED_GAMES,
+    // Hero takes sorted GameDetail[] — best rating wins
+    featured: selectHeroCandidates(heroCandidates),
 
     trending: hasLiveGames ? trending : TRENDING_GAMES,
     newReleases: newReleases.length > 0 ? newReleases : NEW_RELEASES,
@@ -132,50 +146,113 @@ export default async function HomePage() {
           Skip to main content
         </a>
 
-        <Hero featured={featured} />
+        {/* Editorial Hero — artwork-first, premium split layout */}
+        <EditorialHero featured={featured} />
 
-        <ResponsiveContainer className="pb-16 md:pb-24">
+        {/* Homepage Content — shelves + editorial sections */}
+        <ResponsiveContainer className="pb-16 md:pb-24 pt-12 md:pt-16">
+
+          {/* ── Trending Now shelf ── */}
           <MotionFade direction="up" delay={0}>
-            <EditorialSectionWrapper hasDivider>
-              <DiscoveryCarousel
-                title="Trending Now"
-                games={trending}
-                viewAllHref="/games?sort=trending"
-              />
-            </EditorialSectionWrapper>
+            <HomeShelf
+              id="trending"
+              title="Trending Now"
+              description="The most-played and most-discussed games in the community right now"
+              games={trending}
+              viewAllHref="/discover?sort=trending"
+            />
           </MotionFade>
 
-          <MotionFade direction="up" delay={0.05}>
-            <EditorialSectionWrapper hasDivider>
-              <DiscoveryCarousel
+          <hr className="editorial-divider" />
+
+          {/* ── New Releases shelf ── */}
+          <MotionFade direction="up" delay={0.04}>
+            <div className="mt-section">
+              <HomeShelf
+                id="new-releases"
                 title="New Releases"
+                description="Fresh titles worth your attention — reviewed and rated by the community"
                 games={newReleases}
-                viewAllHref="/games?sort=new"
+                viewAllHref="/discover?sort=new"
               />
-            </EditorialSectionWrapper>
+            </div>
           </MotionFade>
 
-          <MotionFade direction="up" delay={0.1}>
-            <EditorialSectionWrapper hasDivider>
-              <DiscoveryCarousel
+          <hr className="editorial-divider" />
+
+          {/* ── Top Rated shelf ── */}
+          <MotionFade direction="up" delay={0.08}>
+            <div className="mt-section">
+              <HomeShelf
+                id="top-rated"
                 title="Top Rated"
+                description="The highest-rated games across all genres — as scored by the Continue community"
                 games={topRated}
-                viewAllHref="/games?sort=top-rated"
+                viewAllHref="/discover?sort=top-rated"
+                badge={
+                  <span
+                    className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[9px] font-bold tracking-widest uppercase rounded"
+                    style={{
+                      background: 'oklch(20% 0.05 70)',
+                      color: 'var(--color-warning)',
+                      border: '1px solid oklch(30% 0.08 70)',
+                    }}
+                  >
+                    ★ Community Pick
+                  </span>
+                }
               />
-            </EditorialSectionWrapper>
+            </div>
           </MotionFade>
 
-          <MotionFade direction="up" delay={0.15}>
-            <EditorialSectionWrapper hasDivider>
-              <FeaturedReviewsSection reviews={reviews} />
-            </EditorialSectionWrapper>
+          <hr className="editorial-divider" />
+
+          {/* ── Featured Reviews ── */}
+          <MotionFade direction="up" delay={0.12}>
+            <div className="mt-section">
+              <EditorialSectionHeader
+                title="Featured Reviews"
+                description="In-depth takes from the community on the games that matter most"
+                action={
+                  <Link
+                    href="/discover"
+                    className="home-shelf__view-all"
+                    aria-label="Browse all reviews"
+                  >
+                    Browse all
+                    <ArrowRight size={14} aria-hidden="true" />
+                  </Link>
+                }
+                className="mb-6"
+              />
+              <FeaturedReviewsSection reviews={reviews} hideHeader />
+            </div>
           </MotionFade>
 
-          <MotionFade direction="up" delay={0.2}>
-            <EditorialSectionWrapper>
-              <CommunityCollectionsSection collections={collections} />
-            </EditorialSectionWrapper>
+          <hr className="editorial-divider" />
+
+          {/* ── Community Collections ── */}
+          <MotionFade direction="up" delay={0.16}>
+            <div className="mt-section">
+              <EditorialSectionHeader
+                title="Community Collections"
+                description="Curated lists built by passionate players — handpicked game journeys"
+                action={
+                  <Link
+                    href="/lists"
+                    className="home-shelf__view-all"
+                    aria-label="Browse all collections"
+                  >
+                    Browse all
+                    <ArrowRight size={14} aria-hidden="true" />
+                  </Link>
+                }
+                className="mb-6"
+              />
+              <CommunityCollectionsSection collections={collections} hideHeader />
+            </div>
           </MotionFade>
+
         </ResponsiveContainer>
       </main>
     </RouteTransition>

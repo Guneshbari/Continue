@@ -7,21 +7,24 @@ import { MetadataBadge } from '@/components/ui/MetadataBadgeSystem'
 
 type FeaturedReviewsSectionProps = Readonly<{
   reviews: SeedReview[]
+  hideHeader?: boolean | undefined
 }>
 
-export function FeaturedReviewsSection({ reviews }: FeaturedReviewsSectionProps) {
+export function FeaturedReviewsSection({ reviews, hideHeader = false }: FeaturedReviewsSectionProps) {
   if (reviews.length === 0) return null
 
   return (
     <section className="featured-reviews" aria-labelledby="featured-reviews-title">
-      <MotionFade direction="none" className="featured-reviews__header">
-        <h2 className="featured-reviews__title" id="featured-reviews-title">
-          Featured Reviews
-        </h2>
-        <Link href="/games" className="discovery-section__view-all">
-          Browse all reviews
-        </Link>
-      </MotionFade>
+      {!hideHeader && (
+        <MotionFade direction="none" className="featured-reviews__header">
+          <h2 className="featured-reviews__title" id="featured-reviews-title">
+            Featured Reviews
+          </h2>
+          <Link href="/games" className="discovery-section__view-all">
+            Browse all reviews
+          </Link>
+        </MotionFade>
+      )}
 
       <MotionStagger preset="editorial" className="featured-reviews__list">
         {reviews.map((review) => (

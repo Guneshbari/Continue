@@ -26,10 +26,12 @@ export interface EditorialSectionHeaderProps
   badge?: React.ReactNode
   description?: string
   action?: React.ReactNode
+  /** Optional id applied to the inner h2 element for aria-labelledby support */
+  headingId?: string | undefined
 }
 
 export const EditorialSectionHeader = React.forwardRef<HTMLDivElement, EditorialSectionHeaderProps>(
-  ({ className, variant, title, subtitle, badge, description, action, ...props }, ref) => {
+  ({ className, variant, title, subtitle, badge, description, action, headingId, ...props }, ref) => {
     const isLarge = variant === 'large'
 
     return (
@@ -47,6 +49,7 @@ export const EditorialSectionHeader = React.forwardRef<HTMLDivElement, Editorial
             )}
             <div className="flex items-center gap-3 flex-wrap">
               <h2
+                id={headingId}
                 className={cn(
                   'font-display leading-[var(--line-height-display)] tracking-[var(--tracking-compressed)] text-[var(--color-text-primary)]',
                   isLarge ? 'text-[var(--font-size-display-lg)]' : 'text-[var(--font-size-display-md)]'
