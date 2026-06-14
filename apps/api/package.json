@@ -18,8 +18,8 @@
     "db:seed": "ts-node --transpile-only --project tsconfig.seed.json prisma/seed.ts"
   },
   "dependencies": {
-    "@bull-board/api": "^7.1.5",
-    "@bull-board/fastify": "^7.1.5",
+    "@bull-board/api": "6.9.6",
+    "@bull-board/fastify": "6.9.6",
     "@continue/types": "workspace:*",
     "@continue/validation": "workspace:*",
     "@fastify/cors": "^9.0.1",

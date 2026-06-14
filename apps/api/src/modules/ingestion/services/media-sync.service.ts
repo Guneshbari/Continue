@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common'
-import type { PrismaService } from '../../../common/prisma/prisma.service'
+import { PrismaService } from '../../../common/prisma/prisma.service'
 import { MediaProcessingState } from '@prisma/client'
 import { InjectQueue } from '@nestjs/bullmq'
 import type { Queue } from 'bullmq'

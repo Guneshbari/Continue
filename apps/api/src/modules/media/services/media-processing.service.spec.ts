@@ -10,7 +10,7 @@ import { MediaProcessingState } from '@prisma/client'
 
 // Mock sharp.stats() and sharp.toBuffer()
 jest.mock('sharp', () => {
-  const mSharp = jest.fn(() => ({
+  const mSharp: any = jest.fn(() => ({
     resize: jest.fn().mockReturnThis(),
     keepMetadata: jest.fn().mockReturnThis(),
     avif: jest.fn().mockReturnThis(),
@@ -27,7 +27,7 @@ jest.mock('sharp', () => {
         { mean: 80, stdev: 35 },  // Blue
       ],
     }),
-  })) as any
+  }))
   mSharp.cache = jest.fn()
   return mSharp
 })

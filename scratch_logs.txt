@@ -1,0 +1,1043 @@
+
+┌─ @continue/api#dev > cache bypass, force executing e8ff1e3f7d1dce5d
+[11:48:48 PM] Starting compilation in watch mode...
+
+[11:48:52 PM] Found 0 errors. Watching for file changes.
+
+(node:38340) [DEP0190] DeprecationWarning: Passing args to
+ a child process with shell option true can lead to securi
+ty vulnerabilities, as the arguments are not escaped, only
+ concatenated.
+(Use `node --trace-deprecation ...` to show where the warn
+ing was created)
+[Nest] 38630  - 06/12/2026, 11:48:53 PM     LOG [NestFacto
+ry] Starting Nest application...
+[Nest] 38630  - 06/12/2026, 11:48:53 PM     LOG [InstanceL
+oader] PrismaModule dependencies initialized +12ms
+[Nest] 38630  - 06/12/2026, 11:48:53 PM     LOG [InstanceL
+oader] PassportModule dependencies initialized +0ms
+[Nest] 38630  - 06/12/2026, 11:48:53 PM     LOG [InstanceL
+oader] ThrottlerModule dependencies initialized +1ms
+[Nest] 38630  - 06/12/2026, 11:48:53 PM     LOG [InstanceL
+oader] JwtModule dependencies initialized +0ms
+[Nest] 38630  - 06/12/2026, 11:48:53 PM   ERROR [Exception
+Handler] Nest can't resolve dependencies of the ScenarioRe
+gistryService (?). Please make sure that the argument Func
+tion at index [0] is available in the FixturesModule conte
+xt.
+
+Potential solutions:
+- Is FixturesModule a valid NestJS module?
+- If Function is a provider, is it part of the current Fix
+turesModule?
+- If Function is exported from a separate @Module, is that
+ module imported within FixturesModule?
+  @Module({
+    imports: [ /* the Module containing Function */ ]
+  })
+
+Error: Nest can't resolve dependencies of the ScenarioRegi
+stryService (?). Please make sure that the argument Functi
+on at index [0] is available in the FixturesModule context
+.
+
+Potential solutions:
+- Is FixturesModule a valid NestJS module?
+- If Function is a provider, is it part of the current Fix
+turesModule?
+- If Function is exported from a separate @Module, is that
+ module imported within FixturesModule?
+  @Module({
+    imports: [ /* the Module containing Function */ ]
+  })
+
+    at Injector.lookupComponentInParentModules (/mnt/windo
+ws-data/Coding/Continue/node_modules/.pnpm/@nestjs+core@10
+.4.22_@nestjs+common@10.4.22_class-transformer@0.5.1_class
+-validator@0.14.4_re_cjd5belzlmbfxxvhgmpmcaquny/node_modul
+es/@nestjs/core/injector/injector.js:262:19)
+    at process.processTicksAndRejections (node:internal/pr
+ocess/task_queues:104:5)
+    at async Injector.resolveComponentInstance (/mnt/windo
+ws-data/Coding/Continue/node_modules/.pnpm/@nestjs+core@10
+.4.22_@nestjs+common@10.4.22_class-transformer@0.5.1_class
+-validator@0.14.4_re_cjd5belzlmbfxxvhgmpmcaquny/node_modul
+es/@nestjs/core/injector/injector.js:215:33)
+    at async resolveParam (/mnt/windows-data/Coding/Contin
+ue/node_modules/.pnpm/@nestjs+core@10.4.22_@nestjs+common@
+10.4.22_class-transformer@0.5.1_class-validator@0.14.4_re_
+cjd5belzlmbfxxvhgmpmcaquny/node_modules/@nestjs/core/injec
+tor/injector.js:129:38)
+    at async Promise.all (index 0)
+    at async Injector.resolveConstructorParams (/mnt/windo
+ws-data/Coding/Continue/node_modules/.pnpm/@nestjs+core@10
+.4.22_@nestjs+common@10.4.22_class-transformer@0.5.1_class
+-validator@0.14.4_re_cjd5belzlmbfxxvhgmpmcaquny/node_modul
+es/@nestjs/core/injector/injector.js:144:27)
+    at async Injector.loadInstance (/mnt/windows-data/Codi
+ng/Continue/node_modules/.pnpm/@nestjs+core@10.4.22_@nestj
+s+common@10.4.22_class-transformer@0.5.1_class-validator@0
+.14.4_re_cjd5belzlmbfxxvhgmpmcaquny/node_modules/@nestjs/c
+ore/injector/injector.js:70:13)
+    at async Injector.loadProvider (/mnt/windows-data/Codi
+ng/Continue/node_modules/.pnpm/@nestjs+core@10.4.22_@nestj
+s+common@10.4.22_class-transformer@0.5.1_class-validator@0
+.14.4_re_cjd5belzlmbfxxvhgmpmcaquny/node_modules/@nestjs/c
+ore/injector/injector.js:98:9)
+    at async /mnt/windows-data/Coding/Continue/node_module
+s/.pnpm/@nestjs+core@10.4.22_@nestjs+common@10.4.22_class-
+transformer@0.5.1_class-validator@0.14.4_re_cjd5belzlmbfxx
+vhgmpmcaquny/node_modules/@nestjs/core/injector/instance-l
+oader.js:56:13
+    at async Promise.all (index 3)
+└─ @continue/api#dev ──
+┌─ @continue/web#dev > cache bypass, force executing 8ee928c03700a84a
+cache bypass, force executing 8ee928c03700a84a
+
+> @continue/web@0.1.0 dev /mnt/windows-data/Coding/Continu
+e/apps/web
+> next dev --turbopack
+
+   ▲ Next.js 15.5.18 (Turbopack)
+   - Local:        http://localhost:3000
+   - Network:      http://172.20.10.4:3000
+   - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Compiled middleware in 140ms
+ ✓ Ready in 1285ms
+└─ @continue/web#dev ──
+
+ Tasks:    0 successful, 2 total
+Cached:    0 cached, 2 total
+  Time:    13.595s
+
+
+󰣇 trespasser  …/Continue   master   v24.15.0  󱎫 14s   23:49
+╰─❯ pnpm dev
+
+> continue-platform@0.1.0 dev /mnt/windows-data/Coding/Continue
+> turbo dev
+
+╭───────────────────────────────────────────────────────────────────────────╮
+│                                                                           │
+│                    Update available v2.9.14 ≫ v2.9.18                     │
+│    Changelog: https://github.com/vercel/turborepo/releases/tag/v2.9.18    │
+│           Run "pnpm dlx @turbo/codemod@latest update" to update           │
+│                                                                           │
+│          Follow @turborepo for updates: https://x.com/turborepo           │
+╰───────────────────────────────────────────────────────────────────────────╯
+• turbo 2.9.14
+
+   • Packages in scope: @continue/api, @continue/types, @continue/ui, @continue/v
+alidation, @continue/web
+   • Running dev in 5 packages
+   • Remote caching disabled
+
+┌─ @continue/api#dev > cache bypass, force executing e8ff1e3f7d1dce5d
+[11:49:05 PM] Starting compilation in watch mode...
+
+[11:49:09 PM] Found 0 errors. Watching for file changes.
+
+(node:39181) [DEP0190] DeprecationWarning: Passing args to
+ a child process with shell option true can lead to securi
+ty vulnerabilities, as the arguments are not escaped, only
+ concatenated.
+(Use `node --trace-deprecation ...` to show where the warn
+ing was created)
+[Nest] 39418  - 06/12/2026, 11:49:10 PM     LOG [NestFacto
+ry] Starting Nest application...
+[Nest] 39418  - 06/12/2026, 11:49:10 PM     LOG [InstanceL
+oader] PrismaModule dependencies initialized +12ms
+[Nest] 39418  - 06/12/2026, 11:49:10 PM     LOG [InstanceL
+oader] PassportModule dependencies initialized +0ms
+[Nest] 39418  - 06/12/2026, 11:49:10 PM     LOG [InstanceL
+oader] ThrottlerModule dependencies initialized +1ms
+[Nest] 39418  - 06/12/2026, 11:49:10 PM     LOG [InstanceL
+oader] JwtModule dependencies initialized +0ms
+[Nest] 39418  - 06/12/2026, 11:49:10 PM   ERROR [Exception
+Handler] Nest can't resolve dependencies of the ScenarioRe
+gistryService (?). Please make sure that the argument Func
+tion at index [0] is available in the FixturesModule conte
+xt.
+
+Potential solutions:
+- Is FixturesModule a valid NestJS module?
+- If Function is a provider, is it part of the current Fix
+turesModule?
+- If Function is exported from a separate @Module, is that
+ module imported within FixturesModule?
+  @Module({
+    imports: [ /* the Module containing Function */ ]
+  })
+
+Error: Nest can't resolve dependencies of the ScenarioRegi
+stryService (?). Please make sure that the argument Functi
+on at index [0] is available in the FixturesModule context
+.
+
+Potential solutions:
+- Is FixturesModule a valid NestJS module?
+- If Function is a provider, is it part of the current Fix
+turesModule?
+- If Function is exported from a separate @Module, is that
+ module imported within FixturesModule?
+  @Module({
+    imports: [ /* the Module containing Function */ ]
+  })
+
+    at Injector.lookupComponentInParentModules (/mnt/windo
+ws-data/Coding/Continue/node_modules/.pnpm/@nestjs+core@10
+.4.22_@nestjs+common@10.4.22_class-transformer@0.5.1_class
+-validator@0.14.4_re_cjd5belzlmbfxxvhgmpmcaquny/node_modul
+es/@nestjs/core/injector/injector.js:262:19)
+    at process.processTicksAndRejections (node:internal/pr
+ocess/task_queues:104:5)
+    at async Injector.resolveComponentInstance (/mnt/windo
+ws-data/Coding/Continue/node_modules/.pnpm/@nestjs+core@10
+.4.22_@nestjs+common@10.4.22_class-transformer@0.5.1_class
+-validator@0.14.4_re_cjd5belzlmbfxxvhgmpmcaquny/node_modul
+es/@nestjs/core/injector/injector.js:215:33)
+    at async resolveParam (/mnt/windows-data/Coding/Contin
+ue/node_modules/.pnpm/@nestjs+core@10.4.22_@nestjs+common@
+10.4.22_class-transformer@0.5.1_class-validator@0.14.4_re_
+cjd5belzlmbfxxvhgmpmcaquny/node_modules/@nestjs/core/injec
+tor/injector.js:129:38)
+    at async Promise.all (index 0)
+    at async Injector.resolveConstructorParams (/mnt/windo
+ws-data/Coding/Continue/node_modules/.pnpm/@nestjs+core@10
+.4.22_@nestjs+common@10.4.22_class-transformer@0.5.1_class
+-validator@0.14.4_re_cjd5belzlmbfxxvhgmpmcaquny/node_modul
+es/@nestjs/core/injector/injector.js:144:27)
+    at async Injector.loadInstance (/mnt/windows-data/Codi
+ng/Continue/node_modules/.pnpm/@nestjs+core@10.4.22_@nestj
+s+common@10.4.22_class-transformer@0.5.1_class-validator@0
+.14.4_re_cjd5belzlmbfxxvhgmpmcaquny/node_modules/@nestjs/c
+ore/injector/injector.js:70:13)
+    at async Injector.loadProvider (/mnt/windows-data/Codi
+ng/Continue/node_modules/.pnpm/@nestjs+core@10.4.22_@nestj
+s+common@10.4.22_class-transformer@0.5.1_class-validator@0
+.14.4_re_cjd5belzlmbfxxvhgmpmcaquny/node_modules/@nestjs/c
+ore/injector/injector.js:98:9)
+    at async /mnt/windows-data/Coding/Continue/node_module
+s/.pnpm/@nestjs+core@10.4.22_@nestjs+common@10.4.22_class-
+transformer@0.5.1_class-validator@0.14.4_re_cjd5belzlmbfxx
+vhgmpmcaquny/node_modules/@nestjs/core/injector/instance-l
+oader.js:56:13
+    at async Promise.all (index 3)
+└─ @continue/api#dev ──
+┌─ @continue/web#dev > cache bypass, force executing 8ee928c03700a84a
+cache bypass, force executing 8ee928c03700a84a
+
+> @continue/web@0.1.0 dev /mnt/windows-data/Coding/Continu
+e/apps/web
+> next dev --turbopack
+
+   ▲ Next.js 15.5.18 (Turbopack)
+   - Local:        http://localhost:3000
+   - Network:      http://172.20.10.4:3000
+   - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Compiled middleware in 112ms
+ ✓ Ready in 1109ms
+└─ @continue/web#dev ──
+
+ Tasks:    0 successful, 2 total
+Cached:    0 cached, 2 total
+  Time:    22.368s
+
+
+󰣇 trespasser  …/Continue   master   v24.15.0  󱎫 22s   23:49
+╰─❯ pnpm dev
+
+> continue-platform@0.1.0 dev /mnt/windows-data/Coding/Continue
+> turbo dev
+
+╭───────────────────────────────────────────────────────────────────────────╮
+│                                                                           │
+│                    Update available v2.9.14 ≫ v2.9.18                     │
+│    Changelog: https://github.com/vercel/turborepo/releases/tag/v2.9.18    │
+│           Run "pnpm dlx @turbo/codemod@latest update" to update           │
+│                                                                           │
+│          Follow @turborepo for updates: https://x.com/turborepo           │
+╰───────────────────────────────────────────────────────────────────────────╯
+• turbo 2.9.14
+
+   • Packages in scope: @continue/api, @continue/types, @continue/ui, @continue/v
+alidation, @continue/web
+   • Running dev in 5 packages
+   • Remote caching disabled
+
+┌─ @continue/web#dev > cache bypass, force executing 8ee928c03700a84a
+cache bypass, force executing 8ee928c03700a84a
+
+> @continue/web@0.1.0 dev /mnt/windows-data/Coding/Continu
+e/apps/web
+> next dev --turbopack
+
+   ▲ Next.js 15.5.18 (Turbopack)
+   - Local:        http://localhost:3000
+   - Network:      http://172.20.10.4:3000
+   - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Compiled middleware in 99ms
+ ✓ Ready in 1085ms
+└─ @continue/web#dev ──
+┌─ @continue/api#dev > cache bypass, force executing e8ff1e3f7d1dce5d
+[11:49:30 PM] Starting compilation in watch mode...
+
+[11:49:33 PM] Found 0 errors. Watching for file changes.
+
+(node:40109) [DEP0190] DeprecationWarning: Passing args to
+ a child process with shell option true can lead to securi
+ty vulnerabilities, as the arguments are not escaped, only
+ concatenated.
+(Use `node --trace-deprecation ...` to show where the warn
+ing was created)
+[Nest] 40312  - 06/12/2026, 11:49:34 PM     LOG [NestFacto
+ry] Starting Nest application...
+[Nest] 40312  - 06/12/2026, 11:49:34 PM     LOG [InstanceL
+oader] PrismaModule dependencies initialized +13ms
+[Nest] 40312  - 06/12/2026, 11:49:34 PM     LOG [InstanceL
+oader] PassportModule dependencies initialized +0ms
+[Nest] 40312  - 06/12/2026, 11:49:34 PM     LOG [InstanceL
+oader] ThrottlerModule dependencies initialized +0ms
+[Nest] 40312  - 06/12/2026, 11:49:34 PM     LOG [InstanceL
+oader] JwtModule dependencies initialized +0ms
+[Nest] 40312  - 06/12/2026, 11:49:34 PM   ERROR [Exception
+Handler] Nest can't resolve dependencies of the ScenarioRe
+gistryService (?). Please make sure that the argument Func
+tion at index [0] is available in the FixturesModule conte
+xt.
+
+Potential solutions:
+- Is FixturesModule a valid NestJS module?
+- If Function is a provider, is it part of the current Fix
+turesModule?
+- If Function is exported from a separate @Module, is that
+ module imported within FixturesModule?
+  @Module({
+    imports: [ /* the Module containing Function */ ]
+  })
+
+Error: Nest can't resolve dependencies of the ScenarioRegi
+stryService (?). Please make sure that the argument Functi
+on at index [0] is available in the FixturesModule context
+.
+
+Potential solutions:
+- Is FixturesModule a valid NestJS module?
+- If Function is a provider, is it part of the current Fix
+turesModule?
+- If Function is exported from a separate @Module, is that
+ module imported within FixturesModule?
+  @Module({
+    imports: [ /* the Module containing Function */ ]
+  })
+[11:52:33 PM] File change detected. Starting incremental c
+ompilation...
+
+[11:52:33 PM] Found 0 errors. Watching for file changes.
+
+[Nest] 43970  - 06/12/2026, 11:52:34 PM     LOG [NestFacto
+ry] Starting Nest application...
+[Nest] 43970  - 06/12/2026, 11:52:34 PM     LOG [InstanceL
+oader] PrismaModule dependencies initialized +13ms
+[Nest] 43970  - 06/12/2026, 11:52:34 PM     LOG [InstanceL
+oader] PassportModule dependencies initialized +0ms
+[Nest] 43970  - 06/12/2026, 11:52:34 PM     LOG [InstanceL
+oader] ThrottlerModule dependencies initialized +0ms
+[Nest] 43970  - 06/12/2026, 11:52:34 PM     LOG [InstanceL
+oader] JwtModule dependencies initialized +0ms
+[Nest] 43970  - 06/12/2026, 11:52:34 PM   ERROR [Exception
+Handler] Nest can't resolve dependencies of the FixtureLoa
+derService (?, Function). Please make sure that the argume
+nt Function at index [0] is available in the FixturesModul
+e context.
+
+Potential solutions:
+- Is FixturesModule a valid NestJS module?
+- If Function is a provider, is it part of the current Fix
+turesModule?
+- If Function is exported from a separate @Module, is that
+ module imported within FixturesModule?
+  @Module({
+    imports: [ /* the Module containing Function */ ]
+  })
+
+Error: Nest can't resolve dependencies of the FixtureLoade
+rService (?, Function). Please make sure that the argument
+ Function at index [0] is available in the FixturesModule
+context.
+
+Potential solutions:
+- Is FixturesModule a valid NestJS module?
+- If Function is a provider, is it part of the current Fix
+turesModule?
+- If Function is exported from a separate @Module, is that
+ module imported within FixturesModule?
+  @Module({
+    imports: [ /* the Module containing Function */ ]
+  })
+[11:52:35 PM] File change detected. Starting incremental c
+ompilation...
+
+[11:52:35 PM] Found 0 errors. Watching for file changes.
+
+[Nest] 44038  - 06/12/2026, 11:52:37 PM     LOG [NestFacto
+ry] Starting Nest application...
+[Nest] 44038  - 06/12/2026, 11:52:37 PM     LOG [InstanceL
+oader] PrismaModule dependencies initialized +13ms
+[Nest] 44038  - 06/12/2026, 11:52:37 PM     LOG [InstanceL
+oader] PassportModule dependencies initialized +0ms
+[Nest] 44038  - 06/12/2026, 11:52:37 PM     LOG [InstanceL
+oader] ThrottlerModule dependencies initialized +0ms
+[Nest] 44038  - 06/12/2026, 11:52:37 PM     LOG [InstanceL
+oader] JwtModule dependencies initialized +0ms
+[Nest] 44038  - 06/12/2026, 11:52:37 PM   ERROR [Exception
+Handler] Nest can't resolve dependencies of the MediaStora
+geService (?). Please make sure that the argument Function
+ at index [0] is available in the MediaModule context.
+
+Potential solutions:
+- Is MediaModule a valid NestJS module?
+- If Function is a provider, is it part of the current Med
+iaModule?
+- If Function is exported from a separate @Module, is that
+ module imported within MediaModule?
+  @Module({
+    imports: [ /* the Module containing Function */ ]
+  })
+
+Error: Nest can't resolve dependencies of the MediaStorage
+Service (?). Please make sure that the argument Function a
+t index [0] is available in the MediaModule context.
+
+Potential solutions:
+- Is MediaModule a valid NestJS module?
+- If Function is a provider, is it part of the current Med
+iaModule?
+- If Function is exported from a separate @Module, is that
+ module imported within MediaModule?
+  @Module({
+    imports: [ /* the Module containing Function */ ]
+  })
+
+    at Injector.lookupComponentInParentModules (/mnt/windo
+ws-data/Coding/Continue/node_modules/.pnpm/@nestjs+core@10
+.4.22_@nestjs+common@10.4.22_class-transformer@0.5.1_class
+-validator@0.14.4_re_cjd5belzlmbfxxvhgmpmcaquny/node_modul
+es/@nestjs/core/injector/injector.js:262:19)
+    at process.processTicksAndRejections (node:internal/pr
+ocess/task_queues:104:5)
+    at async Injector.resolveComponentInstance (/mnt/windo
+ws-data/Coding/Continue/node_modules/.pnpm/@nestjs+core@10
+.4.22_@nestjs+common@10.4.22_class-transformer@0.5.1_class
+-validator@0.14.4_re_cjd5belzlmbfxxvhgmpmcaquny/node_modul
+es/@nestjs/core/injector/injector.js:215:33)
+    at async resolveParam (/mnt/windows-data/Coding/Contin
+ue/node_modules/.pnpm/@nestjs+core@10.4.22_@nestjs+common@
+10.4.22_class-transformer@0.5.1_class-validator@0.14.4_re_
+cjd5belzlmbfxxvhgmpmcaquny/node_modules/@nestjs/core/injec
+tor/injector.js:129:38)
+    at async Promise.all (index 0)
+    at async Injector.resolveConstructorParams (/mnt/windo
+ws-data/Coding/Continue/node_modules/.pnpm/@nestjs+core@10
+.4.22_@nestjs+common@10.4.22_class-transformer@0.5.1_class
+-validator@0.14.4_re_cjd5belzlmbfxxvhgmpmcaquny/node_modul
+es/@nestjs/core/injector/injector.js:144:27)
+    at async Injector.loadInstance (/mnt/windows-data/Codi
+ng/Continue/node_modules/.pnpm/@nestjs+core@10.4.22_@nestj
+s+common@10.4.22_class-transformer@0.5.1_class-validator@0
+.14.4_re_cjd5belzlmbfxxvhgmpmcaquny/node_modules/@nestjs/c
+ore/injector/injector.js:70:13)
+    at async Injector.loadProvider (/mnt/windows-data/Codi
+ng/Continue/node_modules/.pnpm/@nestjs+core@10.4.22_@nestj
+s+common@10.4.22_class-transformer@0.5.1_class-validator@0
+.14.4_re_cjd5belzlmbfxxvhgmpmcaquny/node_modules/@nestjs/c
+ore/injector/injector.js:98:9)
+    at async /mnt/windows-data/Coding/Continue/node_module
+s/.pnpm/@nestjs+core@10.4.22_@nestjs+common@10.4.22_class-
+transformer@0.5.1_class-validator@0.14.4_re_cjd5belzlmbfxx
+vhgmpmcaquny/node_modules/@nestjs/core/injector/instance-l
+oader.js:56:13
+    at async Promise.all (index 3)
+└─ @continue/api#dev ──
+
+ Tasks:    0 successful, 2 total
+Cached:    0 cached, 2 total
+  Time:    3m21.032s
+
+
+󰣇 trespasser  …/Continue   master !   v24.15.0  󱎫 3m21s   23:52
+╰─❯ pnpm dev
+
+> continue-platform@0.1.0 dev /mnt/windows-data/Coding/Continue
+> turbo dev
+
+╭───────────────────────────────────────────────────────────────────────────╮
+│                                                                           │
+│                    Update available v2.9.14 ≫ v2.9.18                     │
+│    Changelog: https://github.com/vercel/turborepo/releases/tag/v2.9.18    │
+│           Run "pnpm dlx @turbo/codemod@latest update" to update           │
+│                                                                           │
+│          Follow @turborepo for updates: https://x.com/turborepo           │
+╰───────────────────────────────────────────────────────────────────────────╯
+• turbo 2.9.14
+
+   • Packages in scope: @continue/api, @continue/types, @continue/ui, @continue/v
+alidation, @continue/web
+   • Running dev in 5 packages
+   • Remote caching disabled
+
+┌─ @continue/api#dev > cache bypass, force executing f0073b78829fb94b
+[11:52:53 PM] Starting compilation in watch mode...
+
+[11:52:57 PM] Found 0 errors. Watching for file changes.
+
+(node:44608) [DEP0190] DeprecationWarning: Passing args to
+a child process with shell option true can lead to security
+ vulnerabilities, as the arguments are not escaped, only co
+ncatenated.
+(Use `node --trace-deprecation ...` to show where the warni
+ng was created)
+[Nest] 44877  - 06/12/2026, 11:52:58 PM     LOG [NestFactor
+y] Starting Nest application...
+[Nest] 44877  - 06/12/2026, 11:52:58 PM     LOG [InstanceLo
+ader] PrismaModule dependencies initialized +13ms
+[Nest] 44877  - 06/12/2026, 11:52:58 PM     LOG [InstanceLo
+ader] PassportModule dependencies initialized +0ms
+[Nest] 44877  - 06/12/2026, 11:52:58 PM     LOG [InstanceLo
+ader] ThrottlerModule dependencies initialized +1ms
+[Nest] 44877  - 06/12/2026, 11:52:58 PM     LOG [InstanceLo
+ader] JwtModule dependencies initialized +0ms
+[Nest] 44877  - 06/12/2026, 11:52:58 PM   ERROR [ExceptionH
+andler] Nest can't resolve dependencies of the MediaStorage
+Service (?). Please make sure that the argument Function at
+ index [0] is available in the MediaModule context.
+
+Potential solutions:
+- Is MediaModule a valid NestJS module?
+- If Function is a provider, is it part of the current Medi
+aModule?
+- If Function is exported from a separate @Module, is that
+module imported within MediaModule?
+  @Module({
+    imports: [ /* the Module containing Function */ ]
+  })
+
+Error: Nest can't resolve dependencies of the MediaStorageS
+ervice (?). Please make sure that the argument Function at
+index [0] is available in the MediaModule context.
+
+Potential solutions:
+- Is MediaModule a valid NestJS module?
+- If Function is a provider, is it part of the current Medi
+aModule?
+- If Function is exported from a separate @Module, is that
+module imported within MediaModule?
+  @Module({
+    imports: [ /* the Module containing Function */ ]
+  })
+[11:53:16 PM] File change detected. Starting incremental co
+mpilation...
+
+[11:53:16 PM] Found 0 errors. Watching for file changes.
+
+[Nest] 45324  - 06/12/2026, 11:53:18 PM     LOG [NestFactor
+y] Starting Nest application...
+[Nest] 45324  - 06/12/2026, 11:53:18 PM     LOG [InstanceLo
+ader] PrismaModule dependencies initialized +13ms
+[Nest] 45324  - 06/12/2026, 11:53:18 PM     LOG [InstanceLo
+ader] PassportModule dependencies initialized +0ms
+[Nest] 45324  - 06/12/2026, 11:53:18 PM     LOG [InstanceLo
+ader] ThrottlerModule dependencies initialized +1ms
+[Nest] 45324  - 06/12/2026, 11:53:18 PM     LOG [InstanceLo
+ader] JwtModule dependencies initialized +0ms
+[Nest] 45324  - 06/12/2026, 11:53:18 PM   ERROR [ExceptionH
+andler] Nest can't resolve dependencies of the AuthService
+(?, Function, Function). Please make sure that the argument
+ Function at index [0] is available in the AuthModule conte
+xt.
+
+Potential solutions:
+- Is AuthModule a valid NestJS module?
+- If Function is a provider, is it part of the current Auth
+Module?
+- If Function is exported from a separate @Module, is that
+module imported within AuthModule?
+  @Module({
+    imports: [ /* the Module containing Function */ ]
+  })
+
+Error: Nest can't resolve dependencies of the AuthService (
+?, Function, Function). Please make sure that the argument
+Function at index [0] is available in the AuthModule contex
+t.
+
+Potential solutions:
+- Is AuthModule a valid NestJS module?
+- If Function is a provider, is it part of the current Auth
+Module?
+- If Function is exported from a separate @Module, is that
+module imported within AuthModule?
+  @Module({
+    imports: [ /* the Module containing Function */ ]
+  })
+[11:55:44 PM] File change detected. Starting incremental co
+mpilation...
+
+[11:55:44 PM] Found 0 errors. Watching for file changes.
+
+[Nest] 48386  - 06/12/2026, 11:55:46 PM     LOG [NestFactor
+y] Starting Nest application...
+[Nest] 48386  - 06/12/2026, 11:55:46 PM     LOG [InstanceLo
+ader] PrismaModule dependencies initialized +13ms
+[Nest] 48386  - 06/12/2026, 11:55:46 PM     LOG [InstanceLo
+ader] PassportModule dependencies initialized +0ms
+[Nest] 48386  - 06/12/2026, 11:55:46 PM     LOG [InstanceLo
+ader] ThrottlerModule dependencies initialized +0ms
+[Nest] 48386  - 06/12/2026, 11:55:46 PM     LOG [InstanceLo
+ader] JwtModule dependencies initialized +0ms
+[Nest] 48386  - 06/12/2026, 11:55:46 PM   ERROR [ExceptionH
+andler] Nest can't resolve dependencies of the AuthService
+(?, Function, Function). Please make sure that the argument
+ Function at index [0] is available in the AuthModule conte
+xt.
+
+Potential solutions:
+- Is AuthModule a valid NestJS module?
+- If Function is a provider, is it part of the current Auth
+Module?
+- If Function is exported from a separate @Module, is that
+module imported within AuthModule?
+  @Module({
+    imports: [ /* the Module containing Function */ ]
+  })
+
+Error: Nest can't resolve dependencies of the AuthService (
+?, Function, Function). Please make sure that the argument
+Function at index [0] is available in the AuthModule contex
+t.
+
+Potential solutions:
+- Is AuthModule a valid NestJS module?
+- If Function is a provider, is it part of the current Auth
+Module?
+- If Function is exported from a separate @Module, is that
+module imported within AuthModule?
+  @Module({
+    imports: [ /* the Module containing Function */ ]
+  })
+[11:55:47 PM] File change detected. Starting incremental co
+mpilation...
+
+[11:55:47 PM] Found 0 errors. Watching for file changes.
+
+[Nest] 48409  - 06/12/2026, 11:55:48 PM     LOG [NestFactor
+y] Starting Nest application...
+[Nest] 48409  - 06/12/2026, 11:55:48 PM     LOG [InstanceLo
+ader] PrismaModule dependencies initialized +14ms
+[Nest] 48409  - 06/12/2026, 11:55:48 PM     LOG [InstanceLo
+ader] PassportModule dependencies initialized +0ms
+[Nest] 48409  - 06/12/2026, 11:55:48 PM     LOG [InstanceLo
+ader] ThrottlerModule dependencies initialized +0ms
+[Nest] 48409  - 06/12/2026, 11:55:48 PM     LOG [InstanceLo
+ader] JwtModule dependencies initialized +0ms
+[Nest] 48409  - 06/12/2026, 11:55:48 PM   ERROR [ExceptionH
+andler] Nest can't resolve dependencies of the JwtStrategy
+(?, Function). Please make sure that the argument Function
+at index [0] is available in the AuthModule context.
+
+Potential solutions:
+- Is AuthModule a valid NestJS module?
+- If Function is a provider, is it part of the current Auth
+Module?
+- If Function is exported from a separate @Module, is that
+module imported within AuthModule?
+  @Module({
+    imports: [ /* the Module containing Function */ ]
+  })
+
+Error: Nest can't resolve dependencies of the JwtStrategy (
+?, Function). Please make sure that the argument Function a
+t index [0] is available in the AuthModule context.
+
+Potential solutions:
+- Is AuthModule a valid NestJS module?
+- If Function is a provider, is it part of the current Auth
+Module?
+- If Function is exported from a separate @Module, is that
+module imported within AuthModule?
+  @Module({
+    imports: [ /* the Module containing Function */ ]
+  })
+[11:55:49 PM] File change detected. Starting incremental co
+mpilation...
+
+[11:55:49 PM] Found 0 errors. Watching for file changes.
+
+[Nest] 48476  - 06/12/2026, 11:55:51 PM     LOG [NestFactor
+y] Starting Nest application...
+[Nest] 48476  - 06/12/2026, 11:55:51 PM     LOG [InstanceLo
+ader] PrismaModule dependencies initialized +13ms
+[Nest] 48476  - 06/12/2026, 11:55:51 PM     LOG [InstanceLo
+ader] PassportModule dependencies initialized +0ms
+[Nest] 48476  - 06/12/2026, 11:55:51 PM     LOG [InstanceLo
+ader] ThrottlerModule dependencies initialized +1ms
+[Nest] 48476  - 06/12/2026, 11:55:51 PM     LOG [InstanceLo
+ader] JwtModule dependencies initialized +0ms
+[Nest] 48476  - 06/12/2026, 11:55:51 PM   ERROR [ExceptionH
+andler] Nest can't resolve dependencies of the QueueModule
+(?, BullQueue_game-sync, BullQueue_media-processing, BullQu
+eue_maintenance, BullQueue_dead-letter). Please make sure t
+hat the argument Function at index [0] is available in the
+QueueModule context.
+
+Potential solutions:
+- Is QueueModule a valid NestJS module?
+- If Function is a provider, is it part of the current Queu
+eModule?
+- If Function is exported from a separate @Module, is that
+module imported within QueueModule?
+  @Module({
+    imports: [ /* the Module containing Function */ ]
+  })
+
+Error: Nest can't resolve dependencies of the QueueModule (
+?, BullQueue_game-sync, BullQueue_media-processing, BullQue
+ue_maintenance, BullQueue_dead-letter). Please make sure th
+at the argument Function at index [0] is available in the Q
+ueueModule context.
+
+Potential solutions:
+- Is QueueModule a valid NestJS module?
+- If Function is a provider, is it part of the current Queu
+eModule?
+- If Function is exported from a separate @Module, is that
+module imported within QueueModule?
+  @Module({
+    imports: [ /* the Module containing Function */ ]
+  })
+[11:55:51 PM] File change detected. Starting incremental co
+mpilation...
+
+[11:55:51 PM] Found 0 errors. Watching for file changes.
+
+[Nest] 48536  - 06/12/2026, 11:55:52 PM     LOG [NestFactor
+y] Starting Nest application...
+[Nest] 48536  - 06/12/2026, 11:55:52 PM     LOG [InstanceLo
+ader] PrismaModule dependencies initialized +13ms
+[Nest] 48536  - 06/12/2026, 11:55:52 PM     LOG [InstanceLo
+ader] PassportModule dependencies initialized +0ms
+[Nest] 48536  - 06/12/2026, 11:55:52 PM     LOG [InstanceLo
+ader] ThrottlerModule dependencies initialized +0ms
+[Nest] 48536  - 06/12/2026, 11:55:52 PM     LOG [InstanceLo
+ader] JwtModule dependencies initialized +0ms
+[Nest] 48536  - 06/12/2026, 11:55:52 PM   ERROR [ExceptionH
+andler] Nest can't resolve dependencies of the QueueModule
+(?, BullQueue_game-sync, BullQueue_media-processing, BullQu
+eue_maintenance, BullQueue_dead-letter). Please make sure t
+hat the argument Function at index [0] is available in the
+QueueModule context.
+
+Potential solutions:
+- Is QueueModule a valid NestJS module?
+- If Function is a provider, is it part of the current Queu
+eModule?
+- If Function is exported from a separate @Module, is that
+module imported within QueueModule?
+  @Module({
+    imports: [ /* the Module containing Function */ ]
+  })
+
+Error: Nest can't resolve dependencies of the QueueModule (
+?, BullQueue_game-sync, BullQueue_media-processing, BullQue
+ue_maintenance, BullQueue_dead-letter). Please make sure th
+at the argument Function at index [0] is available in the Q
+ueueModule context.
+
+Potential solutions:
+- Is QueueModule a valid NestJS module?
+- If Function is a provider, is it part of the current Queu
+eModule?
+- If Function is exported from a separate @Module, is that
+module imported within QueueModule?
+  @Module({
+    imports: [ /* the Module containing Function */ ]
+  })
+[11:55:53 PM] File change detected. Starting incremental co
+mpilation...
+
+[11:55:53 PM] Found 0 errors. Watching for file changes.
+
+[Nest] 48559  - 06/12/2026, 11:55:54 PM     LOG [NestFactor
+y] Starting Nest application...
+[Nest] 48559  - 06/12/2026, 11:55:54 PM     LOG [InstanceLo
+ader] PrismaModule dependencies initialized +13ms
+[Nest] 48559  - 06/12/2026, 11:55:54 PM     LOG [InstanceLo
+ader] PassportModule dependencies initialized +0ms
+[Nest] 48559  - 06/12/2026, 11:55:54 PM     LOG [InstanceLo
+ader] ThrottlerModule dependencies initialized +1ms
+[Nest] 48559  - 06/12/2026, 11:55:54 PM     LOG [InstanceLo
+ader] JwtModule dependencies initialized +0ms
+[Nest] 48559  - 06/12/2026, 11:55:54 PM   ERROR [ExceptionH
+andler] Nest can't resolve dependencies of the QueueModule
+(?, BullQueue_game-sync, BullQueue_media-processing, BullQu
+eue_maintenance, BullQueue_dead-letter). Please make sure t
+hat the argument Function at index [0] is available in the
+QueueModule context.
+
+Potential solutions:
+- Is QueueModule a valid NestJS module?
+- If Function is a provider, is it part of the current Queu
+eModule?
+- If Function is exported from a separate @Module, is that
+module imported within QueueModule?
+  @Module({
+    imports: [ /* the Module containing Function */ ]
+  })
+
+Error: Nest can't resolve dependencies of the QueueModule (
+?, BullQueue_game-sync, BullQueue_media-processing, BullQue
+ue_maintenance, BullQueue_dead-letter). Please make sure th
+at the argument Function at index [0] is available in the Q
+ueueModule context.
+
+Potential solutions:
+- Is QueueModule a valid NestJS module?
+- If Function is a provider, is it part of the current Queu
+eModule?
+- If Function is exported from a separate @Module, is that
+module imported within QueueModule?
+  @Module({
+    imports: [ /* the Module containing Function */ ]
+  })
+[11:55:56 PM] File change detected. Starting incremental co
+mpilation...
+
+[11:55:56 PM] Found 0 errors. Watching for file changes.
+
+[Nest] 48639  - 06/12/2026, 11:55:57 PM     LOG [NestFactor
+y] Starting Nest application...
+[Nest] 48639  - 06/12/2026, 11:55:57 PM     LOG [InstanceLo
+ader] PrismaModule dependencies initialized +13ms
+[Nest] 48639  - 06/12/2026, 11:55:57 PM     LOG [InstanceLo
+ader] PassportModule dependencies initialized +0ms
+[Nest] 48639  - 06/12/2026, 11:55:57 PM     LOG [InstanceLo
+ader] ThrottlerModule dependencies initialized +1ms
+[Nest] 48639  - 06/12/2026, 11:55:57 PM     LOG [InstanceLo
+ader] JwtModule dependencies initialized +0ms
+[Nest] 48639  - 06/12/2026, 11:55:57 PM   ERROR [ExceptionH
+andler] Nest can't resolve dependencies of the QueueModule
+(?, BullQueue_game-sync, BullQueue_media-processing, BullQu
+eue_maintenance, BullQueue_dead-letter). Please make sure t
+hat the argument Function at index [0] is available in the
+QueueModule context.
+
+Potential solutions:
+- Is QueueModule a valid NestJS module?
+- If Function is a provider, is it part of the current Queu
+eModule?
+- If Function is exported from a separate @Module, is that
+module imported within QueueModule?
+  @Module({
+    imports: [ /* the Module containing Function */ ]
+  })
+
+Error: Nest can't resolve dependencies of the QueueModule (
+?, BullQueue_game-sync, BullQueue_media-processing, BullQue
+ue_maintenance, BullQueue_dead-letter). Please make sure th
+at the argument Function at index [0] is available in the Q
+ueueModule context.
+
+Potential solutions:
+- Is QueueModule a valid NestJS module?
+- If Function is a provider, is it part of the current Queu
+eModule?
+- If Function is exported from a separate @Module, is that
+module imported within QueueModule?
+  @Module({
+    imports: [ /* the Module containing Function */ ]
+  })
+[11:55:59 PM] File change detected. Starting incremental co
+mpilation...
+
+[11:55:59 PM] Found 0 errors. Watching for file changes.
+
+[Nest] 48723  - 06/12/2026, 11:56:01 PM     LOG [NestFactor
+y] Starting Nest application...
+[Nest] 48723  - 06/12/2026, 11:56:01 PM     LOG [InstanceLo
+ader] PrismaModule dependencies initialized +12ms
+[Nest] 48723  - 06/12/2026, 11:56:01 PM     LOG [InstanceLo
+ader] PassportModule dependencies initialized +0ms
+[Nest] 48723  - 06/12/2026, 11:56:01 PM     LOG [InstanceLo
+ader] ThrottlerModule dependencies initialized +1ms
+[Nest] 48723  - 06/12/2026, 11:56:01 PM     LOG [InstanceLo
+ader] JwtModule dependencies initialized +0ms
+[Nest] 48723  - 06/12/2026, 11:56:01 PM   ERROR [ExceptionH
+andler] Nest can't resolve dependencies of the QueueModule
+(?, BullQueue_game-sync, BullQueue_media-processing, BullQu
+eue_maintenance, BullQueue_dead-letter). Please make sure t
+hat the argument Function at index [0] is available in the
+QueueModule context.
+
+Potential solutions:
+- Is QueueModule a valid NestJS module?
+- If Function is a provider, is it part of the current Queu
+eModule?
+- If Function is exported from a separate @Module, is that
+module imported within QueueModule?
+  @Module({
+    imports: [ /* the Module containing Function */ ]
+  })
+
+Error: Nest can't resolve dependencies of the QueueModule (
+?, BullQueue_game-sync, BullQueue_media-processing, BullQue
+ue_maintenance, BullQueue_dead-letter). Please make sure th
+at the argument Function at index [0] is available in the Q
+ueueModule context.
+
+Potential solutions:
+- Is QueueModule a valid NestJS module?
+- If Function is a provider, is it part of the current Queu
+eModule?
+- If Function is exported from a separate @Module, is that
+module imported within QueueModule?
+  @Module({
+    imports: [ /* the Module containing Function */ ]
+  })
+[11:56:02 PM] File change detected. Starting incremental co
+mpilation...
+
+[11:56:02 PM] Found 0 errors. Watching for file changes.
+
+[Nest] 48796  - 06/12/2026, 11:56:04 PM     LOG [NestFactor
+y] Starting Nest application...
+[Nest] 48796  - 06/12/2026, 11:56:04 PM     LOG [InstanceLo
+ader] PrismaModule dependencies initialized +12ms
+[Nest] 48796  - 06/12/2026, 11:56:04 PM     LOG [InstanceLo
+ader] PassportModule dependencies initialized +0ms
+[Nest] 48796  - 06/12/2026, 11:56:04 PM     LOG [InstanceLo
+ader] ThrottlerModule dependencies initialized +1ms
+[Nest] 48796  - 06/12/2026, 11:56:04 PM     LOG [InstanceLo
+ader] JwtModule dependencies initialized +0ms
+[Nest] 48796  - 06/12/2026, 11:56:04 PM   ERROR [ExceptionH
+andler] Nest can't resolve dependencies of the QueueModule
+(?, BullQueue_game-sync, BullQueue_media-processing, BullQu
+eue_maintenance, BullQueue_dead-letter). Please make sure t
+hat the argument Function at index [0] is available in the
+QueueModule context.
+
+Potential solutions:
+- Is QueueModule a valid NestJS module?
+- If Function is a provider, is it part of the current Queu
+eModule?
+- If Function is exported from a separate @Module, is that
+module imported within QueueModule?
+  @Module({
+    imports: [ /* the Module containing Function */ ]
+  })
+
+Error: Nest can't resolve dependencies of the QueueModule (
+?, BullQueue_game-sync, BullQueue_media-processing, BullQue
+ue_maintenance, BullQueue_dead-letter). Please make sure th
+at the argument Function at index [0] is available in the Q
+ueueModule context.
+
+Potential solutions:
+- Is QueueModule a valid NestJS module?
+- If Function is a provider, is it part of the current Queu
+eModule?
+- If Function is exported from a separate @Module, is that
+module imported within QueueModule?
+  @Module({
+    imports: [ /* the Module containing Function */ ]
+  })
+
+    at Injector.lookupComponentInParentModules (/mnt/window
+s-data/Coding/Continue/node_modules/.pnpm/@nestjs+core@10.4
+.22_@nestjs+common@10.4.22_class-transformer@0.5.1_class-va
+lidator@0.14.4_re_cjd5belzlmbfxxvhgmpmcaquny/node_modules/@
+nestjs/core/injector/injector.js:262:19)
+    at process.processTicksAndRejections (node:internal/pro
+cess/task_queues:104:5)
+    at async Injector.resolveComponentInstance (/mnt/window
+s-data/Coding/Continue/node_modules/.pnpm/@nestjs+core@10.4
+.22_@nestjs+common@10.4.22_class-transformer@0.5.1_class-va
+lidator@0.14.4_re_cjd5belzlmbfxxvhgmpmcaquny/node_modules/@
+nestjs/core/injector/injector.js:215:33)
+    at async resolveParam (/mnt/windows-data/Coding/Continu
+e/node_modules/.pnpm/@nestjs+core@10.4.22_@nestjs+common@10
+.4.22_class-transformer@0.5.1_class-validator@0.14.4_re_cjd
+5belzlmbfxxvhgmpmcaquny/node_modules/@nestjs/core/injector/
+injector.js:129:38)
+    at async Promise.all (index 0)
+    at async Injector.resolveConstructorParams (/mnt/window
+s-data/Coding/Continue/node_modules/.pnpm/@nestjs+core@10.4
+.22_@nestjs+common@10.4.22_class-transformer@0.5.1_class-va
+lidator@0.14.4_re_cjd5belzlmbfxxvhgmpmcaquny/node_modules/@
+nestjs/core/injector/injector.js:144:27)
+    at async Injector.loadInstance (/mnt/windows-data/Codin
+g/Continue/node_modules/.pnpm/@nestjs+core@10.4.22_@nestjs+
+common@10.4.22_class-transformer@0.5.1_class-validator@0.14
+.4_re_cjd5belzlmbfxxvhgmpmcaquny/node_modules/@nestjs/core/
+injector/injector.js:70:13)
+    at async Injector.loadProvider (/mnt/windows-data/Codin
+g/Continue/node_modules/.pnpm/@nestjs+core@10.4.22_@nestjs+
+common@10.4.22_class-transformer@0.5.1_class-validator@0.14
+.4_re_cjd5belzlmbfxxvhgmpmcaquny/node_modules/@nestjs/core/
+injector/injector.js:98:9)
+    at async /mnt/windows-data/Coding/Continue/node_modules
+/.pnpm/@nestjs+core@10.4.22_@nestjs+common@10.4.22_class-tr
+ansformer@0.5.1_class-validator@0.14.4_re_cjd5belzlmbfxxvhg
+mpmcaquny/node_modules/@nestjs/core/injector/instance-loade
+r.js:56:13
+    at async Promise.all (index 0)
+└─ @continue/api#dev ──
+┌─ @continue/web#dev > cache bypass, force executing 8ee928c03700a84a
+Tasks (/ - Search)   │ @continue/api#dev > cache bypass, force executing 9e06f3a6
+ »  @continue/api#dev│
+ »  @continue/web#dev│    at Injector.lookupComponentInParentModules (/mnt/window
+                     │s-data/Coding/Continue/node_modules/.pnpm/@nestjs+core@10.4
+                     │.22_@nestjs+common@10.4.22_class-transformer@0.5.1_class-va
+                     │lidator@0.14.4_re_cjd5belzlmbfxxvhgmpmcaquny/node_modules/@
+                     │nestjs/core/injector/injector.js:262:19)
+                     │    at process.processTicksAndRejections (node:internal/pro
+                     │cess/task_queues:104:5)
+                     │    at async Injector.resolveComponentInstance (/mnt/window
+                     │s-data/Coding/Continue/node_modules/.pnpm/@nestjs+core@10.4
+                     │.22_@nestjs+common@10.4.22_class-transformer@0.5.1_class-va
+                     │lidator@0.14.4_re_cjd5belzlmbfxxvhgmpmcaquny/node_modules/@
+                     │nestjs/core/injector/injector.js:215:33)
+                     │    at async resolveParam (/mnt/windows-data/Coding/Continu
+                     │e/node_modules/.pnpm/@nestjs+core@10.4.22_@nestjs+common@10
+                     │.4.22_class-transformer@0.5.1_class-validator@0.14.4_re_cjd
+                     │5belzlmbfxxvhgmpmcaquny/node_modules/@nestjs/core/injector/
+                     │injector.js:129:38)
+                     │    at async Promise.all (index 0)
+                     │    at async Injector.resolveConstructorParams (/mnt/window
+                     │s-data/Coding/Continue/node_modules/.pnpm/@nestjs+core@10.4
+                     │.22_@nestjs+common@10.4.22_class-transformer@0.5.1_class-va
+                     │lidator@0.14.4_re_cjd5belzlmbfxxvhgmpmcaquny/node_modules/@
+                     │nestjs/core/injector/injector.js:144:27)
+                     │    at async Injector.loadInstance (/mnt/windows-data/Codin
+                     │g/Continue/node_modules/.pnpm/@nestjs+core@10.4.22_@nestjs+
+                     │common@10.4.22_class-transformer@0.5.1_class-validator@0.14
+                     │.4_re_cjd5belzlmbfxxvhgmpmcaquny/node_modules/@nestjs/core/
+                     │injector/injector.js:70:13)
+                     │    at async Injector.loadProvider (/mnt/windows-data/Codin
+                     │g/Continue/node_modules/.pnpm/@nestjs+core@10.4.22_@nestjs+
+                     │common@10.4.22_class-transformer@0.5.1_class-validator@0.14
+                     │.4_re_cjd5belzlmbfxxvhgmpmcaquny/node_modules/@nestjs/core/
+                     │injector/injector.js:98:9)
+                     │    at async /mnt/windows-data/Coding/Continue/node_modules
+                     │/.pnpm/@nestjs+core@10.4.22_@nestjs+common@10.4.22_class-tr
+                     │ansformer@0.5.1_class-validator@0.14.4_re_cjd5belzlmbfxxvhg
+                     │mpmcaquny/node_modules/@nestjs/core/injector/instance-loade
+                     │r.js:56:13
+                     │    at async Promise.all (index 6)
+↑ ↓ - Select         │█
+m - More binds       │   i - Interact   u/d - Scroll logs   U/D - Page logs   t/b

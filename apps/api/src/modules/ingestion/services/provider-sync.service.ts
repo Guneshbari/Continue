@@ -1,12 +1,12 @@
 import { Injectable, Logger } from '@nestjs/common'
-import type { IgdbApiService } from '../../providers/igdb/igdb-api.service'
-import type { IgdbAuthService } from '../../providers/igdb/igdb-auth.service'
-import type { TaxonomySyncService } from './taxonomy-sync.service'
-import type { MediaSyncService } from './media-sync.service'
-import type { GameSyncService } from './game-sync.service'
+import { IgdbApiService } from '../../providers/igdb/igdb-api.service'
+import { IgdbAuthService } from '../../providers/igdb/igdb-auth.service'
+import { TaxonomySyncService } from './taxonomy-sync.service'
+import { MediaSyncService } from './media-sync.service'
+import { GameSyncService } from './game-sync.service'
 import type { SyncResult } from '../types/sync.types'
 import type { ProviderGame } from '../../providers/contracts/provider.contracts'
-import type { PrismaService } from '../../../common/prisma/prisma.service'
+import { PrismaService } from '../../../common/prisma/prisma.service'
 
 @Injectable()
 export class ProviderSyncService {

@@ -1,6 +1,6 @@
 import type { OnModuleInit} from '@nestjs/common';
 import { Module, Logger } from '@nestjs/common'
-import type { HttpAdapterHost } from '@nestjs/core'
+import { HttpAdapterHost } from '@nestjs/core'
 import { ConfigService } from '@nestjs/config'
 import { BullModule, InjectQueue } from '@nestjs/bullmq'
 import type { Queue } from 'bullmq'

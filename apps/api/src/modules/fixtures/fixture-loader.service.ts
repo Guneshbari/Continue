@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common'
-import type { PrismaService } from '../../common/prisma/prisma.service'
-import type { ScenarioRegistryService } from './scenario-registry.service'
+import { PrismaService } from '../../common/prisma/prisma.service'
+import { ScenarioRegistryService } from './scenario-registry.service'
 import type { FixtureGame } from './fixture.types'
 
 /**

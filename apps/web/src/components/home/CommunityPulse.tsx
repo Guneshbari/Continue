@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { Star, Layers, MessageSquare, Quote, Heart, Calendar } from 'lucide-react'
+import { Star, Layers, MessageSquare } from 'lucide-react'
 import type { SeedReview, SeedCollection } from '@/test-fixtures/seed'
 import { MotionFade, MotionStagger, MotionStaggerItem, MotionScale } from '@/components/motion'
 import { GameArtwork } from '@/components/ui/GameArtwork'
