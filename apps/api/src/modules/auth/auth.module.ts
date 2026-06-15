@@ -1,17 +1,24 @@
 import { Module } from '@nestjs/common'
-import { JwtModule } from '@nestjs/jwt'
-import { PassportModule } from '@nestjs/passport'
-import { AuthService } from './auth.service'
+import { FirebaseAdminModule } from './firebase-admin.module'
+import { UserProvisioningService } from './services/user-provisioning.service'
+import { FirebaseAuthGuard } from './guards/firebase-auth.guard'
 import { AuthController } from './auth.controller'
-import { JwtStrategy } from './strategies/jwt.strategy'
+import { PrismaModule } from '../../common/prisma/prisma.module'
 
 @Module({
   imports: [
-    PassportModule,
-    JwtModule.register({}), // secrets injected per-call via ConfigService
+    PrismaModule,
+    FirebaseAdminModule,
   ],
-  providers: [AuthService, JwtStrategy],
+  providers: [
+    UserProvisioningService,
+    FirebaseAuthGuard,
+  ],
   controllers: [AuthController],
-  exports: [AuthService],
+  exports: [
+    FirebaseAdminModule,
+    UserProvisioningService,
+    FirebaseAuthGuard,
+  ],
 })
 export class AuthModule {}

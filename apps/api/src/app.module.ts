@@ -4,7 +4,7 @@ import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core'
 import { ThrottlerModule } from '@nestjs/throttler'
 import { PrismaModule } from './common/prisma/prisma.module'
 import { AuthModule } from './modules/auth/auth.module'
-import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard'
+import { FirebaseAuthGuard } from './modules/auth/guards/firebase-auth.guard'
 import { RolesGuard } from './modules/auth/guards/roles.guard'
 import { GamesModule } from './modules/games/games.module'
 import { RatingsModule } from './modules/ratings/ratings.module'
@@ -64,7 +64,7 @@ import { LoggingInterceptor } from './common/interceptors/logging.interceptor'
     },
     {
       provide: APP_GUARD,
-      useClass: JwtAuthGuard,
+      useClass: FirebaseAuthGuard,
     },
     {
       provide: APP_GUARD,

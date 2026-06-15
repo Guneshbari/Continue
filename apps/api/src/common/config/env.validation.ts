@@ -21,6 +21,9 @@ const envSchema = z
     DISCOVERY_TOP_RATED_MIN_REVIEWS: z.coerce.number().int().min(0).default(1),
     DISCOVERY_HIDDEN_GEMS_MAX_REVIEWS: z.coerce.number().int().min(0).default(10),
     DISCOVERY_SHELF_DEFAULT_LIMIT: z.coerce.number().int().min(1).default(12),
+    FIREBASE_PROJECT_ID: z.string().min(1),
+    FIREBASE_CLIENT_EMAIL: z.string().email(),
+    FIREBASE_PRIVATE_KEY: z.string().min(1),
   })
   .superRefine((env, ctx) => {
     if (env.NODE_ENV !== 'production') return
