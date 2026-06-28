@@ -12,19 +12,18 @@ export class TaxonomySyncService {
    * Idempotently synchronizes the entire taxonomy tree for a given provider game payload,
    * returning resolved database IDs ready for relationship binding.
    */
-  async resolveTaxonomies(
-    payload: {
-      genres: string[]      // slugs
-      platforms: string[]   // slugs
-      themes: string[]      // slugs
-      developers: string[]  // names
-      publishers: string[]  // names
-      franchise: string | null
-    }
-  ): Promise<TaxonomyResolutionResult> {
-    
+  async resolveTaxonomies(payload: {
+    genres: string[] // slugs
+    platforms: string[] // slugs
+    themes: string[] // slugs
+    developers: string[] // names
+    publishers: string[] // names
+    franchise: string | null
+  }): Promise<TaxonomyResolutionResult> {
     // 1. Resolve Genres - De-duplicate genres slug-level prior to resolution to prevent parallel duplicate conflicts
-    const uniqueGenres = Array.from(new Set((payload.genres ?? []).map(g => g.trim().toLowerCase()))).filter(Boolean)
+    const uniqueGenres = Array.from(
+      new Set((payload.genres ?? []).map((g) => g.trim().toLowerCase())),
+    ).filter(Boolean)
     const genreIds = await Promise.all(
       uniqueGenres.map(async (slug) => {
         const name = this.slugToName(slug)
@@ -35,11 +34,13 @@ export class TaxonomySyncService {
           select: { id: true },
         })
         return genre.id
-      })
+      }),
     )
 
     // 2. Resolve Platforms - De-duplicate platforms slug-level prior to resolution
-    const uniquePlatforms = Array.from(new Set((payload.platforms ?? []).map(p => p.trim().toLowerCase()))).filter(Boolean)
+    const uniquePlatforms = Array.from(
+      new Set((payload.platforms ?? []).map((p) => p.trim().toLowerCase())),
+    ).filter(Boolean)
     const platformIds = await Promise.all(
       uniquePlatforms.map(async (slug) => {
         const name = this.slugToName(slug)
@@ -50,11 +51,13 @@ export class TaxonomySyncService {
           select: { id: true },
         })
         return platform.id
-      })
+      }),
     )
 
     // 3. Resolve Themes - De-duplicate themes slug-level prior to resolution
-    const uniqueThemes = Array.from(new Set((payload.themes ?? []).map(t => t.trim().toLowerCase()))).filter(Boolean)
+    const uniqueThemes = Array.from(
+      new Set((payload.themes ?? []).map((t) => t.trim().toLowerCase())),
+    ).filter(Boolean)
     const themeIds = await Promise.all(
       uniqueThemes.map(async (slug) => {
         const name = this.slugToName(slug)
@@ -65,12 +68,12 @@ export class TaxonomySyncService {
           select: { id: true },
         })
         return theme.id
-      })
+      }),
     )
 
     // 4. Resolve Developers - De-duplicate by mapping to unique normalized slugs first to prevent collision errors
     const devMap = new Map<string, string>()
-    for (const name of (payload.developers ?? [])) {
+    for (const name of payload.developers ?? []) {
       if (!name) continue
       const slug = this.nameToSlug(name)
       if (slug && !devMap.has(slug)) {
@@ -86,12 +89,12 @@ export class TaxonomySyncService {
           select: { id: true },
         })
         return dev.id
-      })
+      }),
     )
 
     // 5. Resolve Publishers - De-duplicate by mapping to unique normalized slugs first
     const pubMap = new Map<string, string>()
-    for (const name of (payload.publishers ?? [])) {
+    for (const name of payload.publishers ?? []) {
       if (!name) continue
       const slug = this.nameToSlug(name)
       if (slug && !pubMap.has(slug)) {
@@ -107,7 +110,7 @@ export class TaxonomySyncService {
           select: { id: true },
         })
         return pub.id
-      })
+      }),
     )
 
     // 6. Resolve Franchise

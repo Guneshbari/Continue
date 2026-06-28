@@ -20,11 +20,7 @@ export function EditorialSectionWrapper({
 }: EditorialSectionWrapperProps) {
   return (
     <Component
-      className={cn(
-        'editorial-section',
-        hasDivider && 'editorial-section--divider',
-        className
-      )}
+      className={cn('editorial-section', hasDivider && 'editorial-section--divider', className)}
       style={style}
       aria-labelledby={ariaLabelledBy}
     >

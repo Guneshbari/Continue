@@ -1,13 +1,4 @@
-import {
-  IsString,
-  IsOptional,
-  IsDateString,
-  IsUrl,
-  IsIn,
-  IsInt,
-  Min,
-  Max,
-} from 'class-validator'
+import { IsString, IsOptional, IsDateString, IsUrl, IsIn, IsInt, Min, Max } from 'class-validator'
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { Type } from 'class-transformer'
 
@@ -16,7 +7,6 @@ export { GameSummaryDto, GameTaxonomyDto } from './game-summary.dto'
 export { CoverManifestDto, BackdropManifestDto, ScreenshotDto } from './media-manifest.dto'
 export { PaginatedResponseDto } from './pagination.dto'
 export { ShelfDto } from './shelf.dto'
-
 
 const SORT_VALUES = [
   'popular',
@@ -31,7 +21,7 @@ const SORT_VALUES = [
   'upcoming',
   'new',
 ] as const
-export type GameSortValue = typeof SORT_VALUES[number]
+export type GameSortValue = (typeof SORT_VALUES)[number]
 
 export class CreateGameDto {
   @ApiProperty()

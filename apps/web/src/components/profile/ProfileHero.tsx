@@ -35,10 +35,10 @@ export function ProfileHero({ profile: initialProfile }: ProfileHeroProps) {
   }
 
   return (
-    <div className="relative rounded-2xl overflow-hidden bg-surface-raised border border-border-subtle p-6 md:p-8 mb-8 shadow-xl">
+    <div className="bg-surface-raised border-border-subtle relative mb-8 overflow-hidden rounded-2xl border p-6 shadow-xl md:p-8">
       {/* Background Cinematic Ambient Glow */}
       <div
-        className="absolute inset-0 z-0 opacity-10 blur-3xl pointer-events-none scale-150 transition-all duration-700"
+        className="pointer-events-none absolute inset-0 z-0 scale-150 opacity-10 blur-3xl transition-all duration-700"
         style={{
           background: profile.avatarUrl
             ? `radial-gradient(circle at center, var(--color-accent) 0%, transparent 70%)`
@@ -47,18 +47,18 @@ export function ProfileHero({ profile: initialProfile }: ProfileHeroProps) {
         aria-hidden="true"
       />
 
-      <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-        <div className="flex flex-col md:flex-row items-center gap-6 text-center md:text-left">
+      <div className="relative z-10 flex flex-col justify-between gap-6 md:flex-row md:items-center">
+        <div className="flex flex-col items-center gap-6 text-center md:flex-row md:text-left">
           {/* Avatar Slot */}
-          <div className="relative flex-shrink-0 w-24 h-24 md:w-28 md:h-28 rounded-full overflow-hidden border-2 border-border bg-surface-sunken shadow-lg group">
+          <div className="border-border bg-surface-sunken group relative h-24 w-24 flex-shrink-0 overflow-hidden rounded-full border-2 shadow-lg md:h-28 md:w-28">
             {profile.avatarUrl ? (
               <img
                 src={profile.avatarUrl}
                 alt={`${profile.username}'s avatar`}
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
             ) : (
-              <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-surface-overlay to-surface-raised font-display text-4xl text-text-secondary select-none">
+              <div className="from-surface-overlay to-surface-raised font-display text-text-secondary flex h-full w-full select-none items-center justify-center bg-gradient-to-br text-4xl">
                 {profile.username.charAt(0).toUpperCase()}
               </div>
             )}
@@ -66,29 +66,36 @@ export function ProfileHero({ profile: initialProfile }: ProfileHeroProps) {
 
           {/* User Meta Details */}
           <div className="flex flex-col gap-1">
-            <div className="flex flex-wrap items-center justify-center md:justify-start gap-2">
-              <h1 className="text-2xl md:text-3xl font-extrabold text-text-primary tracking-tight leading-none">
+            <div className="flex flex-wrap items-center justify-center gap-2 md:justify-start">
+              <h1 className="text-text-primary text-2xl font-extrabold leading-none tracking-tight md:text-3xl">
                 {profile.displayName ?? profile.username}
               </h1>
               {/* Optional verified check */}
-              <ShieldCheck size={18} className="text-accent shadow-sm" aria-label="Verified discovery curator" />
+              <ShieldCheck
+                size={18}
+                className="text-accent shadow-sm"
+                aria-label="Verified discovery curator"
+              />
             </div>
 
-            <p className="text-sm text-text-muted font-medium">@{profile.username}</p>
+            <p className="text-text-muted text-sm font-medium">@{profile.username}</p>
 
             {profile.bio ? (
-              <p className="text-sm text-text-secondary leading-relaxed max-w-xl mt-2 select-text">
+              <p className="text-text-secondary mt-2 max-w-xl select-text text-sm leading-relaxed">
                 {profile.bio}
               </p>
             ) : (
               isOwner && (
-                <p className="text-xs text-text-muted italic mt-1">
+                <p className="text-text-muted mt-1 text-xs italic">
                   Add a bio to share your gaming tastes with the community.
                 </p>
               )
             )}
 
-            <div className="flex items-center justify-center md:justify-start gap-1.5 text-xs text-text-muted font-semibold mt-3" aria-hidden="true">
+            <div
+              className="text-text-muted mt-3 flex items-center justify-center gap-1.5 text-xs font-semibold md:justify-start"
+              aria-hidden="true"
+            >
               <Calendar size={13} />
               <span>Member since {joinYear}</span>
             </div>

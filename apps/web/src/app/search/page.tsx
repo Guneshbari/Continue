@@ -33,10 +33,10 @@ export default function SearchPage() {
     refetch: refetchSearch,
   } = useSearch(debouncedQ, 20)
 
-  const {
-    data: suggestionsResponse,
-    isLoading: suggestsLoading,
-  } = useSearchSuggestions(debouncedQ, 5)
+  const { data: suggestionsResponse, isLoading: suggestsLoading } = useSearchSuggestions(
+    debouncedQ,
+    5,
+  )
 
   const results = searchResponse?.data ?? []
   const suggestions = suggestionsResponse?.data ?? []
@@ -97,9 +97,7 @@ export default function SearchPage() {
 
   // Keyboard navigation handler
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    const itemsCount = query.trim().length === 0
-      ? recentSearches.length
-      : suggestions.length
+    const itemsCount = query.trim().length === 0 ? recentSearches.length : suggestions.length
 
     if (!dropdownOpen) {
       if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
@@ -148,12 +146,19 @@ export default function SearchPage() {
   }, [])
 
   return (
-    <main className="site-container search-page" style={{ paddingTop: '2rem', paddingBottom: '4rem' }}>
+    <main
+      className="site-container search-page"
+      style={{ paddingTop: '2rem', paddingBottom: '4rem' }}
+    >
       <div className="search-page__hero">
         <h1 className="search-page__heading">Find your next game</h1>
 
         {/* Search input container */}
-        <div ref={containerRef} className="search-bar" style={{ position: 'relative', width: '100%' }}>
+        <div
+          ref={containerRef}
+          className="search-bar"
+          style={{ position: 'relative', width: '100%' }}
+        >
           <Search className="search-bar__icon" size={20} aria-hidden="true" />
           <input
             ref={inputRef}
@@ -276,7 +281,10 @@ export default function SearchPage() {
                     {/* Rating */}
                     {game.avgRating !== null && (
                       <div className="search-result-card__rating">
-                        <MetadataBadge variant="warning" icon={<Star size={10} fill="currentColor" />}>
+                        <MetadataBadge
+                          variant="warning"
+                          icon={<Star size={10} fill="currentColor" />}
+                        >
                           {game.avgRating.toFixed(1)}
                         </MetadataBadge>
                       </div>

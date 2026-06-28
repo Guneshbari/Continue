@@ -73,11 +73,7 @@ export function DiscoveryCarousel({
       ))
 
   return (
-    <section
-      ref={inViewRef}
-      className="discovery-carousel"
-      aria-labelledby={sectionId}
-    >
+    <section ref={inViewRef} className="discovery-carousel" aria-labelledby={sectionId}>
       {/* Section header */}
       <MotionFade direction="none" className="discovery-carousel__header">
         <h2 className="discovery-section__title" id={sectionId}>

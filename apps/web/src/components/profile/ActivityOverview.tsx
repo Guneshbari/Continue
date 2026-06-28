@@ -21,7 +21,13 @@ interface ActivityOverviewProps {
   isOwner: boolean
 }
 
-export function ActivityOverview({ ratings, reviews, lists, username: _username, isOwner: _isOwner }: ActivityOverviewProps) {
+export function ActivityOverview({
+  ratings,
+  reviews,
+  lists,
+  username: _username,
+  isOwner: _isOwner,
+}: ActivityOverviewProps) {
   const activities: ActivityItem[] = []
 
   // Add ratings
@@ -103,7 +109,7 @@ export function ActivityOverview({ ratings, reviews, lists, username: _username,
 
   if (sortedActivities.length === 0) {
     return (
-      <div className="p-5 rounded-xl bg-surface-raised border border-border-subtle text-center text-sm text-text-muted">
+      <div className="bg-surface-raised border-border-subtle text-text-muted rounded-xl border p-5 text-center text-sm">
         No recent profile activity to showcase.
       </div>
     )
@@ -118,30 +124,33 @@ export function ActivityOverview({ ratings, reviews, lists, username: _username,
   }
 
   return (
-    <div className="p-5 rounded-xl bg-surface-raised border border-border-subtle">
-      <h3 className="text-xs font-bold text-text-muted uppercase tracking-wider mb-4 flex items-center gap-1.5">
+    <div className="bg-surface-raised border-border-subtle rounded-xl border p-5">
+      <h3 className="text-text-muted mb-4 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider">
         <Calendar size={14} aria-hidden="true" />
         Activity highlights
       </h3>
 
-      <div className="relative pl-4 border-l border-border-subtle flex flex-col gap-5">
+      <div className="border-border-subtle relative flex flex-col gap-5 border-l pl-4">
         {sortedActivities.map((act) => (
           <div key={act.id} className="relative flex flex-col">
             {/* Dot indicator */}
             <div
-              className="absolute left-[-23px] top-[2px] w-4.5 h-4.5 rounded-full bg-surface-raised border border-border flex items-center justify-center shadow-sm"
+              className="w-4.5 h-4.5 bg-surface-raised border-border absolute left-[-23px] top-[2px] flex items-center justify-center rounded-full border shadow-sm"
               aria-hidden="true"
             >
               {iconMap[act.type]}
             </div>
 
-            <div className="flex items-baseline justify-between gap-4 mb-0.5">
+            <div className="mb-0.5 flex items-baseline justify-between gap-4">
               {/* Event description */}
-              <span className="text-xs font-semibold text-text-primary leading-tight">
+              <span className="text-text-primary text-xs font-semibold leading-tight">
                 {act.type === 'RATING' && act.gameSlug ? (
                   <>
                     Rated{' '}
-                    <Link href={`/games/${act.gameSlug}`} className="hover:text-accent underline decoration-border-strong transition-colors">
+                    <Link
+                      href={`/games/${act.gameSlug}`}
+                      className="hover:text-accent decoration-border-strong underline transition-colors"
+                    >
                       {act.gameTitle}
                     </Link>{' '}
                     <span className="text-warning font-bold">{act.score}/10</span>
@@ -149,21 +158,30 @@ export function ActivityOverview({ ratings, reviews, lists, username: _username,
                 ) : act.type === 'REVIEW' && act.gameSlug ? (
                   <>
                     Reviewed{' '}
-                    <Link href={`/games/${act.gameSlug}`} className="hover:text-accent underline decoration-border-strong transition-colors">
+                    <Link
+                      href={`/games/${act.gameSlug}`}
+                      className="hover:text-accent decoration-border-strong underline transition-colors"
+                    >
                       {act.gameTitle}
                     </Link>
                   </>
                 ) : act.type === 'LIST' && act.slug ? (
                   <>
                     Created list{' '}
-                    <Link href={`/lists/${act.slug}`} className="hover:text-accent underline decoration-border-strong transition-colors">
+                    <Link
+                      href={`/lists/${act.slug}`}
+                      className="hover:text-accent decoration-border-strong underline transition-colors"
+                    >
                       {act.title.replace('Created collection ', '')}
                     </Link>
                   </>
                 ) : (act.type === 'LIBRARY_CHANGE' || act.type === 'LIST_ADD') && act.gameSlug ? (
                   <>
                     {act.title.split(act.gameTitle ?? '')[0]}
-                    <Link href={`/games/${act.gameSlug}`} className="hover:text-accent underline decoration-border-strong transition-colors">
+                    <Link
+                      href={`/games/${act.gameSlug}`}
+                      className="hover:text-accent decoration-border-strong underline transition-colors"
+                    >
                       {act.gameTitle}
                     </Link>
                     {act.title.split(act.gameTitle ?? '')[1]}
@@ -174,7 +192,7 @@ export function ActivityOverview({ ratings, reviews, lists, username: _username,
               </span>
 
               {/* Date */}
-              <span className="text-[9px] font-medium text-text-muted uppercase tracking-wider whitespace-nowrap shrink-0">
+              <span className="text-text-muted shrink-0 whitespace-nowrap text-[9px] font-medium uppercase tracking-wider">
                 {new Date(act.date).toLocaleDateString('en-US', {
                   month: 'short',
                   day: 'numeric',
@@ -183,7 +201,7 @@ export function ActivityOverview({ ratings, reviews, lists, username: _username,
             </div>
 
             {act.type === 'REVIEW' && act.subtitle && (
-              <span className="text-[10px] text-text-secondary italic pl-1 mt-0.5 border-l border-border">
+              <span className="text-text-secondary border-border mt-0.5 border-l pl-1 text-[10px] italic">
                 "{act.subtitle}"
               </span>
             )}

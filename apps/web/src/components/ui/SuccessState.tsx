@@ -21,45 +21,40 @@ export const SuccessState = React.forwardRef<HTMLDivElement, SuccessStateProps>(
       onAction,
       ...props
     },
-    ref
+    ref,
   ) => {
     return (
       <CinematicSurface
         ref={ref}
         elevation="sunken"
         className={cn(
-          'flex flex-col items-center justify-center text-center p-8 md:p-12 border border-[var(--color-success)]/20 bg-[var(--color-surface-sunken)] select-none',
-          className
+          'border-[var(--color-success)]/20 flex select-none flex-col items-center justify-center border bg-[var(--color-surface-sunken)] p-8 text-center md:p-12',
+          className,
         )}
         role="status"
         aria-live="polite"
         {...props}
       >
-        <div className="flex items-center justify-center w-12 h-12 rounded-full bg-[oklch(20%_0.05_145)] border border-[oklch(30%_0.08_145)] text-[var(--color-success)] mb-4 animate-fade-in shadow-lg shadow-[oklch(20%_0.05_145_/_0.25)]">
+        <div className="animate-fade-in mb-4 flex h-12 w-12 items-center justify-center rounded-full border border-[oklch(30%_0.08_145)] bg-[oklch(20%_0.05_145)] text-[var(--color-success)] shadow-lg shadow-[oklch(20%_0.05_145_/_0.25)]">
           <CheckCircle2 className="h-6 w-6" aria-hidden="true" />
         </div>
 
-        <h3 className="font-ui text-base font-bold text-[var(--color-text-primary)] mb-2">
+        <h3 className="font-ui mb-2 text-base font-bold text-[var(--color-text-primary)]">
           {title}
         </h3>
 
-        <p className="font-ui text-sm text-[var(--color-text-muted)] max-w-[42ch] mb-6 leading-relaxed">
+        <p className="font-ui mb-6 max-w-[42ch] text-sm leading-relaxed text-[var(--color-text-muted)]">
           {message}
         </p>
 
         {actionLabel && onAction && (
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={onAction}
-            className="animate-fade-in"
-          >
+          <Button variant="secondary" size="sm" onClick={onAction} className="animate-fade-in">
             {actionLabel}
           </Button>
         )}
       </CinematicSurface>
     )
-  }
+  },
 )
 
 SuccessState.displayName = 'SuccessState'

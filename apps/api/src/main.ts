@@ -1,8 +1,5 @@
 import { NestFactory } from '@nestjs/core'
-import {
-  FastifyAdapter,
-  type NestFastifyApplication,
-} from '@nestjs/platform-fastify'
+import { FastifyAdapter, type NestFastifyApplication } from '@nestjs/platform-fastify'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import { ValidationPipe, VersioningType } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
@@ -102,11 +99,14 @@ async function bootstrap() {
   if (configService.get<string>('ENABLE_FIXTURE_MODE') === 'true') {
     const nodeEnv = configService.get<string>('NODE_ENV')
     if (nodeEnv === 'production') {
-      console.error('❌ CRITICAL WARNING: Fixture mode is enabled but NODE_ENV is set to "production". Hard-blocking fixture bootstrapping for safety!')
+      console.error(
+        '❌ CRITICAL WARNING: Fixture mode is enabled but NODE_ENV is set to "production". Hard-blocking fixture bootstrapping for safety!',
+      )
     } else {
       console.log('🎮 Fixture mode is enabled. Bootstrapping canonical datasets...')
       try {
-        const { FixtureLoaderService } = await import('./modules/fixtures/fixture-loader.service.js')
+        const { FixtureLoaderService } =
+          await import('./modules/fixtures/fixture-loader.service.js')
         const loader = app.get(FixtureLoaderService)
         await loader.load()
         console.log('✅ Game fixtures loaded successfully on startup.')

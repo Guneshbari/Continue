@@ -67,10 +67,10 @@ export function UserReviewsList({ initialReviews, username: _username }: UserRev
 
   if (sortedReviews.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center p-12 rounded-xl bg-surface-raised border border-border-subtle text-center min-h-[300px]">
+      <div className="bg-surface-raised border-border-subtle flex min-h-[300px] flex-col items-center justify-center rounded-xl border p-12 text-center">
         <MessageSquare size={44} className="text-text-muted mb-4" aria-hidden="true" />
-        <h2 className="text-xl font-bold text-text-primary mb-2">No reviews in archive</h2>
-        <p className="text-sm text-text-muted max-w-sm">
+        <h2 className="text-text-primary mb-2 text-xl font-bold">No reviews in archive</h2>
+        <p className="text-text-muted max-w-sm text-sm">
           There are no published reviews in this user's archive yet.
         </p>
       </div>
@@ -80,32 +80,38 @@ export function UserReviewsList({ initialReviews, username: _username }: UserRev
   return (
     <div className="flex flex-col gap-6">
       {/* Sorting Control Header */}
-      <div className="flex items-center justify-between border-b border-border-subtle pb-4">
-        <span className="text-xs font-bold text-text-muted uppercase tracking-wider">
+      <div className="border-border-subtle flex items-center justify-between border-b pb-4">
+        <span className="text-text-muted text-xs font-bold uppercase tracking-wider">
           {sortedReviews.length} {sortedReviews.length === 1 ? 'Review' : 'Reviews'}
         </span>
 
         <div className="flex items-center gap-2">
-          <label htmlFor="sort-select" className="text-xs text-text-muted font-medium">Sort by:</label>
+          <label htmlFor="sort-select" className="text-text-muted text-xs font-medium">
+            Sort by:
+          </label>
           <div className="relative">
             <select
               id="sort-select"
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as any)}
-              className="appearance-none bg-surface-raised border border-border-subtle hover:border-border text-xs text-text-primary font-bold py-1.5 pl-3 pr-8 rounded-lg cursor-pointer transition-colors focus:outline-none focus:ring-1 focus:ring-accent"
+              className="bg-surface-raised border-border-subtle hover:border-border text-text-primary focus:ring-accent cursor-pointer appearance-none rounded-lg border py-1.5 pl-3 pr-8 text-xs font-bold transition-colors focus:outline-none focus:ring-1"
             >
               <option value="recent">Recent Reviews</option>
               <option value="oldest">Oldest Reviews</option>
               <option value="highest">Highest Curated Rating</option>
               <option value="lowest">Lowest Curated Rating</option>
             </select>
-            <ChevronDown size={12} className="absolute right-2.5 top-2.5 text-text-muted pointer-events-none" aria-hidden="true" />
+            <ChevronDown
+              size={12}
+              className="text-text-muted pointer-events-none absolute right-2.5 top-2.5"
+              aria-hidden="true"
+            />
           </div>
         </div>
       </div>
 
       {/* Reviews List */}
-      <ul className="flex flex-col gap-6 list-none m-0 p-0" role="list">
+      <ul className="m-0 flex list-none flex-col gap-6 p-0" role="list">
         {sortedReviews.map((review) => {
           const isSpoiler = review.isSpoiler
           const isRevealed = revealedSpoilers[review.id] ?? false
@@ -116,12 +122,12 @@ export function UserReviewsList({ initialReviews, username: _username }: UserRev
           return (
             <li
               key={review.id}
-              className="flex flex-col md:flex-row gap-6 p-5 rounded-xl bg-surface-raised border border-border-subtle"
+              className="bg-surface-raised border-border-subtle flex flex-col gap-6 rounded-xl border p-5 md:flex-row"
             >
               {/* Game Poster Column */}
               <Link
                 href={`/games/${review.game.slug}`}
-                className="relative flex-shrink-0 w-24 md:w-28 aspect-[3/4] rounded-lg overflow-hidden bg-surface-sunken border border-border-subtle shadow-md group align-self-start"
+                className="bg-surface-sunken border-border-subtle align-self-start group relative aspect-[3/4] w-24 flex-shrink-0 overflow-hidden rounded-lg border shadow-md md:w-28"
               >
                 {review.game.coverUrl ? (
                   <Image
@@ -132,27 +138,27 @@ export function UserReviewsList({ initialReviews, username: _username }: UserRev
                     className="object-cover transition-transform duration-300 group-hover:scale-105"
                   />
                 ) : (
-                  <div className="w-100% h-100% bg-gradient-to-br from-surface-overlay to-surface-raised" />
+                  <div className="w-100% h-100% from-surface-overlay to-surface-raised bg-gradient-to-br" />
                 )}
               </Link>
 
               {/* Review Text Body */}
-              <div className="flex-1 flex flex-col justify-between min-w-0">
+              <div className="flex min-w-0 flex-1 flex-col justify-between">
                 <div>
-                  <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 mb-2">
+                  <div className="mb-2 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
                     <div className="flex items-baseline gap-2">
                       <Link
                         href={`/games/${review.game.slug}`}
-                        className="text-lg font-bold text-text-primary hover:text-accent transition-colors"
+                        className="text-text-primary hover:text-accent text-lg font-bold transition-colors"
                       >
                         {review.game.title}
                       </Link>
                       {releaseYear && (
-                        <span className="text-xs text-text-muted font-medium">({releaseYear})</span>
+                        <span className="text-text-muted text-xs font-medium">({releaseYear})</span>
                       )}
                     </div>
 
-                    <time className="text-xs text-text-muted" dateTime={review.createdAt}>
+                    <time className="text-text-muted text-xs" dateTime={review.createdAt}>
                       {new Date(review.createdAt).toLocaleDateString('en-US', {
                         day: 'numeric',
                         month: 'long',
@@ -162,54 +168,57 @@ export function UserReviewsList({ initialReviews, username: _username }: UserRev
                   </div>
 
                   {/* Rating Score Badges */}
-                  <div className="flex items-center gap-3 mb-4" aria-label="Ratings info">
+                  <div className="mb-4 flex items-center gap-3" aria-label="Ratings info">
                     {review.userScore !== null && (
-                      <div className="flex items-center gap-1 px-2 py-0.5 rounded bg-accent-subtle text-accent text-xs font-bold border border-accent/20">
+                      <div className="bg-accent-subtle text-accent border-accent/20 flex items-center gap-1 rounded border px-2 py-0.5 text-xs font-bold">
                         <Star size={11} className="fill-current" />
                         <span>Curated {review.userScore}/10</span>
                       </div>
                     )}
                     {review.game.avgRating !== null && (
-                      <div className="flex items-center gap-1 text-[11px] text-text-secondary font-semibold">
+                      <div className="text-text-secondary flex items-center gap-1 text-[11px] font-semibold">
                         <span>Community avg:</span>
-                        <span className="text-warning font-bold">{review.game.avgRating.toFixed(1)}/10</span>
+                        <span className="text-warning font-bold">
+                          {review.game.avgRating.toFixed(1)}/10
+                        </span>
                       </div>
                     )}
                   </div>
 
                   {review.title && (
-                    <h3 className="text-sm font-bold text-text-primary mb-2 select-text">
+                    <h3 className="text-text-primary mb-2 select-text text-sm font-bold">
                       "{review.title}"
                     </h3>
                   )}
 
                   {/* Restrained Spoiler Blur */}
                   {isSpoiler && !isRevealed ? (
-                    <div className="relative rounded-lg overflow-hidden border border-dashed border-border-strong bg-surface-sunken p-4">
+                    <div className="border-border-strong bg-surface-sunken relative overflow-hidden rounded-lg border border-dashed p-4">
                       {/* Placeholder blur */}
-                      <p className="text-xs text-text-muted/10 blur-sm select-none line-clamp-3">
-                        This review contains spoilers for {review.game.title}. It can be revealed cleanly by clicking the warning banner below.
+                      <p className="text-text-muted/10 line-clamp-3 select-none text-xs blur-sm">
+                        This review contains spoilers for {review.game.title}. It can be revealed
+                        cleanly by clicking the warning banner below.
                       </p>
                       {/* Spoiler Warn Trigger */}
                       <button
                         type="button"
                         onClick={() => toggleSpoiler(review.id)}
-                        className="absolute inset-0 w-full h-full bg-surface-sunken/80 flex items-center justify-center gap-2 cursor-pointer transition-colors hover:bg-surface-sunken/90 focus:outline-none"
+                        className="bg-surface-sunken/80 hover:bg-surface-sunken/90 absolute inset-0 flex h-full w-full cursor-pointer items-center justify-center gap-2 transition-colors focus:outline-none"
                       >
                         <ShieldAlert size={14} className="text-accent" />
-                        <span className="text-xs font-bold text-text-secondary">
+                        <span className="text-text-secondary text-xs font-bold">
                           Review contains spoilers. Click to reveal.
                         </span>
                       </button>
                     </div>
                   ) : (
-                    <div className="text-sm text-text-secondary leading-relaxed whitespace-pre-wrap select-text transition-all duration-300">
+                    <div className="text-text-secondary select-text whitespace-pre-wrap text-sm leading-relaxed transition-all duration-300">
                       {review.body}
                       {isSpoiler && (
                         <button
                           type="button"
                           onClick={() => toggleSpoiler(review.id)}
-                          className="text-[10px] text-accent hover:underline font-semibold block mt-3"
+                          className="text-accent mt-3 block text-[10px] font-semibold hover:underline"
                         >
                           Hide spoilers
                         </button>

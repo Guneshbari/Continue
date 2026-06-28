@@ -89,7 +89,7 @@ function selectSpotlightReview(reviews: SeedReview[]): SeedReview | null {
     return {
       review: r,
       score: lengthScore + confidenceScore,
-    };
+    }
   })
 
   // Sort descending by calculated score
@@ -133,9 +133,7 @@ async function getHomeData() {
 
   // 3. Collections adapter
   const adaptedCollections =
-    (collections?.length ?? 0) > 0
-      ? adaptCollections(collections ?? [])
-      : COMMUNITY_COLLECTIONS
+    (collections?.length ?? 0) > 0 ? adaptCollections(collections ?? []) : COMMUNITY_COLLECTIONS
 
   return {
     heroGame,
@@ -198,7 +196,7 @@ export default async function HomePage() {
             rhythm="top_rated"
             badge={
               <span
-                className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[9px] font-bold tracking-widest uppercase rounded"
+                className="inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-widest"
                 style={{
                   background: 'oklch(20% 0.05 70)',
                   color: 'var(--color-warning)',

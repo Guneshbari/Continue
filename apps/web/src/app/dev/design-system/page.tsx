@@ -34,7 +34,7 @@ import {
 export default function DesignSystemPage() {
   const [buttonsLoading, setButtonsLoading] = useState(false)
   const [artworkSrc, setArtworkSrc] = useState<string | null>(
-    'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600&auto=format&fit=crop&q=80'
+    'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600&auto=format&fit=crop&q=80',
   )
   const [showPresence, setShowPresence] = useState(false)
   const [showStressTest, setShowStressTest] = useState(false)
@@ -46,31 +46,40 @@ export default function DesignSystemPage() {
     { name: '--color-surface-sunken', desc: 'Deep sunken wells', val: 'oklch(5% 0.008 260)' },
     { name: '--color-accent', desc: 'Electric violet accent', val: 'oklch(65% 0.25 290)' },
     { name: '--color-accent-muted', desc: 'Slightly dark violet', val: 'oklch(50% 0.18 290)' },
-    { name: '--color-accent-subtle', desc: 'Light base for badge/glow', val: 'oklch(30% 0.10 290)' },
+    {
+      name: '--color-accent-subtle',
+      desc: 'Light base for badge/glow',
+      val: 'oklch(30% 0.10 290)',
+    },
     { name: '--color-text-primary', desc: 'Primary titles/body', val: 'oklch(96% 0.005 260)' },
     { name: '--color-text-secondary', desc: 'Secondary sub-texts', val: 'oklch(70% 0.01 260)' },
     { name: '--color-text-muted', desc: 'Deeply muted labels', val: 'oklch(45% 0.01 260)' },
     { name: '--color-border', desc: 'Standard separation', val: 'oklch(22% 0.015 260)' },
     { name: '--color-border-subtle', desc: 'Faint outline separation', val: 'oklch(18% 0.01 260)' },
-    { name: '--color-border-strong', desc: 'Active hover focus outline', val: 'oklch(30% 0.02 260)' },
+    {
+      name: '--color-border-strong',
+      desc: 'Active hover focus outline',
+      val: 'oklch(30% 0.02 260)',
+    },
     { name: '--color-success', desc: 'Success status', val: 'oklch(70% 0.18 145)' },
     { name: '--color-warning', desc: 'Warning status', val: 'oklch(75% 0.18 70)' },
     { name: '--color-error', desc: 'Error status', val: 'oklch(65% 0.22 25)' },
   ]
 
   return (
-    <div className="site-container py-10 flex flex-col gap-16">
+    <div className="site-container flex flex-col gap-16 py-10">
       {/* Page Header */}
       <div>
         <span className="text-xs font-bold uppercase tracking-widest text-[var(--color-accent)]">
           Development Suite
         </span>
-        <h1 className="font-display text-[var(--font-size-display-xl)] leading-[var(--line-height-display)] tracking-[var(--tracking-compressed)] text-[var(--color-text-primary)]">
+        <h1 className="font-display leading-[var(--line-height-display)] tracking-[var(--tracking-compressed)] text-[var(--color-text-primary)] text-[var(--font-size-display-xl)]">
           Continue Design System
         </h1>
-        <p className="font-ui text-base text-[var(--color-text-secondary)] max-w-[56ch] mt-2">
-          Interactive showcase and visual regression testing dashboard for Continue visual primitives.
-          All elements are built utilizing strictly standardized tokens and zero hex-code styling.
+        <p className="font-ui mt-2 max-w-[56ch] text-base text-[var(--color-text-secondary)]">
+          Interactive showcase and visual regression testing dashboard for Continue visual
+          primitives. All elements are built utilizing strictly standardized tokens and zero
+          hex-code styling.
         </p>
       </div>
 
@@ -81,25 +90,25 @@ export default function DesignSystemPage() {
           subtitle="Tokens / Color System"
           description="High-contrast oklch design tokens supporting layered cinematic depths. Audited for dark-theme excellence."
         />
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
           {colors.map((c) => (
             <CinematicSurface
               key={c.name}
               elevation="raised"
-              className="p-3 flex flex-col gap-2 rounded-[var(--radius-card)]"
+              className="flex flex-col gap-2 rounded-[var(--radius-card)] p-3"
             >
               <div
-                className="w-full aspect-video rounded-[var(--radius-badge)] border border-[var(--color-border-subtle)]"
+                className="aspect-video w-full rounded-[var(--radius-badge)] border border-[var(--color-border-subtle)]"
                 style={{ backgroundColor: c.val }}
               />
               <div>
-                <h4 className="font-ui text-xs font-bold text-[var(--color-text-primary)] truncate">
+                <h4 className="font-ui truncate text-xs font-bold text-[var(--color-text-primary)]">
                   {c.name.replace('--color-', '')}
                 </h4>
-                <p className="font-ui text-[10px] text-[var(--color-text-secondary)] mt-0.5 truncate">
+                <p className="font-ui mt-0.5 truncate text-[10px] text-[var(--color-text-secondary)]">
                   {c.desc}
                 </p>
-                <code className="block text-[8px] text-[var(--color-text-muted)] bg-[var(--color-surface-sunken)] p-1 rounded mt-1.5 font-mono select-all">
+                <code className="mt-1.5 block select-all rounded bg-[var(--color-surface-sunken)] p-1 font-mono text-[8px] text-[var(--color-text-muted)]">
                   {c.val}
                 </code>
               </div>
@@ -116,27 +125,33 @@ export default function DesignSystemPage() {
           description="Bebas Neue for cinematic headers and Inter UI for content rows. Reading columns are strictly constrained to preserve editorial focus."
         />
         <div className="flex flex-col gap-6">
-          <div className="grid md:grid-cols-2 gap-8 border-b border-[var(--color-border-subtle)] pb-6">
+          <div className="grid gap-8 border-b border-[var(--color-border-subtle)] pb-6 md:grid-cols-2">
             <div>
-              <h3 className="text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-3">
+              <h3 className="mb-3 text-xs font-bold uppercase tracking-wider text-[var(--color-text-muted)]">
                 Font Scales
               </h3>
               <div className="flex flex-col gap-3">
                 <div>
-                  <span className="text-[10px] text-[var(--color-text-muted)] block font-mono">Display XL (--font-size-display-xl)</span>
-                  <h1 className="font-display text-[var(--font-size-display-xl)] leading-none text-[var(--color-text-primary)]">
+                  <span className="block font-mono text-[10px] text-[var(--color-text-muted)]">
+                    Display XL (--font-size-display-xl)
+                  </span>
+                  <h1 className="font-display leading-none text-[var(--color-text-primary)] text-[var(--font-size-display-xl)]">
                     CONTINUE CATALOG
                   </h1>
                 </div>
                 <div>
-                  <span className="text-[10px] text-[var(--color-text-muted)] block font-mono">Display LG (--font-size-display-lg)</span>
-                  <h2 className="font-display text-[var(--font-size-display-lg)] leading-none text-[var(--color-text-primary)]">
+                  <span className="block font-mono text-[10px] text-[var(--color-text-muted)]">
+                    Display LG (--font-size-display-lg)
+                  </span>
+                  <h2 className="font-display leading-none text-[var(--color-text-primary)] text-[var(--font-size-display-lg)]">
                     THE COLLECTIVE LIST
                   </h2>
                 </div>
                 <div>
-                  <span className="text-[10px] text-[var(--color-text-muted)] block font-mono">Display MD (--font-size-display-md)</span>
-                  <h3 className="font-display text-[var(--font-size-display-md)] leading-none text-[var(--color-text-primary)]">
+                  <span className="block font-mono text-[10px] text-[var(--color-text-muted)]">
+                    Display MD (--font-size-display-md)
+                  </span>
+                  <h3 className="font-display leading-none text-[var(--color-text-primary)] text-[var(--font-size-display-md)]">
                     Featured Review Title
                   </h3>
                 </div>
@@ -144,26 +159,33 @@ export default function DesignSystemPage() {
             </div>
 
             <div>
-              <h3 className="text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-3">
+              <h3 className="mb-3 text-xs font-bold uppercase tracking-wider text-[var(--color-text-muted)]">
                 UI & Headings (Inter)
               </h3>
               <div className="flex flex-col gap-4">
                 <div>
-                  <span className="text-[10px] text-[var(--color-text-muted)] block font-mono">Heading LG (--font-size-heading-lg)</span>
-                  <h4 className="font-ui text-[var(--font-size-heading-lg)] font-bold text-[var(--color-text-primary)]">
+                  <span className="block font-mono text-[10px] text-[var(--color-text-muted)]">
+                    Heading LG (--font-size-heading-lg)
+                  </span>
+                  <h4 className="font-ui font-bold text-[var(--color-text-primary)] text-[var(--font-size-heading-lg)]">
                     Modern gaming journal meets catalog
                   </h4>
                 </div>
                 <div>
-                  <span className="text-[10px] text-[var(--color-text-muted)] block font-mono">Heading MD (--font-size-heading-md)</span>
-                  <h5 className="font-ui text-[var(--font-size-heading-md)] font-bold text-[var(--color-text-primary)]">
+                  <span className="block font-mono text-[10px] text-[var(--color-text-muted)]">
+                    Heading MD (--font-size-heading-md)
+                  </span>
+                  <h5 className="font-ui font-bold text-[var(--color-text-primary)] text-[var(--font-size-heading-md)]">
                     Interactive Activity highlights
                   </h5>
                 </div>
                 <div>
-                  <span className="text-[10px] text-[var(--color-text-muted)] block font-mono">Body MD (--font-size-body-md)</span>
-                  <p className="font-ui text-[var(--font-size-body-md)] text-[var(--color-text-secondary)]">
-                    This is standard UI body text. It remains clean, highly legible, and fits navigation nodes easily.
+                  <span className="block font-mono text-[10px] text-[var(--color-text-muted)]">
+                    Body MD (--font-size-body-md)
+                  </span>
+                  <p className="font-ui text-[var(--color-text-secondary)] text-[var(--font-size-body-md)]">
+                    This is standard UI body text. It remains clean, highly legible, and fits
+                    navigation nodes easily.
                   </p>
                 </div>
               </div>
@@ -171,25 +193,31 @@ export default function DesignSystemPage() {
           </div>
 
           <div>
-            <h3 className="text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-3">
+            <h3 className="mb-3 text-xs font-bold uppercase tracking-wider text-[var(--color-text-muted)]">
               Editorial Line Constraints (Measure)
             </h3>
             <div className="flex flex-col gap-6">
-              <div className="border border-[var(--color-border-subtle)] p-4 rounded-[var(--radius-surface)] bg-[var(--color-surface-sunken)]">
-                <span className="text-[10px] text-[var(--color-text-muted)] block font-mono mb-2">
+              <div className="rounded-[var(--radius-surface)] border border-[var(--color-border-subtle)] bg-[var(--color-surface-sunken)] p-4">
+                <span className="mb-2 block font-mono text-[10px] text-[var(--color-text-muted)]">
                   Review Text Constraint (--measure-review: 66ch)
                 </span>
-                <p className="font-ui text-[var(--font-size-body-lg)] leading-[var(--line-height-prose)] text-[var(--color-text-primary)] max-w-[var(--measure-review)] bg-[var(--color-surface-base)] p-4 rounded border border-[var(--color-border)]">
-                  The Witcher 3: Wild Hunt represents a watermark high in RPG design. Its writing doesn't simply present quests; it designs intricate moral puzzles. The Bloody Baron storyline remains a masterclass in domestic tragedy, shifting players from disgust to profound pity. Coupled with a dense, atmospheric dark fantasy setting, the game ensures every decision feels heavy.
+                <p className="font-ui max-w-[var(--measure-review)] rounded border border-[var(--color-border)] bg-[var(--color-surface-base)] p-4 leading-[var(--line-height-prose)] text-[var(--color-text-primary)] text-[var(--font-size-body-lg)]">
+                  The Witcher 3: Wild Hunt represents a watermark high in RPG design. Its writing
+                  doesn't simply present quests; it designs intricate moral puzzles. The Bloody
+                  Baron storyline remains a masterclass in domestic tragedy, shifting players from
+                  disgust to profound pity. Coupled with a dense, atmospheric dark fantasy setting,
+                  the game ensures every decision feels heavy.
                 </p>
               </div>
 
-              <div className="border border-[var(--color-border-subtle)] p-4 rounded-[var(--radius-surface)] bg-[var(--color-surface-sunken)]">
-                <span className="text-[10px] text-[var(--color-text-muted)] block font-mono mb-2">
+              <div className="rounded-[var(--radius-surface)] border border-[var(--color-border-subtle)] bg-[var(--color-surface-sunken)] p-4">
+                <span className="mb-2 block font-mono text-[10px] text-[var(--color-text-muted)]">
                   Synopsis Constraint (--measure-synopsis: 52ch)
                 </span>
-                <p className="font-ui text-[var(--font-size-body-md)] leading-[var(--line-height-ui)] text-[var(--color-text-secondary)] max-w-[var(--measure-synopsis)] bg-[var(--color-surface-base)] p-4 rounded border border-[var(--color-border)]">
-                  An open-world action RPG set in a fantasy universe. Players assume the role of Geralt of Rivia, a mutated monster hunter for hire, tasked with locating his adopted daughter fleeing from the Wild Hunt.
+                <p className="font-ui max-w-[var(--measure-synopsis)] rounded border border-[var(--color-border)] bg-[var(--color-surface-base)] p-4 leading-[var(--line-height-ui)] text-[var(--color-text-secondary)] text-[var(--font-size-body-md)]">
+                  An open-world action RPG set in a fantasy universe. Players assume the role of
+                  Geralt of Rivia, a mutated monster hunter for hire, tasked with locating his
+                  adopted daughter fleeing from the Wild Hunt.
                 </p>
               </div>
             </div>
@@ -204,67 +232,114 @@ export default function DesignSystemPage() {
           subtitle="Primitives / Surfaces"
           description="Polymorphic layers representing elevation levels in our layered catalog layouts. Hoverable variants support interactive translate and shadow glows."
         />
-        <div className="grid md:grid-cols-4 gap-6">
-          <CinematicSurface elevation="sunken" className="p-5 flex flex-col gap-2 justify-between min-h-[140px]">
+        <div className="grid gap-6 md:grid-cols-4">
+          <CinematicSurface
+            elevation="sunken"
+            className="flex min-h-[140px] flex-col justify-between gap-2 p-5"
+          >
             <div>
-              <span className="text-[10px] text-[var(--color-text-muted)] font-mono block">ELEVATION: SUNKEN</span>
-              <h4 className="font-ui text-sm font-bold text-[var(--color-text-primary)] mt-1">Sunken Backdrop</h4>
-              <p className="font-ui text-xs text-[var(--color-text-secondary)] mt-1">
+              <span className="block font-mono text-[10px] text-[var(--color-text-muted)]">
+                ELEVATION: SUNKEN
+              </span>
+              <h4 className="font-ui mt-1 text-sm font-bold text-[var(--color-text-primary)]">
+                Sunken Backdrop
+              </h4>
+              <p className="font-ui mt-1 text-xs text-[var(--color-text-secondary)]">
                 Deepest page background layer, useful for lists wrappers and sidebars.
               </p>
             </div>
-            <code className="text-[9px] text-[var(--color-text-muted)] font-mono">elevation="sunken"</code>
+            <code className="font-mono text-[9px] text-[var(--color-text-muted)]">
+              elevation="sunken"
+            </code>
           </CinematicSurface>
 
-          <CinematicSurface elevation="base" className="p-5 flex flex-col gap-2 justify-between min-h-[140px] border border-[var(--color-border-subtle)]">
+          <CinematicSurface
+            elevation="base"
+            className="flex min-h-[140px] flex-col justify-between gap-2 border border-[var(--color-border-subtle)] p-5"
+          >
             <div>
-              <span className="text-[10px] text-[var(--color-text-muted)] font-mono block">ELEVATION: BASE</span>
-              <h4 className="font-ui text-sm font-bold text-[var(--color-text-primary)] mt-1">Base Layer</h4>
-              <p className="font-ui text-xs text-[var(--color-text-secondary)] mt-1">
+              <span className="block font-mono text-[10px] text-[var(--color-text-muted)]">
+                ELEVATION: BASE
+              </span>
+              <h4 className="font-ui mt-1 text-sm font-bold text-[var(--color-text-primary)]">
+                Base Layer
+              </h4>
+              <p className="font-ui mt-1 text-xs text-[var(--color-text-secondary)]">
                 Standard page background level for standard scrolling routes.
               </p>
             </div>
-            <code className="text-[9px] text-[var(--color-text-muted)] font-mono">elevation="base"</code>
+            <code className="font-mono text-[9px] text-[var(--color-text-muted)]">
+              elevation="base"
+            </code>
           </CinematicSurface>
 
-          <CinematicSurface elevation="raised" className="p-5 flex flex-col gap-2 justify-between min-h-[140px]">
+          <CinematicSurface
+            elevation="raised"
+            className="flex min-h-[140px] flex-col justify-between gap-2 p-5"
+          >
             <div>
-              <span className="text-[10px] text-[var(--color-text-muted)] font-mono block">ELEVATION: RAISED</span>
-              <h4 className="font-ui text-sm font-bold text-[var(--color-text-primary)] mt-1">Raised Surface</h4>
-              <p className="font-ui text-xs text-[var(--color-text-secondary)] mt-1">
+              <span className="block font-mono text-[10px] text-[var(--color-text-muted)]">
+                ELEVATION: RAISED
+              </span>
+              <h4 className="font-ui mt-1 text-sm font-bold text-[var(--color-text-primary)]">
+                Raised Surface
+              </h4>
+              <p className="font-ui mt-1 text-xs text-[var(--color-text-secondary)]">
                 Standard container for cards, comments, reviews, shelves, and form wrappers.
               </p>
             </div>
-            <code className="text-[9px] text-[var(--color-text-muted)] font-mono">elevation="raised"</code>
+            <code className="font-mono text-[9px] text-[var(--color-text-muted)]">
+              elevation="raised"
+            </code>
           </CinematicSurface>
 
-          <CinematicSurface elevation="overlay" className="p-5 flex flex-col gap-2 justify-between min-h-[140px]">
+          <CinematicSurface
+            elevation="overlay"
+            className="flex min-h-[140px] flex-col justify-between gap-2 p-5"
+          >
             <div>
-              <span className="text-[10px] text-[var(--color-text-muted)] font-mono block">ELEVATION: OVERLAY</span>
-              <h4 className="font-ui text-sm font-bold text-[var(--color-text-primary)] mt-1">Overlay Panel</h4>
-              <p className="font-ui text-xs text-[var(--color-text-secondary)] mt-1">
-                Floating elements: dialog modals, tooltips, autocomplete lists. Features soft drop shadow.
+              <span className="block font-mono text-[10px] text-[var(--color-text-muted)]">
+                ELEVATION: OVERLAY
+              </span>
+              <h4 className="font-ui mt-1 text-sm font-bold text-[var(--color-text-primary)]">
+                Overlay Panel
+              </h4>
+              <p className="font-ui mt-1 text-xs text-[var(--color-text-secondary)]">
+                Floating elements: dialog modals, tooltips, autocomplete lists. Features soft drop
+                shadow.
               </p>
             </div>
-            <code className="text-[9px] text-[var(--color-text-muted)] font-mono">elevation="overlay"</code>
+            <code className="font-mono text-[9px] text-[var(--color-text-muted)]">
+              elevation="overlay"
+            </code>
           </CinematicSurface>
 
-          <CinematicSurface elevation="raised" hoverable className="p-5 flex flex-col gap-2 justify-between min-h-[140px] md:col-span-2">
+          <CinematicSurface
+            elevation="raised"
+            hoverable
+            className="flex min-h-[140px] flex-col justify-between gap-2 p-5 md:col-span-2"
+          >
             <div>
-              <span className="text-[10px] text-[var(--color-text-muted)] font-mono block">HOVERABLE: TRUE</span>
-              <h4 className="font-ui text-sm font-bold text-[var(--color-text-primary)] mt-1">Interactive Hover Surface</h4>
-              <p className="font-ui text-xs text-[var(--color-text-secondary)] mt-1">
+              <span className="block font-mono text-[10px] text-[var(--color-text-muted)]">
+                HOVERABLE: TRUE
+              </span>
+              <h4 className="font-ui mt-1 text-sm font-bold text-[var(--color-text-primary)]">
+                Interactive Hover Surface
+              </h4>
+              <p className="font-ui mt-1 text-xs text-[var(--color-text-secondary)]">
                 Translate scale and dynamic drop shadow depth expansion on mouse hover.
               </p>
             </div>
-            <code className="text-[9px] text-[var(--color-text-muted)] font-mono">elevation="raised" hoverable</code>
+            <code className="font-mono text-[9px] text-[var(--color-text-muted)]">
+              elevation="raised" hoverable
+            </code>
           </CinematicSurface>
         </div>
       </section>
 
       {/* SECTION 4: Buttons & Interactions */}
       <section id="buttons">
-        <div className="flex items-center justify-between gap-4 mb-4">
+        <div className="mb-4 flex items-center justify-between gap-4">
           <EditorialSectionHeader
             title="Interactive Buttons"
             subtitle="Primitives / Buttons"
@@ -285,12 +360,12 @@ export default function DesignSystemPage() {
 
         <div className="flex flex-col gap-6">
           {/* SIZES MATRIX */}
-          <div className="grid md:grid-cols-3 gap-6">
-            <CinematicSurface elevation="raised" className="p-5 flex flex-col gap-4">
-              <h4 className="text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider">
+          <div className="grid gap-6 md:grid-cols-3">
+            <CinematicSurface elevation="raised" className="flex flex-col gap-4 p-5">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-[var(--color-text-muted)]">
                 Size Small (sm)
               </h4>
-              <div className="flex flex-wrap gap-2 items-center">
+              <div className="flex flex-wrap items-center gap-2">
                 <Button variant="primary" size="sm" isLoading={buttonsLoading}>
                   Primary
                 </Button>
@@ -306,11 +381,11 @@ export default function DesignSystemPage() {
               </div>
             </CinematicSurface>
 
-            <CinematicSurface elevation="raised" className="p-5 flex flex-col gap-4">
-              <h4 className="text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider">
+            <CinematicSurface elevation="raised" className="flex flex-col gap-4 p-5">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-[var(--color-text-muted)]">
                 Size Medium (md)
               </h4>
-              <div className="flex flex-wrap gap-2 items-center">
+              <div className="flex flex-wrap items-center gap-2">
                 <Button variant="primary" size="md" isLoading={buttonsLoading}>
                   Primary
                 </Button>
@@ -326,11 +401,11 @@ export default function DesignSystemPage() {
               </div>
             </CinematicSurface>
 
-            <CinematicSurface elevation="raised" className="p-5 flex flex-col gap-4">
-              <h4 className="text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider">
+            <CinematicSurface elevation="raised" className="flex flex-col gap-4 p-5">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-[var(--color-text-muted)]">
                 Size Large (lg)
               </h4>
-              <div className="flex flex-wrap gap-2 items-center">
+              <div className="flex flex-wrap items-center gap-2">
                 <Button variant="primary" size="lg" isLoading={buttonsLoading}>
                   Primary
                 </Button>
@@ -348,9 +423,9 @@ export default function DesignSystemPage() {
           </div>
 
           {/* DISABLED / LOADING STATES */}
-          <div className="grid md:grid-cols-2 gap-6">
-            <CinematicSurface elevation="raised" className="p-5 flex flex-col gap-3">
-              <h4 className="text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-2">
+          <div className="grid gap-6 md:grid-cols-2">
+            <CinematicSurface elevation="raised" className="flex flex-col gap-3 p-5">
+              <h4 className="mb-2 text-xs font-bold uppercase tracking-wider text-[var(--color-text-muted)]">
                 Disabled State (disabled)
               </h4>
               <div className="flex flex-wrap gap-2">
@@ -366,8 +441,8 @@ export default function DesignSystemPage() {
               </div>
             </CinematicSurface>
 
-            <CinematicSurface elevation="raised" className="p-5 flex flex-col gap-3">
-              <h4 className="text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider mb-2">
+            <CinematicSurface elevation="raised" className="flex flex-col gap-3 p-5">
+              <h4 className="mb-2 text-xs font-bold uppercase tracking-wider text-[var(--color-text-muted)]">
                 Forced Loading State (isLoading)
               </h4>
               <div className="flex flex-wrap gap-2">
@@ -390,9 +465,9 @@ export default function DesignSystemPage() {
           subtitle="Primitives / Badges"
           description="Used for ratings, status categories, tags, genres, and indicators across all cards and sections."
         />
-        <div className="grid md:grid-cols-2 gap-6">
-          <CinematicSurface elevation="raised" className="p-5 flex flex-col gap-4">
-            <h4 className="text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider">
+        <div className="grid gap-6 md:grid-cols-2">
+          <CinematicSurface elevation="raised" className="flex flex-col gap-4 p-5">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-[var(--color-text-muted)]">
               Badge Size Medium (md - default)
             </h4>
             <MetadataBadgeGroup>
@@ -411,8 +486,8 @@ export default function DesignSystemPage() {
             </MetadataBadgeGroup>
           </CinematicSurface>
 
-          <CinematicSurface elevation="raised" className="p-5 flex flex-col gap-4">
-            <h4 className="text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider">
+          <CinematicSurface elevation="raised" className="flex flex-col gap-4 p-5">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-[var(--color-text-muted)]">
               Badge Size Small (sm)
             </h4>
             <MetadataBadgeGroup>
@@ -444,16 +519,19 @@ export default function DesignSystemPage() {
           description="Consistent visual modules for Loading, Empty, Success, and Error boundaries to govern system state changes."
         />
         <div className="flex flex-col gap-6">
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid gap-6 md:grid-cols-2">
             {/* Loading skeletons demo */}
-            <CinematicSurface elevation="raised" className="p-5 flex flex-col gap-4 justify-between">
-              <h4 className="text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider">
+            <CinematicSurface
+              elevation="raised"
+              className="flex flex-col justify-between gap-4 p-5"
+            >
+              <h4 className="text-xs font-bold uppercase tracking-wider text-[var(--color-text-muted)]">
                 Skeleton Placeholders (circle, rect, text)
               </h4>
               <div className="flex flex-col gap-4">
                 <div className="flex items-center gap-3">
                   <Skeleton variant="circle" className="h-10 w-10" />
-                  <div className="flex-1 flex flex-col gap-1.5">
+                  <div className="flex flex-1 flex-col gap-1.5">
                     <Skeleton variant="text" className="h-3 w-1/3" />
                     <Skeleton variant="text" className="h-2 w-1/4" />
                   </div>
@@ -471,7 +549,7 @@ export default function DesignSystemPage() {
             />
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid gap-6 md:grid-cols-2">
             {/* Empty State demo */}
             <EmptyState
               title="Collection is empty"
@@ -493,7 +571,7 @@ export default function DesignSystemPage() {
 
       {/* SECTION 7: Game Artwork Primitive */}
       <section id="artwork">
-        <div className="flex items-center justify-between gap-4 mb-4">
+        <div className="mb-4 flex items-center justify-between gap-4">
           <EditorialSectionHeader
             title="Game Artwork Primitive"
             subtitle="Primitives / Media"
@@ -516,7 +594,7 @@ export default function DesignSystemPage() {
               disabled={!!artworkSrc}
               onClick={() =>
                 setArtworkSrc(
-                  'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600&auto=format&fit=crop&q=80'
+                  'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600&auto=format&fit=crop&q=80',
                 )
               }
             >
@@ -525,35 +603,53 @@ export default function DesignSystemPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6">
-          <CinematicSurface elevation="raised" className="p-3 flex flex-col items-center gap-2">
-            <span className="text-[9px] text-[var(--color-text-muted)] font-mono">avatar</span>
+        <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-5">
+          <CinematicSurface elevation="raised" className="flex flex-col items-center gap-2 p-3">
+            <span className="font-mono text-[9px] text-[var(--color-text-muted)]">avatar</span>
             <GameArtwork src={artworkSrc} alt="User avatar" variant="avatar" />
-            <span className="text-[10px] text-[var(--color-text-secondary)] font-bold">1:1 Circle</span>
+            <span className="text-[10px] font-bold text-[var(--color-text-secondary)]">
+              1:1 Circle
+            </span>
           </CinematicSurface>
 
-          <CinematicSurface elevation="raised" className="p-3 flex flex-col items-center gap-2">
-            <span className="text-[9px] text-[var(--color-text-muted)] font-mono">cover-sm</span>
+          <CinematicSurface elevation="raised" className="flex flex-col items-center gap-2 p-3">
+            <span className="font-mono text-[9px] text-[var(--color-text-muted)]">cover-sm</span>
             <GameArtwork src={artworkSrc} alt="Small Cover" variant="cover-sm" />
-            <span className="text-[10px] text-[var(--color-text-secondary)] font-bold">3:4 W-12</span>
+            <span className="text-[10px] font-bold text-[var(--color-text-secondary)]">
+              3:4 W-12
+            </span>
           </CinematicSurface>
 
-          <CinematicSurface elevation="raised" className="p-3 flex flex-col items-center gap-2">
-            <span className="text-[9px] text-[var(--color-text-muted)] font-mono">cover-md</span>
+          <CinematicSurface elevation="raised" className="flex flex-col items-center gap-2 p-3">
+            <span className="font-mono text-[9px] text-[var(--color-text-muted)]">cover-md</span>
             <GameArtwork src={artworkSrc} alt="Medium Cover" variant="cover-md" />
-            <span className="text-[10px] text-[var(--color-text-secondary)] font-bold">3:4 W-36</span>
+            <span className="text-[10px] font-bold text-[var(--color-text-secondary)]">
+              3:4 W-36
+            </span>
           </CinematicSurface>
 
-          <CinematicSurface elevation="raised" className="p-3 flex flex-col items-center gap-2">
-            <span className="text-[9px] text-[var(--color-text-muted)] font-mono">cover-lg</span>
+          <CinematicSurface elevation="raised" className="flex flex-col items-center gap-2 p-3">
+            <span className="font-mono text-[9px] text-[var(--color-text-muted)]">cover-lg</span>
             <GameArtwork src={artworkSrc} alt="Large Cover" variant="cover-lg" />
-            <span className="text-[10px] text-[var(--color-text-secondary)] font-bold">3:4 W-48</span>
+            <span className="text-[10px] font-bold text-[var(--color-text-secondary)]">
+              3:4 W-48
+            </span>
           </CinematicSurface>
 
-          <CinematicSurface elevation="raised" className="p-3 flex flex-col items-center gap-2 col-span-2 sm:col-span-1">
-            <span className="text-[9px] text-[var(--color-text-muted)] font-mono">backdrop</span>
-            <GameArtwork src={artworkSrc} alt="Cinematic Backdrop" variant="backdrop" className="w-full" />
-            <span className="text-[10px] text-[var(--color-text-secondary)] font-bold">16:9 Video</span>
+          <CinematicSurface
+            elevation="raised"
+            className="col-span-2 flex flex-col items-center gap-2 p-3 sm:col-span-1"
+          >
+            <span className="font-mono text-[9px] text-[var(--color-text-muted)]">backdrop</span>
+            <GameArtwork
+              src={artworkSrc}
+              alt="Cinematic Backdrop"
+              variant="backdrop"
+              className="w-full"
+            />
+            <span className="text-[10px] font-bold text-[var(--color-text-secondary)]">
+              16:9 Video
+            </span>
           </CinematicSurface>
         </div>
       </section>
@@ -582,38 +678,58 @@ export default function DesignSystemPage() {
               }
             />
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-6">
               {[
-                { title: 'The Witcher 3: Wild Hunt', rating: '9.4', src: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=400&q=80' },
-                { title: 'Elden Ring', rating: '9.6', src: 'https://images.unsplash.com/photo-1655821888788-6107699e173b?w=400&q=80' },
-                { title: 'Cyberpunk 2077', rating: '8.2', src: 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=400&q=80' },
+                {
+                  title: 'The Witcher 3: Wild Hunt',
+                  rating: '9.4',
+                  src: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=400&q=80',
+                },
+                {
+                  title: 'Elden Ring',
+                  rating: '9.6',
+                  src: 'https://images.unsplash.com/photo-1655821888788-6107699e173b?w=400&q=80',
+                },
+                {
+                  title: 'Cyberpunk 2077',
+                  rating: '8.2',
+                  src: 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=400&q=80',
+                },
                 { title: 'Red Dead Redemption 2', rating: '9.7', src: null },
-                { title: 'Portal 2', rating: '9.8', src: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=400&q=80' },
-                { title: 'Hades', rating: '9.3', src: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400&q=80' },
+                {
+                  title: 'Portal 2',
+                  rating: '9.8',
+                  src: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=400&q=80',
+                },
+                {
+                  title: 'Hades',
+                  rating: '9.3',
+                  src: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400&q=80',
+                },
               ].map((g, idx) => (
                 <CinematicSurface
                   key={idx}
                   elevation="raised"
                   hoverable
-                  className="group flex flex-col h-full bg-[var(--color-surface-raised)] border border-[var(--color-border-subtle)]"
+                  className="group flex h-full flex-col border border-[var(--color-border-subtle)] bg-[var(--color-surface-raised)]"
                 >
-                  <div className="relative w-full aspect-[3/4]">
+                  <div className="relative aspect-[3/4] w-full">
                     <GameArtwork
                       src={g.src}
                       alt={g.title}
                       variant="cover-md"
-                      className="w-full h-full border-none rounded-none"
+                      className="h-full w-full rounded-none border-none"
                     />
-                    <div className="absolute top-2 right-2 flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-black/70 backdrop-blur-sm text-[var(--color-warning)] font-bold text-[10px] z-20">
+                    <div className="absolute right-2 top-2 z-20 flex items-center gap-0.5 rounded bg-black/70 px-1.5 py-0.5 text-[10px] font-bold text-[var(--color-warning)] backdrop-blur-sm">
                       <Star className="h-2.5 w-2.5 fill-current" />
                       {g.rating}
                     </div>
                   </div>
-                  <div className="p-3 flex flex-col flex-1 gap-1">
-                    <span className="text-[9px] uppercase tracking-wider font-bold text-[var(--color-accent-muted)]">
+                  <div className="flex flex-1 flex-col gap-1 p-3">
+                    <span className="text-[9px] font-bold uppercase tracking-wider text-[var(--color-accent-muted)]">
                       RPG / Action
                     </span>
-                    <h4 className="font-ui text-xs font-bold text-[var(--color-text-primary)] leading-tight line-clamp-2 group-hover:text-[var(--color-accent)] transition-colors">
+                    <h4 className="font-ui line-clamp-2 text-xs font-bold leading-tight text-[var(--color-text-primary)] transition-colors group-hover:text-[var(--color-accent)]">
                       {g.title}
                     </h4>
                   </div>
@@ -631,31 +747,31 @@ export default function DesignSystemPage() {
               variant="minimal"
             />
 
-            <div className="flex flex-col gap-6 max-w-[var(--measure-review)]">
+            <div className="flex max-w-[var(--measure-review)] flex-col gap-6">
               {[
                 {
                   user: 'GeraltOfRivia',
                   rating: 10,
                   game: 'The Witcher 3',
                   time: '2 hours ago',
-                  text: "The Bloody Baron questline remains the highest peak of narrative execution gaming has ever achieved. It captures complex domestic tragedy without reducing characters to simple heroes or villains. A decade later, it still sets the standard for roleplaying story columns. Truly a masterpiece.",
+                  text: 'The Bloody Baron questline remains the highest peak of narrative execution gaming has ever achieved. It captures complex domestic tragedy without reducing characters to simple heroes or villains. A decade later, it still sets the standard for roleplaying story columns. Truly a masterpiece.',
                 },
                 {
                   user: 'LetoTheSlayer',
                   rating: 8,
                   game: 'Cyberpunk 2077',
                   time: 'Yesterday',
-                  text: "Despite the launch bugs, Night City is one of the most stunningly atmospheric sandbox layouts ever composed. Moving around under the neon glow in first-person feels genuinely cinematic. The writing is punchy, though the primary story campaign ends slightly prematurely.",
+                  text: 'Despite the launch bugs, Night City is one of the most stunningly atmospheric sandbox layouts ever composed. Moving around under the neon glow in first-person feels genuinely cinematic. The writing is punchy, though the primary story campaign ends slightly prematurely.',
                 },
               ].map((rev, idx) => (
                 <CinematicSurface
                   key={idx}
                   elevation="raised"
-                  className="p-5 flex flex-col gap-4 border border-[var(--color-border-subtle)]"
+                  className="flex flex-col gap-4 border border-[var(--color-border-subtle)] p-5"
                 >
-                  <div className="flex items-center justify-between gap-4 flex-wrap">
+                  <div className="flex flex-wrap items-center justify-between gap-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-[var(--color-accent-subtle)] border border-[var(--color-accent)]/20 flex items-center justify-center text-[var(--color-accent)] text-xs font-bold font-mono">
+                      <div className="border-[var(--color-accent)]/20 flex h-8 w-8 items-center justify-center rounded-full border bg-[var(--color-accent-subtle)] font-mono text-xs font-bold text-[var(--color-accent)]">
                         {rev.user.substring(0, 2).toUpperCase()}
                       </div>
                       <div>
@@ -667,7 +783,7 @@ export default function DesignSystemPage() {
                             reviewed {rev.game}
                           </span>
                         </div>
-                        <span className="text-[10px] text-[var(--color-text-muted)] block mt-0.5">
+                        <span className="mt-0.5 block text-[10px] text-[var(--color-text-muted)]">
                           {rev.time}
                         </span>
                       </div>
@@ -676,7 +792,7 @@ export default function DesignSystemPage() {
                     <div className="flex items-center gap-1.5">
                       <span className="text-xs text-[var(--color-text-muted)]">Rating:</span>
                       <MetadataBadge variant="warning" className="font-bold">
-                        <Star className="h-3 w-3 fill-current mr-0.5" />
+                        <Star className="mr-0.5 h-3 w-3 fill-current" />
                         {rev.rating}.0
                       </MetadataBadge>
                     </div>
@@ -711,39 +827,47 @@ export default function DesignSystemPage() {
 
             <div className="flex flex-col gap-3">
               {[
-                { rank: 1, title: 'Elden Ring', score: '9.6', year: '2022', desc: 'Rise, Tarnished, and be guided by grace to brandish the power of the Elden Ring and become an Elden Lord in the Lands Between.' },
-                { rank: 2, title: 'The Witcher 3: Wild Hunt', score: '9.4', year: '2015', desc: 'Geralt of Rivia search for his child of prophecy in a war-torn dark fantasy world filled with monsters.' },
+                {
+                  rank: 1,
+                  title: 'Elden Ring',
+                  score: '9.6',
+                  year: '2022',
+                  desc: 'Rise, Tarnished, and be guided by grace to brandish the power of the Elden Ring and become an Elden Lord in the Lands Between.',
+                },
+                {
+                  rank: 2,
+                  title: 'The Witcher 3: Wild Hunt',
+                  score: '9.4',
+                  year: '2015',
+                  desc: 'Geralt of Rivia search for his child of prophecy in a war-torn dark fantasy world filled with monsters.',
+                },
               ].map((item, idx) => (
                 <CinematicSurface
                   key={idx}
                   elevation="raised"
-                  className="p-3 flex items-center gap-4 hover:border-[var(--color-border)] transition-colors"
+                  className="flex items-center gap-4 p-3 transition-colors hover:border-[var(--color-border)]"
                 >
-                  <span className="font-display text-[var(--font-size-display-md)] text-[var(--color-accent)] w-8 text-center">
+                  <span className="font-display w-8 text-center text-[var(--color-accent)] text-[var(--font-size-display-md)]">
                     #{item.rank}
                   </span>
-                  <GameArtwork
-                    alt={item.title}
-                    variant="cover-sm"
-                    className="w-10 h-14"
-                  />
-                  <div className="flex-1 min-w-0">
+                  <GameArtwork alt={item.title} variant="cover-sm" className="h-14 w-10" />
+                  <div className="min-w-0 flex-1">
                     <div className="flex items-baseline gap-2">
-                      <h4 className="font-ui text-sm font-bold text-[var(--color-text-primary)] truncate">
+                      <h4 className="font-ui truncate text-sm font-bold text-[var(--color-text-primary)]">
                         {item.title}
                       </h4>
-                      <span className="text-[10px] text-[var(--color-text-muted)] font-bold">
+                      <span className="text-[10px] font-bold text-[var(--color-text-muted)]">
                         ({item.year})
                       </span>
                     </div>
-                    <p className="font-ui text-xs text-[var(--color-text-muted)] line-clamp-1 mt-0.5 max-w-[var(--measure-synopsis)]">
+                    <p className="font-ui mt-0.5 line-clamp-1 max-w-[var(--measure-synopsis)] text-xs text-[var(--color-text-muted)]">
                       {item.desc}
                     </p>
                   </div>
 
                   <div className="flex items-center gap-3">
-                    <MetadataBadge variant="warning" className="font-bold flex-shrink-0">
-                      <Star className="h-3 w-3 fill-current mr-0.5" />
+                    <MetadataBadge variant="warning" className="flex-shrink-0 font-bold">
+                      <Star className="mr-0.5 h-3 w-3 fill-current" />
                       {item.score}
                     </MetadataBadge>
                     <Button variant="ghost" size="sm" className="px-2 py-1">
@@ -764,23 +888,26 @@ export default function DesignSystemPage() {
               variant="minimal"
             />
 
-            <div className="grid md:grid-cols-3 gap-6">
+            <div className="grid gap-6 md:grid-cols-3">
               {/* User Hero Banner */}
-              <CinematicSurface elevation="raised" className="md:col-span-2 p-6 flex items-center gap-4">
+              <CinematicSurface
+                elevation="raised"
+                className="flex items-center gap-4 p-6 md:col-span-2"
+              >
                 <div className="relative">
-                  <div className="w-16 h-16 rounded-full bg-[var(--color-accent)] text-[var(--color-text-inverse)] flex items-center justify-center font-display text-2xl font-bold">
+                  <div className="font-display flex h-16 w-16 items-center justify-center rounded-full bg-[var(--color-accent)] text-2xl font-bold text-[var(--color-text-inverse)]">
                     GP
                   </div>
-                  <div className="absolute bottom-0 right-0 w-4 h-4 bg-[var(--color-success)] border-2 border-[var(--color-surface-raised)] rounded-full" />
+                  <div className="absolute bottom-0 right-0 h-4 w-4 rounded-full border-2 border-[var(--color-surface-raised)] bg-[var(--color-success)]" />
                 </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-ui text-lg font-bold text-[var(--color-text-primary)] leading-tight">
+                <div className="min-w-0 flex-1">
+                  <h3 className="font-ui text-lg font-bold leading-tight text-[var(--color-text-primary)]">
                     Guneshbari_Player
                   </h3>
-                  <p className="font-ui text-xs text-[var(--color-text-muted)] mt-1">
+                  <p className="font-ui mt-1 text-xs text-[var(--color-text-muted)]">
                     Gamer profile • Member since June 2026
                   </p>
-                  <div className="flex gap-2 mt-3 flex-wrap">
+                  <div className="mt-3 flex flex-wrap gap-2">
                     <Button variant="secondary" size="sm">
                       Edit Profile
                     </Button>
@@ -792,36 +919,36 @@ export default function DesignSystemPage() {
               </CinematicSurface>
 
               {/* Statistics Grid */}
-              <CinematicSurface elevation="raised" className="p-6 grid grid-cols-2 gap-4">
+              <CinematicSurface elevation="raised" className="grid grid-cols-2 gap-4 p-6">
                 <div className="flex flex-col">
-                  <span className="text-[10px] text-[var(--color-text-muted)] font-bold uppercase tracking-wider">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--color-text-muted)]">
                     Total Plays
                   </span>
-                  <span className="font-display text-[var(--font-size-display-md)] text-[var(--color-text-primary)] mt-1">
+                  <span className="font-display mt-1 text-[var(--color-text-primary)] text-[var(--font-size-display-md)]">
                     148
                   </span>
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-[10px] text-[var(--color-text-muted)] font-bold uppercase tracking-wider">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--color-text-muted)]">
                     Backlog
                   </span>
-                  <span className="font-display text-[var(--font-size-display-md)] text-[var(--color-accent)] mt-1">
+                  <span className="font-display mt-1 text-[var(--color-accent)] text-[var(--font-size-display-md)]">
                     34
                   </span>
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-[10px] text-[var(--color-text-muted)] font-bold uppercase tracking-wider">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--color-text-muted)]">
                     Reviews
                   </span>
-                  <span className="font-display text-[var(--font-size-display-md)] text-[var(--color-text-primary)] mt-1">
+                  <span className="font-display mt-1 text-[var(--color-text-primary)] text-[var(--font-size-display-md)]">
                     23
                   </span>
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-[10px] text-[var(--color-text-muted)] font-bold uppercase tracking-wider">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--color-text-muted)]">
                     Avg Rating
                   </span>
-                  <span className="font-display text-[var(--font-size-display-md)] text-[var(--color-warning)] mt-1">
+                  <span className="font-display mt-1 text-[var(--color-warning)] text-[var(--font-size-display-md)]">
                     8.4
                   </span>
                 </div>
@@ -845,17 +972,17 @@ export default function DesignSystemPage() {
             <EditorialSectionHeader
               title="MotionFade — Directional Viewport Fade"
               subtitle="Motion / MotionFade"
-              description='Workhorse animation: fades content from a direction when scrolled into view. 5 directions: up, down, left, right, none.'
+              description="Workhorse animation: fades content from a direction when scrolled into view. 5 directions: up, down, left, right, none."
               variant="minimal"
             />
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-5">
               {(['up', 'down', 'left', 'right', 'none'] as const).map((dir) => (
                 <MotionFade key={dir} direction={dir} delay={0.05}>
                   <CinematicSurface elevation="raised" className="p-4 text-center">
-                    <code className="text-[10px] text-[var(--color-text-muted)] font-mono block mb-1">
+                    <code className="mb-1 block font-mono text-[10px] text-[var(--color-text-muted)]">
                       direction="{dir}"
                     </code>
-                    <div className="h-16 flex items-center justify-center">
+                    <div className="flex h-16 items-center justify-center">
                       <span className="text-sm font-bold text-[var(--color-text-primary)]">
                         {dir.toUpperCase()}
                       </span>
@@ -871,13 +998,13 @@ export default function DesignSystemPage() {
             <EditorialSectionHeader
               title="MotionStagger — Orchestrated Child Reveal"
               subtitle="Motion / MotionStagger"
-              description='Container that staggers child animation. Uses fast/standard/editorial presets. Children use MotionStaggerItem wrappers.'
+              description="Container that staggers child animation. Uses fast/standard/editorial presets. Children use MotionStaggerItem wrappers."
               variant="minimal"
             />
-            <div className="grid md:grid-cols-3 gap-6">
+            <div className="grid gap-6 md:grid-cols-3">
               {(['fast', 'standard', 'editorial'] as const).map((preset) => (
                 <div key={preset}>
-                  <code className="text-[9px] text-[var(--color-text-muted)] font-mono block mb-2">
+                  <code className="mb-2 block font-mono text-[9px] text-[var(--color-text-muted)]">
                     preset="{preset}"
                   </code>
                   <MotionStagger preset={preset} className="grid grid-cols-2 gap-2">
@@ -901,7 +1028,7 @@ export default function DesignSystemPage() {
             <EditorialSectionHeader
               title="MotionPresence — Mount/Unmount Animation"
               subtitle="Motion / MotionPresence"
-              description='AnimatePresence wrapper for conditional rendering. Fades + scales on enter/exit.'
+              description="AnimatePresence wrapper for conditional rendering. Fades + scales on enter/exit."
               variant="minimal"
             />
             <div className="flex flex-col items-start gap-4">
@@ -913,8 +1040,8 @@ export default function DesignSystemPage() {
                 {showPresence ? 'Hide Element' : 'Show Element'}
               </Button>
               <MotionPresence show={showPresence}>
-                <CinematicSurface elevation="overlay" className="p-6 max-w-sm">
-                  <h4 className="font-ui text-sm font-bold text-[var(--color-text-primary)] mb-2">
+                <CinematicSurface elevation="overlay" className="max-w-sm p-6">
+                  <h4 className="font-ui mb-2 text-sm font-bold text-[var(--color-text-primary)]">
                     I appear with animation!
                   </h4>
                   <p className="text-xs text-[var(--color-text-secondary)]">
@@ -930,15 +1057,15 @@ export default function DesignSystemPage() {
             <EditorialSectionHeader
               title="MotionReveal — Premium Editorial Reveal"
               subtitle="Motion / MotionReveal"
-              description='Transform-based reveal with editorial easing (no clip-path). Designed for hero text, section headers, and editorial content.'
+              description="Transform-based reveal with editorial easing (no clip-path). Designed for hero text, section headers, and editorial content."
               variant="minimal"
             />
             <MotionReveal>
               <div className="max-w-[var(--measure-hero)]">
-                <h2 className="font-display text-[var(--font-size-display-lg)] leading-[var(--line-height-display)] text-[var(--color-text-primary)]">
+                <h2 className="font-display leading-[var(--line-height-display)] text-[var(--color-text-primary)] text-[var(--font-size-display-lg)]">
                   CINEMATIC EDITORIAL REVEAL
                 </h2>
-                <p className="font-ui text-sm text-[var(--color-text-secondary)] mt-3">
+                <p className="font-ui mt-3 text-sm text-[var(--color-text-secondary)]">
                   This text appears with editorial easing — a smooth, decelerating curve
                   (cubic-bezier 0.16, 1, 0.3, 1) that feels premium and intentional.
                 </p>
@@ -951,14 +1078,14 @@ export default function DesignSystemPage() {
             <EditorialSectionHeader
               title="MotionScale — Hover/Tap Interaction"
               subtitle="Motion / MotionScale"
-              description='Spring-based scale on hover (1.02) and tap (0.98). Uses snappy spring physics for tactile feedback.'
+              description="Spring-based scale on hover (1.02) and tap (0.98). Uses snappy spring physics for tactile feedback."
               variant="minimal"
             />
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
               {[1.01, 1.02, 1.04, 1.06].map((scale) => (
                 <MotionScale key={scale} hoverScale={scale} tapScale={0.96}>
-                  <CinematicSurface elevation="raised" className="p-5 text-center cursor-pointer">
-                    <code className="text-[9px] text-[var(--color-text-muted)] font-mono block mb-1">
+                  <CinematicSurface elevation="raised" className="cursor-pointer p-5 text-center">
+                    <code className="mb-1 block font-mono text-[9px] text-[var(--color-text-muted)]">
                       hover: {scale}x
                     </code>
                     <span className="text-sm font-bold text-[var(--color-text-primary)]">
@@ -975,24 +1102,28 @@ export default function DesignSystemPage() {
             <EditorialSectionHeader
               title="MotionCounter — Animated Number Counter"
               subtitle="Motion / MotionCounter"
-              description='Viewport-triggered counter with Intl.NumberFormat locale support. Numbers animate from 0 to target value.'
+              description="Viewport-triggered counter with Intl.NumberFormat locale support. Numbers animate from 0 to target value."
               variant="minimal"
             />
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
               {[
                 { label: 'Total Games', to: 12847 },
                 { label: 'Active Users', to: 3215 },
-                { label: 'Avg Rating', to: 8.4, formatOptions: { minimumFractionDigits: 1, maximumFractionDigits: 1 } },
+                {
+                  label: 'Avg Rating',
+                  to: 8.4,
+                  formatOptions: { minimumFractionDigits: 1, maximumFractionDigits: 1 },
+                },
                 { label: 'Reviews', to: 24903 },
               ].map((stat) => (
-                <CinematicSurface key={stat.label} elevation="raised" className="p-5 flex flex-col">
-                  <span className="text-[10px] text-[var(--color-text-muted)] font-bold uppercase tracking-wider">
+                <CinematicSurface key={stat.label} elevation="raised" className="flex flex-col p-5">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--color-text-muted)]">
                     {stat.label}
                   </span>
                   <MotionCounter
                     to={stat.to}
                     formatOptions={stat.formatOptions}
-                    className="font-display text-[var(--font-size-display-md)] text-[var(--color-text-primary)] mt-1"
+                    className="font-display mt-1 text-[var(--color-text-primary)] text-[var(--font-size-display-md)]"
                   />
                 </CinematicSurface>
               ))}
@@ -1004,18 +1135,18 @@ export default function DesignSystemPage() {
             <EditorialSectionHeader
               title="AmbientGlow — GSAP Atmospheric Background"
               subtitle="Motion / AmbientGlow (GSAP)"
-              description='Floating gradient orbs with lazy-loaded GSAP. Only transform is animated. Subtle and medium intensity.'
+              description="Floating gradient orbs with lazy-loaded GSAP. Only transform is animated. Subtle and medium intensity."
               variant="minimal"
             />
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid gap-6 md:grid-cols-2">
               {(['subtle', 'medium'] as const).map((intensity) => (
                 <div
                   key={intensity}
-                  className="relative overflow-hidden rounded-[var(--radius-surface)] border border-[var(--color-border-subtle)] min-h-[200px] flex items-center justify-center"
+                  className="relative flex min-h-[200px] items-center justify-center overflow-hidden rounded-[var(--radius-surface)] border border-[var(--color-border-subtle)]"
                 >
                   <AmbientGlow intensity={intensity} />
                   <div className="relative z-10 text-center">
-                    <code className="text-[10px] text-[var(--color-text-muted)] font-mono block mb-1">
+                    <code className="mb-1 block font-mono text-[10px] text-[var(--color-text-muted)]">
                       intensity="{intensity}"
                     </code>
                     <span className="text-sm font-bold text-[var(--color-text-primary)]">
@@ -1029,11 +1160,11 @@ export default function DesignSystemPage() {
 
           {/* Demo H: Stress Test — 100 card stagger */}
           <div>
-            <div className="flex items-center justify-between gap-4 mb-4">
+            <div className="mb-4 flex items-center justify-between gap-4">
               <EditorialSectionHeader
                 title="Stagger Stress Test — 100 Items"
                 subtitle="Performance / Stress Test"
-                description='Tests stagger performance with 100 simultaneously animating cards. Toggle to render.'
+                description="Tests stagger performance with 100 simultaneously animating cards. Toggle to render."
                 variant="minimal"
                 className="mb-0 pb-0"
               />
@@ -1046,11 +1177,17 @@ export default function DesignSystemPage() {
               </Button>
             </div>
             {showStressTest && (
-              <MotionStagger preset="fast" className="grid grid-cols-5 sm:grid-cols-8 md:grid-cols-10 gap-2">
+              <MotionStagger
+                preset="fast"
+                className="grid grid-cols-5 gap-2 sm:grid-cols-8 md:grid-cols-10"
+              >
                 {Array.from({ length: 100 }).map((_, i) => (
                   <MotionStaggerItem key={i}>
-                    <CinematicSurface elevation="raised" className="p-2 text-center aspect-square flex items-center justify-center">
-                      <span className="text-[9px] font-bold text-[var(--color-text-muted)] font-mono">
+                    <CinematicSurface
+                      elevation="raised"
+                      className="flex aspect-square items-center justify-center p-2 text-center"
+                    >
+                      <span className="font-mono text-[9px] font-bold text-[var(--color-text-muted)]">
                         {i + 1}
                       </span>
                     </CinematicSurface>
@@ -1065,19 +1202,22 @@ export default function DesignSystemPage() {
             <EditorialSectionHeader
               title="Hover Interaction Matrix"
               subtitle="Performance / Interactions"
-              description='Tests multiple hover interactions simultaneously. Each card uses MotionScale with different parameters.'
+              description="Tests multiple hover interactions simultaneously. Each card uses MotionScale with different parameters."
               variant="minimal"
             />
-            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
+            <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-6">
               {Array.from({ length: 12 }).map((_, i) => {
                 const hoverScale = 1 + (i + 1) * 0.005
                 return (
                   <MotionScale key={i} hoverScale={hoverScale} tapScale={0.95}>
-                    <CinematicSurface elevation="raised" className="p-3 text-center cursor-pointer aspect-square flex flex-col items-center justify-center">
-                      <span className="text-[8px] text-[var(--color-text-muted)] font-mono">
+                    <CinematicSurface
+                      elevation="raised"
+                      className="flex aspect-square cursor-pointer flex-col items-center justify-center p-3 text-center"
+                    >
+                      <span className="font-mono text-[8px] text-[var(--color-text-muted)]">
                         {hoverScale.toFixed(3)}x
                       </span>
-                      <span className="text-sm font-bold text-[var(--color-accent)] mt-1">
+                      <span className="mt-1 text-sm font-bold text-[var(--color-accent)]">
                         {i + 1}
                       </span>
                     </CinematicSurface>

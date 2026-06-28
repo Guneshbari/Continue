@@ -11,21 +11,18 @@ interface ReviewEditorProps {
   gameId: string
   isOpen: boolean
   onClose: () => void
-  editingReview?: {
-    id: string
-    title: string | null
-    body: string
-    status: 'PUBLISHED' | 'DRAFT'
-    isSpoiler?: boolean
-  } | undefined
+  editingReview?:
+    | {
+        id: string
+        title: string | null
+        body: string
+        status: 'PUBLISHED' | 'DRAFT'
+        isSpoiler?: boolean
+      }
+    | undefined
 }
 
-export function ReviewEditor({
-  gameId,
-  isOpen,
-  onClose,
-  editingReview,
-}: ReviewEditorProps) {
+export function ReviewEditor({ gameId, isOpen, onClose, editingReview }: ReviewEditorProps) {
   const { token } = useInteractionPermissions()
   const createMutation = useCreateReview(gameId, token)
   const updateMutation = useUpdateReview(gameId, token)
@@ -119,9 +116,7 @@ export function ReviewEditor({
       />
       <div className="list-modal__content list-modal__content--large">
         <div className="list-modal__header">
-          <h2 id="composer-title">
-            {editingReview ? 'Edit your review' : 'Write a review'}
-          </h2>
+          <h2 id="composer-title">{editingReview ? 'Edit your review' : 'Write a review'}</h2>
           <button className="list-modal__close" onClick={onClose} aria-label="Close modal">
             <X size={18} />
           </button>
@@ -213,7 +208,11 @@ export function ReviewEditor({
               disabled={submitting || body.trim().length < 10}
             >
               {submitting ? (
-                <Loader2 size={16} className="spinner search-spin" style={{ animation: 'search-spin 0.8s linear infinite' }} />
+                <Loader2
+                  size={16}
+                  className="spinner search-spin"
+                  style={{ animation: 'search-spin 0.8s linear infinite' }}
+                />
               ) : (
                 <Save size={16} />
               )}

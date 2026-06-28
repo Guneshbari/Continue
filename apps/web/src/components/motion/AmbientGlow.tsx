@@ -132,7 +132,7 @@ export function AmbientGlow({ intensity = 'subtle', className }: AmbientGlowProp
 
   const opacity = OPACITY[intensity]
   const visibleOrbs = ORB_DEFS.filter(
-    (def) => !('mediumOnly' in def && def.mediumOnly) || intensity === 'medium'
+    (def) => !('mediumOnly' in def && def.mediumOnly) || intensity === 'medium',
   )
 
   return (

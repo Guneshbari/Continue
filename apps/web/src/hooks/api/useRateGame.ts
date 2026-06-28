@@ -41,7 +41,8 @@ export function useRateGame(gameId: string, slug: string, token: string | undefi
           newCount += 1
           newAvg = ((prevDetail.avgRating ?? 0) * prevDetail.ratingCount + newScore) / newCount
         } else {
-          newAvg = ((prevDetail.avgRating ?? 0) * prevDetail.ratingCount - prevScore + newScore) / newCount
+          newAvg =
+            ((prevDetail.avgRating ?? 0) * prevDetail.ratingCount - prevScore + newScore) / newCount
         }
 
         queryClient.setQueryData(detailKey, {
@@ -84,7 +85,10 @@ export function useRateGame(gameId: string, slug: string, token: string | undefi
       if (prevDetail && prevRating && prevRating.score > 0) {
         const prevScore = prevRating.score
         const newCount = Math.max(0, prevDetail.ratingCount - 1)
-        const newAvg = newCount > 0 ? (prevDetail.avgRating * prevDetail.ratingCount - prevScore) / newCount : null
+        const newAvg =
+          newCount > 0
+            ? (prevDetail.avgRating * prevDetail.ratingCount - prevScore) / newCount
+            : null
 
         queryClient.setQueryData(detailKey, {
           ...prevDetail,

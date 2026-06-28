@@ -22,12 +22,11 @@ export const gameArtworkVariants = cva(
     defaultVariants: {
       variant: 'cover-md',
     },
-  }
+  },
 )
 
 export interface GameArtworkProps
-  extends React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof gameArtworkVariants> {
+  extends React.HTMLAttributes<HTMLDivElement>, VariantProps<typeof gameArtworkVariants> {
   src?: string | null | undefined
   alt: string
   priority?: boolean | undefined
@@ -38,7 +37,20 @@ export interface GameArtworkProps
 }
 
 export const GameArtwork = React.forwardRef<HTMLDivElement, GameArtworkProps>(
-  ({ className, variant, src, alt, priority = false, imageClassName, sizes, hoverable = true, ...props }, ref) => {
+  (
+    {
+      className,
+      variant,
+      src,
+      alt,
+      priority = false,
+      imageClassName,
+      sizes,
+      hoverable = true,
+      ...props
+    },
+    ref,
+  ) => {
     const [isLoaded, setIsLoaded] = useState(false)
     const [hasError, setHasError] = useState(false)
 
@@ -60,7 +72,8 @@ export const GameArtwork = React.forwardRef<HTMLDivElement, GameArtworkProps>(
         className={cn(gameArtworkVariants({ variant, className }))}
         style={{
           ...(canHover && {
-            transition: 'transform var(--motion-standard) var(--ease-standard), box-shadow var(--motion-standard) var(--ease-standard), filter var(--motion-standard) var(--ease-standard)',
+            transition:
+              'transform var(--motion-standard) var(--ease-standard), box-shadow var(--motion-standard) var(--ease-standard), filter var(--motion-standard) var(--ease-standard)',
           }),
           ...props.style,
         }}
@@ -84,19 +97,19 @@ export const GameArtwork = React.forwardRef<HTMLDivElement, GameArtworkProps>(
       >
         {/* Loading Skeleton underneath */}
         {!isLoaded && !showPlaceholder && (
-          <Skeleton className="absolute inset-0 z-10 w-full h-full rounded-none" />
+          <Skeleton className="absolute inset-0 z-10 h-full w-full rounded-none" />
         )}
 
         {showPlaceholder ? (
-          <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-[var(--color-surface-raised)] to-[var(--color-surface-sunken)] text-[var(--color-text-muted)] p-2 text-center select-none animate-fade-in">
+          <div className="animate-fade-in absolute inset-0 flex select-none flex-col items-center justify-center bg-gradient-to-br from-[var(--color-surface-raised)] to-[var(--color-surface-sunken)] p-2 text-center text-[var(--color-text-muted)]">
             {isAvatar ? (
               <User className="h-1/2 w-1/2" />
             ) : variant === 'backdrop' ? (
               <ImageOff className="h-12 w-12 opacity-60" />
             ) : (
               <>
-                <Gamepad2 className="h-8 w-8 mb-1 opacity-60" />
-                <span className="text-[10px] uppercase font-bold tracking-wider opacity-60 truncate max-w-full">
+                <Gamepad2 className="mb-1 h-8 w-8 opacity-60" />
+                <span className="max-w-full truncate text-[10px] font-bold uppercase tracking-wider opacity-60">
                   {alt}
                 </span>
               </>
@@ -110,9 +123,9 @@ export const GameArtwork = React.forwardRef<HTMLDivElement, GameArtworkProps>(
             sizes={sizes || '(max-width: 768px) 100vw, 33vw'}
             priority={priority}
             className={cn(
-              'object-cover transition-all duration-[var(--motion-slow)] ease-[var(--ease-standard)] filter saturate-[0.85]',
-              isLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-105',
-              imageClassName
+              'object-cover saturate-[0.85] filter transition-all duration-[var(--motion-slow)] ease-[var(--ease-standard)]',
+              isLoaded ? 'scale-100 opacity-100' : 'scale-105 opacity-0',
+              imageClassName,
             )}
             onLoad={() => setIsLoaded(true)}
             onError={() => setHasError(true)}
@@ -120,7 +133,7 @@ export const GameArtwork = React.forwardRef<HTMLDivElement, GameArtworkProps>(
         )}
       </div>
     )
-  }
+  },
 )
 
 GameArtwork.displayName = 'GameArtwork'

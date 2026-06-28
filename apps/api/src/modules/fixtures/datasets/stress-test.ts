@@ -19,13 +19,28 @@ const BASE_STRESS_GAMES: FixtureGame[] = [
     backdropUrl: 'https://images.igdb.com/igdb/image/upload/t_screenshot_big/scg4lq.jpg',
     genres: ['role-playing-game', 'turn-based-strategy'],
     platforms: ['playstation-4', 'nintendo-switch', 'pc'],
-    themes: ['dark-fantasy', 'post-apocalyptic', 'mythology', 'horror', 'psychological', 'turn-based', 'remaster'],
-    developers: ['Atlus', 'Historia Incorporated Joint Stock Company', 'Virtuos Games Limited Partnership'],
+    themes: [
+      'dark-fantasy',
+      'post-apocalyptic',
+      'mythology',
+      'horror',
+      'psychological',
+      'turn-based',
+      'remaster',
+    ],
+    developers: [
+      'Atlus',
+      'Historia Incorporated Joint Stock Company',
+      'Virtuos Games Limited Partnership',
+    ],
     publishers: ['Atlus', 'Sega of America', 'Sega Europe Limited (UK & Ireland Territory)'],
     franchise: 'Shin Megami Tensei',
     trailers: [
       { youtubeId: 'TWqPiJuKYXg', name: 'HD Remaster Official Announce Trailer' },
-      { youtubeId: 'Rlrx5aW2cKk', name: 'Release Date Announcement Trailer — Extended Director\'s Cut' },
+      {
+        youtubeId: 'Rlrx5aW2cKk',
+        name: "Release Date Announcement Trailer — Extended Director's Cut",
+      },
     ],
     screenshots: [
       'https://images.igdb.com/igdb/image/upload/t_screenshot_big/scg4lq.jpg',
@@ -61,13 +76,23 @@ const BASE_STRESS_GAMES: FixtureGame[] = [
     genres: ['role-playing-game', 'adventure', 'hack-and-slash'],
     platforms: ['pc', 'playstation-4', 'playstation-5', 'xbox-one', 'xbox-series-x'],
     themes: ['samurai', 'historical', 'action', 'open-world', 'crime', 'drama'],
-    developers: ['Ryu Ga Gotoku Studio (RGG Studio) — Core Development Team', 'Sega AM2 (Technical Support Division)'],
-    publishers: ['Sega', 'Sega of America (North American Region)', 'Sega Europe (European & PAL Territories)'],
+    developers: [
+      'Ryu Ga Gotoku Studio (RGG Studio) — Core Development Team',
+      'Sega AM2 (Technical Support Division)',
+    ],
+    publishers: [
+      'Sega',
+      'Sega of America (North American Region)',
+      'Sega Europe (European & PAL Territories)',
+    ],
     franchise: 'Like a Dragon / Yakuza',
     trailers: [
       { youtubeId: 'a2jLNkl9XT4', name: 'The Dragon of Dojima Reborn — Reveal Trailer' },
       { youtubeId: '5G2tRDXNWBo', name: 'Official Combat & Gameplay Systems Breakdown' },
-      { youtubeId: 'Jl_sMmKy3Yw', name: 'Western Release Announcement Trailer — Full Localization Preview' },
+      {
+        youtubeId: 'Jl_sMmKy3Yw',
+        name: 'Western Release Announcement Trailer — Full Localization Preview',
+      },
     ],
     screenshots: [
       'https://images.igdb.com/igdb/image/upload/t_screenshot_big/scme5n.jpg',
@@ -89,7 +114,8 @@ const BASE_STRESS_GAMES: FixtureGame[] = [
   },
   {
     slug: 'extremely-long-title-game',
-    title: 'The Legend of Westerdale: Shadows of the Forgotten Kingdom — A Grand Epic Adventure in the Realm of Eternal Twilight (Complete Edition)',
+    title:
+      'The Legend of Westerdale: Shadows of the Forgotten Kingdom — A Grand Epic Adventure in the Realm of Eternal Twilight (Complete Edition)',
     description:
       'A sprawling fantasy RPG with an absolutely enormous title that no UI system should render without truncation guards in place.',
     summary:
@@ -103,9 +129,24 @@ const BASE_STRESS_GAMES: FixtureGame[] = [
     status: 'released',
     coverUrl: 'https://images.igdb.com/igdb/image/upload/t_cover_big/co1rgi.jpg',
     backdropUrl: null,
-    genres: ['role-playing-game', 'adventure', 'strategy', 'simulation', 'platform', 'hack-and-slash'],
+    genres: [
+      'role-playing-game',
+      'adventure',
+      'strategy',
+      'simulation',
+      'platform',
+      'hack-and-slash',
+    ],
     platforms: ['pc', 'playstation-5', 'xbox-series-x', 'nintendo-switch', 'ios', 'android'],
-    themes: ['fantasy', 'open-world', 'dark-fantasy', 'mythology', 'historical', 'sci-fi', 'horror'],
+    themes: [
+      'fantasy',
+      'open-world',
+      'dark-fantasy',
+      'mythology',
+      'historical',
+      'sci-fi',
+      'horror',
+    ],
     developers: [
       'The Extremely Long Developer Studio Name That Tests Company Name Truncation in Metadata Cards',
     ],
@@ -114,12 +155,23 @@ const BASE_STRESS_GAMES: FixtureGame[] = [
     ],
     franchise: 'The Legend of Westerdale — A Franchise Name That Is Also Unreasonably Long',
     trailers: [
-      { youtubeId: 'E3Huy2cdih0', name: 'Official Announcement Trailer (Extended Director\'s Cut — Unrated Version)' },
-      { youtubeId: 'sXIHFsVMkbw', name: 'Gameplay Overview — Chapter One: The Forgotten Kingdom of Eternal Twilight' },
-      { youtubeId: 'qIcTM8WXFjk', name: 'Launch Trailer — The Complete Edition Including All DLC Packs Released To Date' },
+      {
+        youtubeId: 'E3Huy2cdih0',
+        name: "Official Announcement Trailer (Extended Director's Cut — Unrated Version)",
+      },
+      {
+        youtubeId: 'sXIHFsVMkbw',
+        name: 'Gameplay Overview — Chapter One: The Forgotten Kingdom of Eternal Twilight',
+      },
+      {
+        youtubeId: 'qIcTM8WXFjk',
+        name: 'Launch Trailer — The Complete Edition Including All DLC Packs Released To Date',
+      },
     ],
-    screenshots: Array.from({ length: 30 }, (_, i) =>
-      `https://images.igdb.com/igdb/image/upload/t_screenshot_big/scfm9${String.fromCharCode(97 + (i % 26))}.jpg`,
+    screenshots: Array.from(
+      { length: 30 },
+      (_, i) =>
+        `https://images.igdb.com/igdb/image/upload/t_screenshot_big/scfm9${String.fromCharCode(97 + (i % 26))}.jpg`,
     ),
     avgRating: 10,
     ratingCount: 99999,
@@ -130,12 +182,17 @@ const BASE_STRESS_GAMES: FixtureGame[] = [
 // Generate 197 additional stress games to reach exactly 200 games
 const GENERATED_STRESS_GAMES: FixtureGame[] = Array.from({ length: 197 }, (_, index) => {
   const i = index + 4
-  const screenshots = Array.from({ length: 30 }, (_, s) =>
-    `https://images.igdb.com/igdb/image/upload/t_screenshot_big/scfm9${String.fromCharCode(97 + ((s + i) % 26))}.jpg`
+  const screenshots = Array.from(
+    { length: 30 },
+    (_, s) =>
+      `https://images.igdb.com/igdb/image/upload/t_screenshot_big/scfm9${String.fromCharCode(97 + ((s + i) % 26))}.jpg`,
   )
 
   const coverUrl = `https://images.igdb.com/igdb/image/upload/t_cover_big/co1rg${String.fromCharCode(97 + (i % 26))}.jpg`
-  const backdropUrl = i % 5 === 0 ? null : `https://images.igdb.com/igdb/image/upload/t_screenshot_big/scfm9${String.fromCharCode(97 + (i % 26))}.jpg`
+  const backdropUrl =
+    i % 5 === 0
+      ? null
+      : `https://images.igdb.com/igdb/image/upload/t_screenshot_big/scfm9${String.fromCharCode(97 + (i % 26))}.jpg`
 
   return {
     slug: `stress-test-game-${i}`,
@@ -150,19 +207,62 @@ const GENERATED_STRESS_GAMES: FixtureGame[] = Array.from({ length: 197 }, (_, in
     status: i % 10 === 0 ? 'announced' : 'released',
     coverUrl,
     backdropUrl,
-    genres: ['role-playing-game', 'adventure', 'strategy', 'simulation', 'platform', 'hack-and-slash', 'shooter'],
-    platforms: ['pc', 'playstation-4', 'playstation-5', 'xbox-one', 'xbox-series-x', 'nintendo-switch', 'ios', 'android', 'mac', 'linux'],
-    themes: ['fantasy', 'open-world', 'dark-fantasy', 'mythology', 'historical', 'sci-fi', 'horror', 'survival', 'action', 'drama'],
-    developers: [`The Enormous Collaborative Multi-National Enterprise of Game Developers Group Division ${i}`],
-    publishers: [`A Publisher With An Equally Exhausting Corporate Identity and Subsidiary Division Group LLC ${i}`],
+    genres: [
+      'role-playing-game',
+      'adventure',
+      'strategy',
+      'simulation',
+      'platform',
+      'hack-and-slash',
+      'shooter',
+    ],
+    platforms: [
+      'pc',
+      'playstation-4',
+      'playstation-5',
+      'xbox-one',
+      'xbox-series-x',
+      'nintendo-switch',
+      'ios',
+      'android',
+      'mac',
+      'linux',
+    ],
+    themes: [
+      'fantasy',
+      'open-world',
+      'dark-fantasy',
+      'mythology',
+      'historical',
+      'sci-fi',
+      'horror',
+      'survival',
+      'action',
+      'drama',
+    ],
+    developers: [
+      `The Enormous Collaborative Multi-National Enterprise of Game Developers Group Division ${i}`,
+    ],
+    publishers: [
+      `A Publisher With An Equally Exhausting Corporate Identity and Subsidiary Division Group LLC ${i}`,
+    ],
     franchise: `The Mythos of Shadow War Saga Franchise Group Part ${i}`,
     trailers: [
-      { youtubeId: 'E3Huy2cdih0', name: `Extended Story Cinematic Trailer Part ${i} — Deep Dive Version` },
-      { youtubeId: 'sXIHFsVMkbw', name: `Developer Interview & Technical Gameplay Overview Session ${i}` },
-      { youtubeId: 'qIcTM8WXFjk', name: `Official World Premiere Announcement Trailer Showcase ${i}` },
+      {
+        youtubeId: 'E3Huy2cdih0',
+        name: `Extended Story Cinematic Trailer Part ${i} — Deep Dive Version`,
+      },
+      {
+        youtubeId: 'sXIHFsVMkbw',
+        name: `Developer Interview & Technical Gameplay Overview Session ${i}`,
+      },
+      {
+        youtubeId: 'qIcTM8WXFjk',
+        name: `Official World Premiere Announcement Trailer Showcase ${i}`,
+      },
     ],
     screenshots,
-    avgRating: 5.0 + ((i % 50) / 10),
+    avgRating: 5.0 + (i % 50) / 10,
     ratingCount: 100 + i,
     missingScreenshots: false,
     ultraLongTitle: true,
@@ -172,7 +272,4 @@ const GENERATED_STRESS_GAMES: FixtureGame[] = Array.from({ length: 197 }, (_, in
   }
 })
 
-export const STRESS_TEST_GAMES: FixtureGame[] = [
-  ...BASE_STRESS_GAMES,
-  ...GENERATED_STRESS_GAMES,
-]
+export const STRESS_TEST_GAMES: FixtureGame[] = [...BASE_STRESS_GAMES, ...GENERATED_STRESS_GAMES]

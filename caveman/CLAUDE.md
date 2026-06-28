@@ -80,22 +80,22 @@ caveman/
 
 ### Single source of truth files — edit only these
 
-| File | What it controls |
-|------|-----------------|
-| `skills/caveman/SKILL.md` | Caveman behavior: intensity levels, rules, wenyan mode, auto-clarity, persistence. Only file to edit for behavior changes. |
-| `src/rules/caveman-activate.md` | Always-on auto-activation rule body. Consumed by `src/tools/caveman-init.js` when a user runs `npx caveman --with-init` (per-repo IDE rule files). Edit here, not in any per-agent rule copy. |
+| File                                      | What it controls                                                                                                                                                                                                                                                                     |
+| ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `skills/caveman/SKILL.md`                 | Caveman behavior: intensity levels, rules, wenyan mode, auto-clarity, persistence. Only file to edit for behavior changes.                                                                                                                                                           |
+| `src/rules/caveman-activate.md`           | Always-on auto-activation rule body. Consumed by `src/tools/caveman-init.js` when a user runs `npx caveman --with-init` (per-repo IDE rule files). Edit here, not in any per-agent rule copy.                                                                                        |
 | `src/rules/caveman-openclaw-bootstrap.md` | Marker-fenced bootstrap snippet appended to `~/.openclaw/workspace/SOUL.md` by `bin/lib/openclaw.js`. Drives always-on caveman through the OpenClaw gateway. Must include the SENTINEL `Respond terse like smart caveman` and stay well under OpenClaw's 12K-per-bootstrap-file cap. |
-| `bin/lib/openclaw.js` | OpenClaw install/uninstall helper. Frontmatter merge (`version`, `always: true`), SOUL.md marker append/strip, idempotent. Shared by `bin/install.js` and `src/tools/caveman-init.js`. |
-| `skills/caveman-commit/SKILL.md` | Caveman commit message behavior. Fully independent skill. |
-| `skills/caveman-review/SKILL.md` | Caveman code review behavior. Fully independent skill. |
-| `skills/caveman-help/SKILL.md` | Quick-reference card. One-shot display, not a persistent mode. |
-| `skills/caveman-compress/SKILL.md` | Compress sub-skill behavior. |
-| `skills/cavecrew/SKILL.md` | Cavecrew decision guide — when to delegate to caveman subagents vs vanilla. Edit only here. |
-| `agents/cavecrew-investigator.md` | Read-only locator subagent (haiku). Output contract: `path:line — symbol — note`. |
-| `agents/cavecrew-builder.md` | Surgical 1-2 file editor subagent. Refuses 3+ file scope. |
-| `agents/cavecrew-reviewer.md` | Diff/file reviewer subagent (haiku). One-line findings with severity emoji. |
-| `src/plugins/opencode/plugin.js` | opencode native plugin. ESM Bun module — `session.created` writes flag, `tui.prompt.append` parses slash/natural-language activation and appends per-prompt reinforcement. Reuses `caveman-config.js` via `createRequire`. |
-| `src/plugins/opencode/commands/*.md` | Six opencode slash-command prompt templates (`/caveman`, `/caveman-{commit,review,compress,stats,help}`). |
+| `bin/lib/openclaw.js`                     | OpenClaw install/uninstall helper. Frontmatter merge (`version`, `always: true`), SOUL.md marker append/strip, idempotent. Shared by `bin/install.js` and `src/tools/caveman-init.js`.                                                                                               |
+| `skills/caveman-commit/SKILL.md`          | Caveman commit message behavior. Fully independent skill.                                                                                                                                                                                                                            |
+| `skills/caveman-review/SKILL.md`          | Caveman code review behavior. Fully independent skill.                                                                                                                                                                                                                               |
+| `skills/caveman-help/SKILL.md`            | Quick-reference card. One-shot display, not a persistent mode.                                                                                                                                                                                                                       |
+| `skills/caveman-compress/SKILL.md`        | Compress sub-skill behavior.                                                                                                                                                                                                                                                         |
+| `skills/cavecrew/SKILL.md`                | Cavecrew decision guide — when to delegate to caveman subagents vs vanilla. Edit only here.                                                                                                                                                                                          |
+| `agents/cavecrew-investigator.md`         | Read-only locator subagent (haiku). Output contract: `path:line — symbol — note`.                                                                                                                                                                                                    |
+| `agents/cavecrew-builder.md`              | Surgical 1-2 file editor subagent. Refuses 3+ file scope.                                                                                                                                                                                                                            |
+| `agents/cavecrew-reviewer.md`             | Diff/file reviewer subagent (haiku). One-line findings with severity emoji.                                                                                                                                                                                                          |
+| `src/plugins/opencode/plugin.js`          | opencode native plugin. ESM Bun module — `session.created` writes flag, `tui.prompt.append` parses slash/natural-language activation and appends per-prompt reinforcement. Reuses `caveman-config.js` via `createRequire`.                                                           |
+| `src/plugins/opencode/commands/*.md`      | Six opencode slash-command prompt templates (`/caveman`, `/caveman-{commit,review,compress,stats,help}`).                                                                                                                                                                            |
 
 ### Auto-generated / auto-synced — do not edit directly
 
@@ -105,13 +105,13 @@ A handful of dotdir leftovers (`.junie/`, `.kiro/`, `.roo/`, `.agents/`) still h
 
 What's left is the Claude Code plugin distribution (required by the plugin loader) and the release ZIP.
 
-| File | Synced from |
-|------|-------------|
-| `plugins/caveman/skills/caveman/SKILL.md` | `skills/caveman/SKILL.md` |
-| `plugins/caveman/skills/caveman-compress/SKILL.md` (+ `scripts/`) | `skills/caveman-compress/SKILL.md` (+ `scripts/`) |
-| `plugins/caveman/skills/cavecrew/SKILL.md` | `skills/cavecrew/SKILL.md` |
-| `plugins/caveman/agents/cavecrew-*.md` | `agents/cavecrew-*.md` |
-| `dist/caveman.skill` | ZIP of `skills/caveman/` directory (gitignored; rebuilt by CI on release) |
+| File                                                              | Synced from                                                               |
+| ----------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| `plugins/caveman/skills/caveman/SKILL.md`                         | `skills/caveman/SKILL.md`                                                 |
+| `plugins/caveman/skills/caveman-compress/SKILL.md` (+ `scripts/`) | `skills/caveman-compress/SKILL.md` (+ `scripts/`)                         |
+| `plugins/caveman/skills/cavecrew/SKILL.md`                        | `skills/cavecrew/SKILL.md`                                                |
+| `plugins/caveman/agents/cavecrew-*.md`                            | `agents/cavecrew-*.md`                                                    |
+| `dist/caveman.skill`                                              | ZIP of `skills/caveman/` directory (gitignored; rebuilt by CI on release) |
 
 Skills not in this table (`caveman-commit`, `caveman-review`, `caveman-help`, `caveman-stats`) are not mirrored into the Claude Code plugin distribution by CI. They reach Claude Code through the standalone hook + skill install path, and reach other agents via `npx skills add`. A `plugins/caveman/skills/caveman-stats/` directory is currently checked in as a hand-committed copy; the sync workflow does not touch it, so don't rely on edits there to propagate.
 
@@ -122,6 +122,7 @@ Skills not in this table (`caveman-commit`, `caveman-review`, `caveman-help`, `c
 `.github/workflows/sync-skill.yml` triggers on main push when `skills/**/SKILL.md` or `agents/cavecrew-*.md` changes.
 
 What it does:
+
 1. Copies `skills/caveman/SKILL.md` and `skills/cavecrew/SKILL.md` into their `plugins/caveman/skills/<name>/` mirrors so the Claude Code plugin loader sees the latest behavior.
 2. Copies `skills/caveman-compress/SKILL.md` and its `scripts/` into `plugins/caveman/skills/caveman-compress/`.
 3. Copies `agents/cavecrew-*.md` into `plugins/caveman/agents/`.
@@ -154,12 +155,14 @@ All hooks honor `CLAUDE_CONFIG_DIR` for non-default Claude Code config locations
 ### `src/hooks/caveman-config.js` — shared module
 
 Exports:
+
 - `getDefaultMode()` — resolves default mode from `CAVEMAN_DEFAULT_MODE` env var, then `$XDG_CONFIG_HOME/caveman/config.json` / `~/.config/caveman/config.json` / `%APPDATA%\caveman\config.json`, then `'full'`
 - `safeWriteFlag(flagPath, content)` — symlink-safe flag write. Refuses if flag target or its immediate parent is a symlink. Opens with `O_NOFOLLOW` where supported. Atomic temp + rename. Creates with `0600`. Protects against local attackers replacing the predictable flag path with a symlink to clobber files writable by the user. Used by both write hooks. Silent-fails on all filesystem errors.
 
 ### `src/hooks/caveman-activate.js` — SessionStart hook
 
 Runs once per Claude Code session start. Three things:
+
 1. Writes the active mode to `$CLAUDE_CONFIG_DIR/.caveman-active` via `safeWriteFlag` (creates if missing)
 2. Emits caveman ruleset as hidden stdout — Claude Code injects SessionStart hook stdout as system context, invisible to user
 3. Checks `settings.json` for statusline config; if missing, appends nudge to offer setup on first interaction
@@ -171,6 +174,7 @@ Silent-fails on all filesystem errors — never blocks session start.
 Reads JSON from stdin. Three responsibilities:
 
 **1. Slash-command activation.** If prompt starts with `/caveman`, writes mode to flag file via `safeWriteFlag`:
+
 - `/caveman` → configured default (see `caveman-config.js`, defaults to `full`)
 - `/caveman lite` → `lite`
 - `/caveman ultra` → `ultra`
@@ -188,6 +192,7 @@ Reads JSON from stdin. Three responsibilities:
 ### `src/hooks/caveman-statusline.sh` — Statusline badge
 
 Reads flag file at `$CLAUDE_CONFIG_DIR/.caveman-active`. Outputs colored badge string for Claude Code statusline:
+
 - `full` or empty → `[CAVEMAN]` (orange)
 - anything else → `[CAVEMAN:<MODE_UPPERCASED>]` (orange)
 
@@ -237,18 +242,18 @@ Independent skills in `skills/caveman-commit/SKILL.md` and `skills/caveman-revie
 
 How caveman reaches each agent type:
 
-| Agent | Mechanism | Auto-activates? |
-|-------|-----------|----------------|
-| Claude Code | Plugin (hooks + skills) or standalone hooks | Yes — SessionStart hook injects rules |
-| Codex | Plugin in `plugins/caveman/` plus repo `.codex/hooks.json` and `.codex/config.toml` | Yes on macOS/Linux — SessionStart hook |
-| Gemini CLI | Extension with `GEMINI.md` context file | Yes — context file loads every session |
-| opencode | Native plugin (`src/plugins/opencode/`) copied into `~/.config/opencode/plugins/caveman/` + `AGENTS.md` ruleset + skills/agents/commands directories. Plugin uses `session.created` and `tui.prompt.append` lifecycle hooks. No statusline (opencode TUI exposes no plugin-writable badge). | Yes — `session.created` writes flag, `AGENTS.md` carries always-on ruleset |
-| OpenClaw | Workspace skill at `~/.openclaw/workspace/skills/caveman/SKILL.md` (frontmatter merged with `version` + `always: true`) plus a marker-fenced bootstrap block in `~/.openclaw/workspace/SOUL.md`. Both writes go through `bin/lib/openclaw.js`; workspace path is overridable via `OPENCLAW_WORKSPACE`. | Yes — SOUL.md is auto-injected each turn under "Project Context" (subject to OpenClaw's 12K-per-file / 60K-total bootstrap caps) |
-| Cursor | `npx skills add ... -a cursor` (default via `--only cursor`) writes the upstream skill profile; per-repo `.cursor/rules/caveman.mdc` via `--with-init` (calls `src/tools/caveman-init.js`) | Yes — always-on rule |
-| Windsurf | `npx skills add ... -a windsurf` (default via `--only windsurf`); per-repo `.windsurf/rules/caveman.md` via `--with-init` | Yes — always-on rule |
-| Cline | `npx skills add ... -a cline` (default via `--only cline`); per-repo `.clinerules/caveman.md` via `--with-init` | Yes — Cline auto-discovers `.clinerules/` |
-| Copilot | `npx skills add ... -a github-copilot` (soft probe — pass `--only copilot`); per-repo `.github/copilot-instructions.md` + `AGENTS.md` via `--with-init` | Yes — repo-wide instructions |
-| Others (Junie, Trae, Warp, Tabnine, Mistral, Qwen, Devin, Droid, ForgeCode, Bob, Crush, iFlow, OpenHands, Qoder, Rovo Dev, Replit, Antigravity, …) | `npx skills add JuliusBrussee/caveman -a <profile>` | No — user must say `/caveman` each session |
+| Agent                                                                                                                                              | Mechanism                                                                                                                                                                                                                                                                                              | Auto-activates?                                                                                                                  |
+| -------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------- |
+| Claude Code                                                                                                                                        | Plugin (hooks + skills) or standalone hooks                                                                                                                                                                                                                                                            | Yes — SessionStart hook injects rules                                                                                            |
+| Codex                                                                                                                                              | Plugin in `plugins/caveman/` plus repo `.codex/hooks.json` and `.codex/config.toml`                                                                                                                                                                                                                    | Yes on macOS/Linux — SessionStart hook                                                                                           |
+| Gemini CLI                                                                                                                                         | Extension with `GEMINI.md` context file                                                                                                                                                                                                                                                                | Yes — context file loads every session                                                                                           |
+| opencode                                                                                                                                           | Native plugin (`src/plugins/opencode/`) copied into `~/.config/opencode/plugins/caveman/` + `AGENTS.md` ruleset + skills/agents/commands directories. Plugin uses `session.created` and `tui.prompt.append` lifecycle hooks. No statusline (opencode TUI exposes no plugin-writable badge).            | Yes — `session.created` writes flag, `AGENTS.md` carries always-on ruleset                                                       |
+| OpenClaw                                                                                                                                           | Workspace skill at `~/.openclaw/workspace/skills/caveman/SKILL.md` (frontmatter merged with `version` + `always: true`) plus a marker-fenced bootstrap block in `~/.openclaw/workspace/SOUL.md`. Both writes go through `bin/lib/openclaw.js`; workspace path is overridable via `OPENCLAW_WORKSPACE`. | Yes — SOUL.md is auto-injected each turn under "Project Context" (subject to OpenClaw's 12K-per-file / 60K-total bootstrap caps) |
+| Cursor                                                                                                                                             | `npx skills add ... -a cursor` (default via `--only cursor`) writes the upstream skill profile; per-repo `.cursor/rules/caveman.mdc` via `--with-init` (calls `src/tools/caveman-init.js`)                                                                                                             | Yes — always-on rule                                                                                                             |
+| Windsurf                                                                                                                                           | `npx skills add ... -a windsurf` (default via `--only windsurf`); per-repo `.windsurf/rules/caveman.md` via `--with-init`                                                                                                                                                                              | Yes — always-on rule                                                                                                             |
+| Cline                                                                                                                                              | `npx skills add ... -a cline` (default via `--only cline`); per-repo `.clinerules/caveman.md` via `--with-init`                                                                                                                                                                                        | Yes — Cline auto-discovers `.clinerules/`                                                                                        |
+| Copilot                                                                                                                                            | `npx skills add ... -a github-copilot` (soft probe — pass `--only copilot`); per-repo `.github/copilot-instructions.md` + `AGENTS.md` via `--with-init`                                                                                                                                                | Yes — repo-wide instructions                                                                                                     |
+| Others (Junie, Trae, Warp, Tabnine, Mistral, Qwen, Devin, Droid, ForgeCode, Bob, Crush, iFlow, OpenHands, Qoder, Rovo Dev, Replit, Antigravity, …) | `npx skills add JuliusBrussee/caveman -a <profile>`                                                                                                                                                                                                                                                    | No — user must say `/caveman` each session                                                                                       |
 
 opencode reaches Tier 1 minus the statusline (opencode's TUI has no plugin-writable badge). Mode flag lives at `~/.config/opencode/.caveman-active` for any external tooling that wants to surface it.
 
@@ -265,6 +270,7 @@ For agents without hook systems, the always-on snippet lives in `INSTALL.md`'s "
 ## Evals
 
 `evals/` has three-arm harness:
+
 - `__baseline__` — no system prompt
 - `__terse__` — `Answer concisely.`
 - `<skill>` — `Answer concisely.\n\n{SKILL.md}`

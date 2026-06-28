@@ -4,16 +4,16 @@ Cinematic game discovery platform. Discover, rate, collect games.
 
 ## Stack
 
-| Layer | Tech |
-|---|---|
+| Layer    | Tech                                                      |
+| -------- | --------------------------------------------------------- |
 | Frontend | Next.js 15 App Router, TypeScript strict, Tailwind CSS v4 |
-| Backend | NestJS 10, Fastify, TypeScript strict |
-| Database | PostgreSQL 16 + Prisma ORM |
-| Cache | Redis 7 |
-| Shared | `@continue/types`, `@continue/validation` (Zod) |
-| Build | Turborepo + pnpm workspaces |
-| Infra | Docker Compose, Nginx, Let's Encrypt, Cloudflare |
-| CI/CD | GitHub Actions |
+| Backend  | NestJS 10, Fastify, TypeScript strict                     |
+| Database | PostgreSQL 16 + Prisma ORM                                |
+| Cache    | Redis 7                                                   |
+| Shared   | `@continue/types`, `@continue/validation` (Zod)           |
+| Build    | Turborepo + pnpm workspaces                               |
+| Infra    | Docker Compose, Nginx, Let's Encrypt, Cloudflare          |
+| CI/CD    | GitHub Actions                                            |
 
 ## Project Structure
 
@@ -39,6 +39,7 @@ Continue/
 ## Local Development
 
 ### Prerequisites
+
 - Node.js ≥ 20
 - pnpm ≥ 9
 - Docker + Docker Compose

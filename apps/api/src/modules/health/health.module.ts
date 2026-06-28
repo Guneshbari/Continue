@@ -8,4 +8,3 @@ import { QueueModule } from '../queue/queue.module'
   controllers: [HealthController],
 })
 export class HealthModule {}
-

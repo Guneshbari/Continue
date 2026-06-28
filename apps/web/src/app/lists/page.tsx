@@ -81,22 +81,26 @@ export default function ListsPage() {
       </div>
 
       <div className="lists-page__content">
-        {activeTab === 'my-lists' && user && (
-          loadingUser ? (
+        {activeTab === 'my-lists' &&
+          user &&
+          (loadingUser ? (
             <div className="lists-page__loading">
               <Loader2 className="spinner" />
               <span>Loading your lists...</span>
             </div>
           ) : (
             <UserListsManager initialLists={userLists} username={user.username} />
-          )
-        )}
+          ))}
 
         {activeTab === 'community' && (
           <div className="community-collections-full">
             <div className="community-collections__header">
               <h1 className="community-collections__title">
-                <Layers size={22} className="title-icon" style={{ display: 'inline', marginRight: '0.5rem', verticalAlign: 'middle' }} />
+                <Layers
+                  size={22}
+                  className="title-icon"
+                  style={{ display: 'inline', marginRight: '0.5rem', verticalAlign: 'middle' }}
+                />
                 Community Collections
               </h1>
               <p className="community-collections__subtitle">
@@ -117,10 +121,7 @@ export default function ListsPage() {
               <ul className="community-collections__list">
                 {discoveryLists.map((collection) => (
                   <li key={collection.id}>
-                    <Link
-                      href={`/lists/${collection.slug}`}
-                      className="collection-card"
-                    >
+                    <Link href={`/lists/${collection.slug}`} className="collection-card">
                       <div className="collection-card__mosaic">
                         {collection.covers.slice(0, 3).map((cover, i) => (
                           <div
@@ -163,7 +164,9 @@ export default function ListsPage() {
             {!user && (
               <div className="lists-page__cta">
                 <h2>Create Your Own Collections</h2>
-                <p>Sign in to organize your gaming catalog, track your backlog, and build your lists.</p>
+                <p>
+                  Sign in to organize your gaming catalog, track your backlog, and build your lists.
+                </p>
                 <Link href="/login" className="btn btn--primary">
                   Sign In to Continue
                 </Link>

@@ -43,7 +43,9 @@ export default function LoginPage() {
     <main className="auth-page">
       <div className="auth-card">
         <div className="auth-card__header">
-          <Link href="/" className="auth-card__brand">Continue</Link>
+          <Link href="/" className="auth-card__brand">
+            Continue
+          </Link>
           <h1 className="auth-card__title">Welcome back</h1>
           <p className="auth-card__subtitle">Sign in to your account</p>
         </div>
@@ -58,7 +60,9 @@ export default function LoginPage() {
 
           {/* Email */}
           <div className="form-field">
-            <label htmlFor="email" className="form-label">Email</label>
+            <label htmlFor="email" className="form-label">
+              Email
+            </label>
             <input
               id="email"
               type="email"
@@ -67,19 +71,26 @@ export default function LoginPage() {
               {...register('email')}
             />
             {errors.email && (
-              <p className="form-error" role="alert">{errors.email.message}</p>
+              <p className="form-error" role="alert">
+                {errors.email.message}
+              </p>
             )}
           </div>
 
           {/* Password */}
           <div className="form-field">
-            <label htmlFor="password" className="form-label">Password</label>
+            <label htmlFor="password" className="form-label">
+              Password
+            </label>
             <div className="form-input-wrap">
               <input
                 id="password"
                 type={showPassword ? 'text' : 'password'}
                 autoComplete="current-password"
-                className={cn('form-input form-input--with-icon', errors.password && 'form-input--error')}
+                className={cn(
+                  'form-input form-input--with-icon',
+                  errors.password && 'form-input--error',
+                )}
                 {...register('password')}
               />
               <button
@@ -92,24 +103,28 @@ export default function LoginPage() {
               </button>
             </div>
             {errors.password && (
-              <p className="form-error" role="alert">{errors.password.message}</p>
+              <p className="form-error" role="alert">
+                {errors.password.message}
+              </p>
             )}
           </div>
 
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="auth-form__submit"
-          >
+          <button type="submit" disabled={isSubmitting} className="auth-form__submit">
             {isSubmitting ? (
-              <><Loader2 size={16} className="spin" aria-hidden="true" /> Signing in…</>
-            ) : 'Sign in'}
+              <>
+                <Loader2 size={16} className="spin" aria-hidden="true" /> Signing in…
+              </>
+            ) : (
+              'Sign in'
+            )}
           </button>
         </form>
 
         <p className="auth-card__footer">
           No account?{' '}
-          <Link href="/register" className="auth-card__link">Create one</Link>
+          <Link href="/register" className="auth-card__link">
+            Create one
+          </Link>
         </p>
       </div>
     </main>

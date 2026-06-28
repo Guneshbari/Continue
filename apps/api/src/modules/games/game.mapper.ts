@@ -97,23 +97,15 @@ export class GameMapper {
       externalRatingCount: game.igdbRatingCount,
     }
 
-    const developers = (game.developers ?? [])
-      .map((d: any) => d.developer?.name)
-      .filter(Boolean)
+    const developers = (game.developers ?? []).map((d: any) => d.developer?.name).filter(Boolean)
     const developer = developers[0] || null
 
-    const publishers = (game.publishers ?? [])
-      .map((p: any) => p.publisher?.name)
-      .filter(Boolean)
+    const publishers = (game.publishers ?? []).map((p: any) => p.publisher?.name).filter(Boolean)
     const publisher = publishers[0] || null
 
-    const themes = (game.themes ?? [])
-      .map((t: any) => t.theme?.name)
-      .filter(Boolean)
+    const themes = (game.themes ?? []).map((t: any) => t.theme?.name).filter(Boolean)
 
-    const tags = (game.tags ?? [])
-      .map((t: any) => t.tag?.name)
-      .filter(Boolean)
+    const tags = (game.tags ?? []).map((t: any) => t.tag?.name).filter(Boolean)
 
     const metadata: GameMetadataDto = {
       status: game.status || null,
@@ -147,7 +139,7 @@ export class GameMapper {
     return {
       id,
       title,
-      items: (games ?? []).map(g => this.toSummaryDto(g)),
+      items: (games ?? []).map((g) => this.toSummaryDto(g)),
     }
   }
 }

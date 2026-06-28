@@ -10,7 +10,8 @@ export const cinematicSurfaceVariants = cva(
         sunken: 'bg-[var(--color-surface-sunken)] border border-[var(--color-border-subtle)]',
         base: 'bg-[var(--color-surface-base)]',
         raised: 'bg-[var(--color-surface-raised)] border border-[var(--color-border-subtle)]',
-        overlay: 'bg-[var(--color-surface-overlay)] border border-[var(--color-border-subtle)] shadow-[0_8px_30px_rgba(0,0,0,0.5)]',
+        overlay:
+          'bg-[var(--color-surface-overlay)] border border-[var(--color-border-subtle)] shadow-[0_8px_30px_rgba(0,0,0,0.5)]',
       },
       hoverable: {
         true: 'hover:translate-y-[-4px] hover:scale-[1.01] hover:border-[var(--color-border)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.6)] cursor-pointer',
@@ -21,11 +22,12 @@ export const cinematicSurfaceVariants = cva(
       elevation: 'raised',
       hoverable: false,
     },
-  }
+  },
 )
 
 export interface CinematicSurfaceProps
-  extends Omit<React.HTMLAttributes<HTMLElement>, 'elevation'>,
+  extends
+    Omit<React.HTMLAttributes<HTMLElement>, 'elevation'>,
     VariantProps<typeof cinematicSurfaceVariants> {
   as?: 'div' | 'article' | 'aside' | 'section'
 }
@@ -44,7 +46,7 @@ export const CinematicSurface = React.forwardRef<HTMLElement, CinematicSurfacePr
         {children}
       </Component>
     )
-  }
+  },
 )
 
 CinematicSurface.displayName = 'CinematicSurface'

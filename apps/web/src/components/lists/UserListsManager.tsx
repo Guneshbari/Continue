@@ -22,7 +22,7 @@ export function UserListsManager({ initialLists, username }: Props) {
   const [lists, setLists] = useState<ListSummary[]>(initialLists)
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
-  
+
   // Form State
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
@@ -78,18 +78,27 @@ export function UserListsManager({ initialLists, username }: Props) {
       {/* Modal */}
       {open && (
         <dialog className="list-modal" open aria-labelledby="modal-title">
-          <button type="button" className="list-modal__backdrop" onClick={() => setOpen(false)} aria-label="Close modal" />
+          <button
+            type="button"
+            className="list-modal__backdrop"
+            onClick={() => setOpen(false)}
+            aria-label="Close modal"
+          />
           <div className="list-modal__content">
             <div className="list-modal__header">
               <h2 id="modal-title">Create a new list</h2>
-              <button className="list-modal__close" onClick={() => setOpen(false)} aria-label="Close modal">
+              <button
+                className="list-modal__close"
+                onClick={() => setOpen(false)}
+                aria-label="Close modal"
+              >
                 <X size={18} />
               </button>
             </div>
-            
+
             <form onSubmit={handleCreate} className="list-modal__form">
               {error && <div className="list-modal__error">{error}</div>}
-              
+
               <div className="list-modal__field">
                 <label htmlFor="list-title">Title</label>
                 <input
@@ -134,7 +143,11 @@ export function UserListsManager({ initialLists, username }: Props) {
                 <button type="button" className="btn btn--secondary" onClick={() => setOpen(false)}>
                   Cancel
                 </button>
-                <button type="submit" className="btn btn--primary" disabled={loading || !title.trim()}>
+                <button
+                  type="submit"
+                  className="btn btn--primary"
+                  disabled={loading || !title.trim()}
+                >
                   {loading ? <Loader2 size={16} className="add-to-list__spinner" /> : 'Create'}
                 </button>
               </div>
@@ -159,9 +172,7 @@ export function UserListsManager({ initialLists, username }: Props) {
                 <div className="list-card__body">
                   <div className="list-card__title-row">
                     <span className="list-card__title">{list.title}</span>
-                    <span className="list-card__visibility">
-                      {visibilityIcon[list.visibility]}
-                    </span>
+                    <span className="list-card__visibility">{visibilityIcon[list.visibility]}</span>
                   </div>
                   {list.description && <p className="list-card__desc">{list.description}</p>}
                   <span className="list-card__count">

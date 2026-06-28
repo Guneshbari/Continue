@@ -27,21 +27,25 @@ export const buttonVariants = cva(
       variant: 'primary',
       size: 'md',
     },
-  }
+  },
 )
 
 export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {
   isLoading?: boolean | undefined
   as?: React.ElementType | undefined
   href?: string | undefined
 }
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, isLoading, children, as: Component = 'button', disabled, ...props }, ref) => {
+  (
+    { className, variant, size, isLoading, children, as: Component = 'button', disabled, ...props },
+    ref,
+  ) => {
     const isButton = Component === 'button'
-    const buttonProps = isButton ? { type: props.type || 'button', disabled: disabled || isLoading } : {}
+    const buttonProps = isButton
+      ? { type: props.type || 'button', disabled: disabled || isLoading }
+      : {}
 
     return (
       <Component
@@ -50,13 +54,11 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {...buttonProps}
         {...props}
       >
-        {isLoading && (
-          <Loader2 className="h-4 w-4 animate-spin text-current" aria-hidden="true" />
-        )}
+        {isLoading && <Loader2 className="h-4 w-4 animate-spin text-current" aria-hidden="true" />}
         {children}
       </Component>
     )
-  }
+  },
 )
 
 Button.displayName = 'Button'

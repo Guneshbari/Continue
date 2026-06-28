@@ -16,7 +16,11 @@ export function ProtectedInteraction({ children, fallback }: ProtectedInteractio
 
   if (isLoading) {
     return (
-      <div className="skeleton-pulse" style={{ width: '100%', height: '200px', borderRadius: '12px' }} aria-hidden="true" />
+      <div
+        className="skeleton-pulse"
+        style={{ width: '100%', height: '200px', borderRadius: '12px' }}
+        aria-hidden="true"
+      />
     )
   }
 
@@ -24,11 +28,23 @@ export function ProtectedInteraction({ children, fallback }: ProtectedInteractio
     if (fallback) return <>{fallback}</>
 
     return (
-      <div className="games-grid-empty" style={{ maxWidth: '400px', marginInline: 'auto', padding: '3rem 1.5rem' }}>
-        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1rem', color: 'var(--color-accent)' }}>
+      <div
+        className="games-grid-empty"
+        style={{ maxWidth: '400px', marginInline: 'auto', padding: '3rem 1.5rem' }}
+      >
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            marginBottom: '1rem',
+            color: 'var(--color-accent)',
+          }}
+        >
           <Lock size={32} aria-hidden="true" />
         </div>
-        <h2 className="games-grid-empty__title" style={{ fontSize: '1.25rem' }}>Authentication Required</h2>
+        <h2 className="games-grid-empty__title" style={{ fontSize: '1.25rem' }}>
+          Authentication Required
+        </h2>
         <p className="games-grid-empty__sub" style={{ margin: '0.75rem 0 1.5rem' }}>
           Please sign in to access this interactive collection and discovery feature.
         </p>

@@ -33,12 +33,15 @@ export interface RawIgdbGame {
  * Example input: "//images.igdb.com/igdb/image/upload/t_thumb/co1rgi.jpg"
  * Example output: "https://images.igdb.com/igdb/image/upload/t_cover_big/co1rgi.jpg"
  */
-export function normalizeIgdbImageUrl(url: string | undefined | null, size: 't_cover_big' | 't_screenshot_huge' = 't_cover_big'): string | null {
+export function normalizeIgdbImageUrl(
+  url: string | undefined | null,
+  size: 't_cover_big' | 't_screenshot_huge' = 't_cover_big',
+): string | null {
   if (!url) return null
-  
+
   // Prefix with https: if starting with double slash
   const absoluteUrl = url.startsWith('//') ? `https:${url}` : url
-  
+
   // Replace standard size token (e.g. /t_thumb/, /t_cover_small/, etc.) with the target high-resolution size
   return absoluteUrl.replace(/\/t_[a-zA-Z0-9_]+\//, `/${size}/`)
 }
@@ -50,11 +53,14 @@ export function normalizeIgdbImageUrl(url: string | undefined | null, size: 't_c
 export function normalizeIgdbGame(raw: RawIgdbGame): ProviderGame {
   // ── 1. Image Resolution ────────────────────────────────────────────────────
   const coverUrl = normalizeIgdbImageUrl(raw.cover?.url, 't_cover_big')
-  
+
   // Backdrop resolution: prefer first artwork, fallback to first screenshot, or null
   const firstArtworkUrl = raw.artworks?.[0]?.url
   const firstScreenshotUrl = raw.screenshots?.[0]?.url
-  const backdropUrl = normalizeIgdbImageUrl(firstArtworkUrl ?? firstScreenshotUrl, 't_screenshot_huge')
+  const backdropUrl = normalizeIgdbImageUrl(
+    firstArtworkUrl ?? firstScreenshotUrl,
+    't_screenshot_huge',
+  )
 
   // ── 2. Taxonomy Names extraction ───────────────────────────────────────────
   const genres = (raw.genres ?? []).map((g) => g.slug).filter(Boolean)
@@ -94,9 +100,7 @@ export function normalizeIgdbGame(raw: RawIgdbGame): ProviderGame {
     }))
 
   // ── 7. Date parsing ────────────────────────────────────────────────────────
-  const releaseDate = raw.first_release_date
-    ? new Date(raw.first_release_date * 1000)
-    : null
+  const releaseDate = raw.first_release_date ? new Date(raw.first_release_date * 1000) : null
 
   return {
     externalId: raw.id,

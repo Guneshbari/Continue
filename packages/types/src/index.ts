@@ -49,7 +49,16 @@ export interface UserProfile extends UserPublic {
 // ─── Game ────────────────────────────────────────────────────────────────────
 
 export interface MediaVariantDTO {
-  role: 'COVER_SM' | 'COVER_MD' | 'COVER_LG' | 'BACKDROP_HERO' | 'GALLERY_HD' | 'THUMBNAIL_BLUR' | 'AVATAR_SM' | 'AVATAR_MD' | 'LOGO_TRANSPARENT'
+  role:
+    | 'COVER_SM'
+    | 'COVER_MD'
+    | 'COVER_LG'
+    | 'BACKDROP_HERO'
+    | 'GALLERY_HD'
+    | 'THUMBNAIL_BLUR'
+    | 'AVATAR_SM'
+    | 'AVATAR_MD'
+    | 'LOGO_TRANSPARENT'
   url: string
   width: number | null
   height: number | null
@@ -203,7 +212,6 @@ export interface FranchiseSummary {
   slug: string
   name: string
 }
-
 
 // ─── Review ──────────────────────────────────────────────────────────────────
 

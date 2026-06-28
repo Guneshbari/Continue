@@ -35,42 +35,42 @@ curl -fsSL https://raw.githubusercontent.com/JuliusBrussee/caveman/main/install.
 
 If you want to install for one agent (or want to know exactly what command runs under the hood), use the table below. Every row also works as `--only <id>` to the unified installer.
 
-| Agent | Install command | Auto-activates? |
-|---|---|:-:|
-| **Claude Code** | `claude plugin marketplace add JuliusBrussee/caveman && claude plugin install caveman@caveman` | Yes |
-| **Gemini CLI** | `gemini extensions install https://github.com/JuliusBrussee/caveman` | Yes |
-| **opencode** | `node bin/install.js --only opencode` *(or `npx -y github:JuliusBrussee/caveman -- --only opencode`)* | Yes (plugin + AGENTS.md) |
-| **OpenClaw** | `npx -y github:JuliusBrussee/caveman -- --only openclaw` | Yes (workspace skill + SOUL.md) |
-| **Codex CLI** | `npx skills add JuliusBrussee/caveman -a codex` | Per-session: `/caveman` |
-| **Cursor** | `npx skills add JuliusBrussee/caveman -a cursor` | Per-session by default; `--with-init` for an always-on rule file |
-| **Windsurf** | `npx skills add JuliusBrussee/caveman -a windsurf` | Per-session by default; `--with-init` for an always-on rule file |
-| **Cline** | `npx skills add JuliusBrussee/caveman -a cline` | Per-session by default; `--with-init` for an always-on rule file |
-| **GitHub Copilot** *(soft probe)* | `npx -y github:JuliusBrussee/caveman -- --only copilot --with-init` | Repo-wide instructions via `--with-init` |
-| **Continue** | `npx skills add JuliusBrussee/caveman -a continue` | No — say `/caveman` |
-| **Kilo Code** | `npx skills add JuliusBrussee/caveman -a kilo` | No |
-| **Roo Code** | `npx skills add JuliusBrussee/caveman -a roo` | No |
-| **Augment Code** | `npx skills add JuliusBrussee/caveman -a augment` | No |
-| **Aider Desk** | `npx skills add JuliusBrussee/caveman -a aider-desk` | No |
-| **Sourcegraph Amp** | `npx skills add JuliusBrussee/caveman -a amp` | No |
-| **IBM Bob** | `npx skills add JuliusBrussee/caveman -a bob` | No |
-| **Crush** | `npx skills add JuliusBrussee/caveman -a crush` | No |
-| **Devin (terminal)** | `npx skills add JuliusBrussee/caveman -a devin` | No |
-| **Droid (Factory)** | `npx skills add JuliusBrussee/caveman -a droid` | No |
-| **ForgeCode** | `npx skills add JuliusBrussee/caveman -a forgecode` | No |
-| **Block Goose** | `npx skills add JuliusBrussee/caveman -a goose` | No |
-| **iFlow CLI** | `npx skills add JuliusBrussee/caveman -a iflow-cli` | No |
-| **Kiro CLI** | `npx skills add JuliusBrussee/caveman -a kiro-cli` | No |
-| **Mistral Vibe** | `npx skills add JuliusBrussee/caveman -a mistral-vibe` | No |
-| **OpenHands** | `npx skills add JuliusBrussee/caveman -a openhands` | No |
-| **Qwen Code** | `npx skills add JuliusBrussee/caveman -a qwen-code` | No |
-| **Atlassian Rovo Dev** | `npx skills add JuliusBrussee/caveman -a rovodev` | No |
-| **Tabnine CLI** | `npx skills add JuliusBrussee/caveman -a tabnine-cli` | No |
-| **Trae** | `npx skills add JuliusBrussee/caveman -a trae` | No |
-| **Warp** | `npx skills add JuliusBrussee/caveman -a warp` | No |
-| **Replit Agent** | `npx skills add JuliusBrussee/caveman -a replit` | No |
-| **JetBrains Junie** *(soft probe)* | `npx skills add JuliusBrussee/caveman -a junie` | No |
-| **Qoder** *(soft probe)* | `npx skills add JuliusBrussee/caveman -a qoder` | No |
-| **Google Antigravity** *(soft probe)* | `npx skills add JuliusBrussee/caveman -a antigravity` | No |
+| Agent                                 | Install command                                                                                       |                         Auto-activates?                          |
+| ------------------------------------- | ----------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------: |
+| **Claude Code**                       | `claude plugin marketplace add JuliusBrussee/caveman && claude plugin install caveman@caveman`        |                               Yes                                |
+| **Gemini CLI**                        | `gemini extensions install https://github.com/JuliusBrussee/caveman`                                  |                               Yes                                |
+| **opencode**                          | `node bin/install.js --only opencode` _(or `npx -y github:JuliusBrussee/caveman -- --only opencode`)_ |                     Yes (plugin + AGENTS.md)                     |
+| **OpenClaw**                          | `npx -y github:JuliusBrussee/caveman -- --only openclaw`                                              |                 Yes (workspace skill + SOUL.md)                  |
+| **Codex CLI**                         | `npx skills add JuliusBrussee/caveman -a codex`                                                       |                     Per-session: `/caveman`                      |
+| **Cursor**                            | `npx skills add JuliusBrussee/caveman -a cursor`                                                      | Per-session by default; `--with-init` for an always-on rule file |
+| **Windsurf**                          | `npx skills add JuliusBrussee/caveman -a windsurf`                                                    | Per-session by default; `--with-init` for an always-on rule file |
+| **Cline**                             | `npx skills add JuliusBrussee/caveman -a cline`                                                       | Per-session by default; `--with-init` for an always-on rule file |
+| **GitHub Copilot** _(soft probe)_     | `npx -y github:JuliusBrussee/caveman -- --only copilot --with-init`                                   |             Repo-wide instructions via `--with-init`             |
+| **Continue**                          | `npx skills add JuliusBrussee/caveman -a continue`                                                    |                       No — say `/caveman`                        |
+| **Kilo Code**                         | `npx skills add JuliusBrussee/caveman -a kilo`                                                        |                                No                                |
+| **Roo Code**                          | `npx skills add JuliusBrussee/caveman -a roo`                                                         |                                No                                |
+| **Augment Code**                      | `npx skills add JuliusBrussee/caveman -a augment`                                                     |                                No                                |
+| **Aider Desk**                        | `npx skills add JuliusBrussee/caveman -a aider-desk`                                                  |                                No                                |
+| **Sourcegraph Amp**                   | `npx skills add JuliusBrussee/caveman -a amp`                                                         |                                No                                |
+| **IBM Bob**                           | `npx skills add JuliusBrussee/caveman -a bob`                                                         |                                No                                |
+| **Crush**                             | `npx skills add JuliusBrussee/caveman -a crush`                                                       |                                No                                |
+| **Devin (terminal)**                  | `npx skills add JuliusBrussee/caveman -a devin`                                                       |                                No                                |
+| **Droid (Factory)**                   | `npx skills add JuliusBrussee/caveman -a droid`                                                       |                                No                                |
+| **ForgeCode**                         | `npx skills add JuliusBrussee/caveman -a forgecode`                                                   |                                No                                |
+| **Block Goose**                       | `npx skills add JuliusBrussee/caveman -a goose`                                                       |                                No                                |
+| **iFlow CLI**                         | `npx skills add JuliusBrussee/caveman -a iflow-cli`                                                   |                                No                                |
+| **Kiro CLI**                          | `npx skills add JuliusBrussee/caveman -a kiro-cli`                                                    |                                No                                |
+| **Mistral Vibe**                      | `npx skills add JuliusBrussee/caveman -a mistral-vibe`                                                |                                No                                |
+| **OpenHands**                         | `npx skills add JuliusBrussee/caveman -a openhands`                                                   |                                No                                |
+| **Qwen Code**                         | `npx skills add JuliusBrussee/caveman -a qwen-code`                                                   |                                No                                |
+| **Atlassian Rovo Dev**                | `npx skills add JuliusBrussee/caveman -a rovodev`                                                     |                                No                                |
+| **Tabnine CLI**                       | `npx skills add JuliusBrussee/caveman -a tabnine-cli`                                                 |                                No                                |
+| **Trae**                              | `npx skills add JuliusBrussee/caveman -a trae`                                                        |                                No                                |
+| **Warp**                              | `npx skills add JuliusBrussee/caveman -a warp`                                                        |                                No                                |
+| **Replit Agent**                      | `npx skills add JuliusBrussee/caveman -a replit`                                                      |                                No                                |
+| **JetBrains Junie** _(soft probe)_    | `npx skills add JuliusBrussee/caveman -a junie`                                                       |                                No                                |
+| **Qoder** _(soft probe)_              | `npx skills add JuliusBrussee/caveman -a qoder`                                                       |                                No                                |
+| **Google Antigravity** _(soft probe)_ | `npx skills add JuliusBrussee/caveman -a antigravity`                                                 |                                No                                |
 
 "Soft probe" = installer won't auto-detect these without `--only <id>` because there's no reliable always-on signal (Copilot subscription state is auth-gated; the others have no CLI / config-dir-only). Pass the flag when you want them.
 
@@ -99,23 +99,23 @@ node bin/install.js --all
 
 Useful flags:
 
-| Flag | What |
-|---|---|
-| `--all` | Plugin + hooks + statusline + MCP shrink + per-repo rule files in `$PWD`. The full ride. |
-| `--minimal` | Plugin / extension only. No hooks, no MCP shrink, no per-repo rules. |
-| `--only <id>` | One agent only. Repeatable: `--only claude --only cursor`. |
-| `--dry-run` | Print every command. Write nothing. |
-| `--with-init` | Drop always-on rule files into the current repo (`.cursor/`, `.windsurf/`, `.clinerules/`, `.github/copilot-instructions.md`, `.opencode/AGENTS.md`, `AGENTS.md`) and, if OpenClaw is on the box, append the bootstrap block to `~/.openclaw/workspace/SOUL.md`. |
-| `--with-mcp-shrink` | Register `caveman-shrink` MCP proxy. **On by default.** |
-| `--no-mcp-shrink` | Skip MCP-shrink registration. |
-| `--with-hooks` / `--no-hooks` | Force-on or force-off the Claude Code hook installer. (Default: on.) |
-| `--skip-skills` | Don't run the npx-skills auto-detect fallback when nothing else matched. |
-| `--config-dir <path>` | Claude Code config dir for hook files + `settings.json`. **Does NOT scope** `claude plugin install`, `gemini extensions install`, opencode (`XDG_CONFIG_HOME`), or openclaw (`OPENCLAW_WORKSPACE`) — those use their own paths. Default: `$CLAUDE_CONFIG_DIR` or `~/.claude`. `~` is expanded. |
-| `--non-interactive` | Never prompt; use defaults. (Auto when stdin is not a TTY.) |
-| `--no-color` | Disable ANSI colors. |
-| `--list` | Print full agent matrix and exit. |
-| `--force` | Re-run even if already installed. |
-| `--uninstall` | Remove everything. See below. |
+| Flag                          | What                                                                                                                                                                                                                                                                                           |
+| ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--all`                       | Plugin + hooks + statusline + MCP shrink + per-repo rule files in `$PWD`. The full ride.                                                                                                                                                                                                       |
+| `--minimal`                   | Plugin / extension only. No hooks, no MCP shrink, no per-repo rules.                                                                                                                                                                                                                           |
+| `--only <id>`                 | One agent only. Repeatable: `--only claude --only cursor`.                                                                                                                                                                                                                                     |
+| `--dry-run`                   | Print every command. Write nothing.                                                                                                                                                                                                                                                            |
+| `--with-init`                 | Drop always-on rule files into the current repo (`.cursor/`, `.windsurf/`, `.clinerules/`, `.github/copilot-instructions.md`, `.opencode/AGENTS.md`, `AGENTS.md`) and, if OpenClaw is on the box, append the bootstrap block to `~/.openclaw/workspace/SOUL.md`.                               |
+| `--with-mcp-shrink`           | Register `caveman-shrink` MCP proxy. **On by default.**                                                                                                                                                                                                                                        |
+| `--no-mcp-shrink`             | Skip MCP-shrink registration.                                                                                                                                                                                                                                                                  |
+| `--with-hooks` / `--no-hooks` | Force-on or force-off the Claude Code hook installer. (Default: on.)                                                                                                                                                                                                                           |
+| `--skip-skills`               | Don't run the npx-skills auto-detect fallback when nothing else matched.                                                                                                                                                                                                                       |
+| `--config-dir <path>`         | Claude Code config dir for hook files + `settings.json`. **Does NOT scope** `claude plugin install`, `gemini extensions install`, opencode (`XDG_CONFIG_HOME`), or openclaw (`OPENCLAW_WORKSPACE`) — those use their own paths. Default: `$CLAUDE_CONFIG_DIR` or `~/.claude`. `~` is expanded. |
+| `--non-interactive`           | Never prompt; use defaults. (Auto when stdin is not a TTY.)                                                                                                                                                                                                                                    |
+| `--no-color`                  | Disable ANSI colors.                                                                                                                                                                                                                                                                           |
+| `--list`                      | Print full agent matrix and exit.                                                                                                                                                                                                                                                              |
+| `--force`                     | Re-run even if already installed.                                                                                                                                                                                                                                                              |
+| `--uninstall`                 | Remove everything. See below.                                                                                                                                                                                                                                                                  |
 
 ## Always-on rules
 

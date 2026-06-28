@@ -39,13 +39,26 @@ export class UserProvisioningService {
 
     // 3. Create a new user
     // Generate a unique username from email
-    const baseUsername = email.split('@')[0]!.replace(/[^a-zA-Z0-9]/g, '').toLowerCase() || 'user'
+    const baseUsername =
+      email
+        .split('@')[0]!
+        .replace(/[^a-zA-Z0-9]/g, '')
+        .toLowerCase() || 'user'
     let username = baseUsername
     let suffix = 1
 
     // Ensure username is unique and not a reserved word
     const RESERVED_USERNAMES = [
-      'admin', 'support', 'continue', 'api', 'auth', 'settings', 'discover', 'games', 'lists', 'u'
+      'admin',
+      'support',
+      'continue',
+      'api',
+      'auth',
+      'settings',
+      'discover',
+      'games',
+      'lists',
+      'u',
     ]
 
     while (true) {

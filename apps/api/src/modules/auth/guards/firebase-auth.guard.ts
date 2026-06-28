@@ -1,9 +1,4 @@
-import {
-  Injectable,
-  CanActivate,
-  ExecutionContext,
-  UnauthorizedException,
-} from '@nestjs/common'
+import { Injectable, CanActivate, ExecutionContext, UnauthorizedException } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
 import type { FastifyRequest } from 'fastify'
 import { FirebaseAdminService } from '../firebase-admin.service'
@@ -20,8 +15,10 @@ export class FirebaseAuthGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const request = context.switchToHttp().getRequest<FastifyRequest & { user?: AuthenticatedUser }>()
-    
+    const request = context
+      .switchToHttp()
+      .getRequest<FastifyRequest & { user?: AuthenticatedUser }>()
+
     // Extract token
     const authHeader = request.headers.authorization
     const token = authHeader?.startsWith('Bearer ') ? authHeader.substring(7) : null
@@ -41,7 +38,7 @@ export class FirebaseAuthGuard implements CanActivate {
     try {
       // Verify token via Firebase Admin (checks revocation as requested)
       const decodedToken = await this.firebaseAdmin.verifyIdToken(token, true)
-      
+
       // Auto-provision user record locally
       const localUser = await this.userProvisioning.findOrCreateUser(decodedToken)
 

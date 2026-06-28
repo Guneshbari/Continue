@@ -19,13 +19,7 @@
  */
 
 import { useEffect, useRef } from 'react'
-import {
-  useInView,
-  useMotionValue,
-  useTransform,
-  animate,
-  useReducedMotion,
-} from 'motion/react'
+import { useInView, useMotionValue, useTransform, animate, useReducedMotion } from 'motion/react'
 import { durations, easings } from '@/components/motion/motion-config'
 
 type MotionCounterProps = Readonly<{

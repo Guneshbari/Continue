@@ -97,12 +97,8 @@ describe('GameMapper', () => {
           rawUrl: 'https://raw.com/cover.jpg',
           variants: [{ role: 'COVER_MD', url: 'https://opt.com/cover_md.webp' }],
         },
-        genres: [
-          { genre: { id: 'g1', slug: 'action', name: 'Action' } },
-        ],
-        platforms: [
-          { platform: { id: 'p1', slug: 'pc', name: 'PC' } },
-        ],
+        genres: [{ genre: { id: 'g1', slug: 'action', name: 'Action' } }],
+        platforms: [{ platform: { id: 'p1', slug: 'pc', name: 'PC' } }],
       }
 
       const result = mapper.toSummaryDto(mockGame)
@@ -142,18 +138,10 @@ describe('GameMapper', () => {
         },
         genres: [],
         platforms: [],
-        developers: [
-          { developer: { name: 'Supergiant Games' } },
-        ],
-        publishers: [
-          { publisher: { name: 'Supergiant Games Inc' } },
-        ],
-        themes: [
-          { theme: { name: 'Mythology' } },
-        ],
-        tags: [
-          { tag: { name: 'Indie' } },
-        ],
+        developers: [{ developer: { name: 'Supergiant Games' } }],
+        publishers: [{ publisher: { name: 'Supergiant Games Inc' } }],
+        themes: [{ theme: { name: 'Mythology' } }],
+        tags: [{ tag: { name: 'Indie' } }],
         franchise: { name: 'Hades Franchise' },
         screenshots: [
           {

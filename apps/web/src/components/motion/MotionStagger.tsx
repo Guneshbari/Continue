@@ -24,7 +24,12 @@
 
 import { type ReactNode } from 'react'
 import { motion, useReducedMotion, type Variants } from 'motion/react'
-import { durations, easings, staggerPresets, viewportDefaults } from '@/components/motion/motion-config'
+import {
+  durations,
+  easings,
+  staggerPresets,
+  viewportDefaults,
+} from '@/components/motion/motion-config'
 
 type StaggerPreset = keyof typeof staggerPresets
 

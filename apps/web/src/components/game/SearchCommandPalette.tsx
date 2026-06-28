@@ -20,9 +20,9 @@ export function SearchCommandPalette() {
   const [loading, setLoading] = useState(false)
   const [highlightedIndex, setHighlightedIndex] = useState(-1)
   const [recentSearches, setRecentSearches] = useState<string[]>([])
-  
+
   const [mounted, setMounted] = useState(false)
-  
+
   const inputRef = useRef<HTMLInputElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const latestQueryRef = useRef('')
@@ -53,7 +53,7 @@ export function SearchCommandPalette() {
       setHighlightedIndex(-1)
       // Standard page overflow lock when overlay is active
       document.body.style.overflow = 'hidden'
-      
+
       // Delay focus slightly to allow visual render fade-in transition
       const t = setTimeout(() => inputRef.current?.focus(), 50)
       return () => {

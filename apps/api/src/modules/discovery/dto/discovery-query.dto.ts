@@ -10,7 +10,7 @@ const DISCOVERY_SORT_VALUES = [
   'title',
 ] as const
 
-export type DiscoverySortValue = typeof DISCOVERY_SORT_VALUES[number]
+export type DiscoverySortValue = (typeof DISCOVERY_SORT_VALUES)[number]
 
 export class DiscoveryQueryDto {
   @ApiPropertyOptional({ description: 'Genre slug filter' })
@@ -50,7 +50,11 @@ export class DiscoveryQueryDto {
   @Max(10)
   ratingMax?: number
 
-  @ApiPropertyOptional({ enum: DISCOVERY_SORT_VALUES, default: 'popular', description: 'Sort criteria' })
+  @ApiPropertyOptional({
+    enum: DISCOVERY_SORT_VALUES,
+    default: 'popular',
+    description: 'Sort criteria',
+  })
   @IsOptional()
   @IsIn(DISCOVERY_SORT_VALUES)
   sort: DiscoverySortValue = 'popular'

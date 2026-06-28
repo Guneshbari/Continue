@@ -31,12 +31,25 @@ export const reviewsApi = {
   },
 
   async create(gameId: string, data: CreateReviewPayload, token: string): Promise<ReviewResponse> {
-    const res = await apiClient.post<{ data: ReviewResponse }>(`/games/${gameId}/reviews`, data, token)
+    const res = await apiClient.post<{ data: ReviewResponse }>(
+      `/games/${gameId}/reviews`,
+      data,
+      token,
+    )
     return res.data
   },
 
-  async update(gameId: string, reviewId: string, data: Partial<CreateReviewPayload>, token: string): Promise<ReviewResponse> {
-    const res = await apiClient.patch<{ data: ReviewResponse }>(`/games/${gameId}/reviews/${reviewId}`, data, token)
+  async update(
+    gameId: string,
+    reviewId: string,
+    data: Partial<CreateReviewPayload>,
+    token: string,
+  ): Promise<ReviewResponse> {
+    const res = await apiClient.patch<{ data: ReviewResponse }>(
+      `/games/${gameId}/reviews/${reviewId}`,
+      data,
+      token,
+    )
     return res.data
   },
 

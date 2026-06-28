@@ -39,7 +39,9 @@ export class ScreenshotDto {
   @IsNumber()
   heroScore?: number | null
 
-  @ApiProperty({ description: 'Indicates if screenshot is selected as primary hero backdrop banner' })
+  @ApiProperty({
+    description: 'Indicates if screenshot is selected as primary hero backdrop banner',
+  })
   @IsBoolean()
   isPrimaryHeroCandidate!: boolean
 }

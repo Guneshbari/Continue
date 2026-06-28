@@ -15,7 +15,7 @@ Caveman like simple. Small focused PR > big rewrite.
 ## Quick orientation
 
 The repo distributes one skill (caveman) plus a handful of sub-skills
-(caveman-commit, caveman-review, caveman-compress, cavecrew-*) to many
+(caveman-commit, caveman-review, caveman-compress, cavecrew-\*) to many
 agents through different distribution mechanisms (Claude Code plugin, Codex
 plugin, Gemini extension, Cursor/Windsurf/Cline rule files, `npx skills` for
 the long tail). A single Node installer at `bin/install.js` detects which
@@ -29,21 +29,21 @@ copies live under `plugins/caveman/` and similar mirror dirs — those are
 
 ## What to edit (sources of truth)
 
-| I want to change... | Edit this file |
-|---|---|
-| Caveman behavior (intensity levels, voice, rules) | `skills/caveman/SKILL.md` |
-| Caveman commit-message format | `skills/caveman-commit/SKILL.md` |
-| Caveman code-review format | `skills/caveman-review/SKILL.md` |
-| Caveman compress logic | `skills/caveman-compress/SKILL.md` and `skills/caveman-compress/scripts/` |
-| Caveman quick-reference card | `skills/caveman-help/SKILL.md` |
-| Cavecrew decision guide (when to delegate to subagents) | `skills/cavecrew/SKILL.md` |
-| cavecrew subagent definitions | `agents/cavecrew-investigator.md`, `agents/cavecrew-builder.md`, `agents/cavecrew-reviewer.md` |
-| Auto-activation rule body (Cursor/Windsurf/Cline/Copilot) | `src/rules/caveman-activate.md` |
-| Add support for a new agent | `bin/install.js` (PROVIDERS array) |
-| Per-repo init script (drops rule files into a user's repo) | `src/tools/caveman-init.js` |
-| Claude Code hooks | `src/hooks/caveman-activate.js`, `src/hooks/caveman-mode-tracker.js`, `src/hooks/caveman-config.js`, `src/hooks/caveman-statusline.sh`, `src/hooks/caveman-statusline.ps1` |
-| Settings.json read/write helpers | `bin/lib/settings.js` |
-| MCP shrink server | `src/mcp-servers/caveman-shrink/` |
+| I want to change...                                        | Edit this file                                                                                                                                                             |
+| ---------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Caveman behavior (intensity levels, voice, rules)          | `skills/caveman/SKILL.md`                                                                                                                                                  |
+| Caveman commit-message format                              | `skills/caveman-commit/SKILL.md`                                                                                                                                           |
+| Caveman code-review format                                 | `skills/caveman-review/SKILL.md`                                                                                                                                           |
+| Caveman compress logic                                     | `skills/caveman-compress/SKILL.md` and `skills/caveman-compress/scripts/`                                                                                                  |
+| Caveman quick-reference card                               | `skills/caveman-help/SKILL.md`                                                                                                                                             |
+| Cavecrew decision guide (when to delegate to subagents)    | `skills/cavecrew/SKILL.md`                                                                                                                                                 |
+| cavecrew subagent definitions                              | `agents/cavecrew-investigator.md`, `agents/cavecrew-builder.md`, `agents/cavecrew-reviewer.md`                                                                             |
+| Auto-activation rule body (Cursor/Windsurf/Cline/Copilot)  | `src/rules/caveman-activate.md`                                                                                                                                            |
+| Add support for a new agent                                | `bin/install.js` (PROVIDERS array)                                                                                                                                         |
+| Per-repo init script (drops rule files into a user's repo) | `src/tools/caveman-init.js`                                                                                                                                                |
+| Claude Code hooks                                          | `src/hooks/caveman-activate.js`, `src/hooks/caveman-mode-tracker.js`, `src/hooks/caveman-config.js`, `src/hooks/caveman-statusline.sh`, `src/hooks/caveman-statusline.ps1` |
+| Settings.json read/write helpers                           | `bin/lib/settings.js`                                                                                                                                                      |
+| MCP shrink server                                          | `src/mcp-servers/caveman-shrink/`                                                                                                                                          |
 
 That's it. Every other markdown file with `SKILL.md` in the path is a copy.
 
@@ -55,13 +55,13 @@ Edits to these files are wiped by the next CI run. The
 `.github/workflows/sync-skill.yml` job rebuilds them from the sources above
 on every push to `main`.
 
-| Path | Rebuilt from |
-|------|--------------|
-| `plugins/caveman/skills/caveman/SKILL.md` | `skills/caveman/SKILL.md` |
-| `plugins/caveman/skills/caveman-compress/{SKILL.md, scripts/}` | `skills/caveman-compress/{SKILL.md, scripts/}` |
-| `plugins/caveman/skills/cavecrew/SKILL.md` | `skills/cavecrew/SKILL.md` |
-| `plugins/caveman/agents/cavecrew-*.md` | `agents/cavecrew-*.md` |
-| `dist/caveman.skill` | ZIP of `skills/caveman/` (gitignored; rebuilt by CI on each push to `main`) |
+| Path                                                           | Rebuilt from                                                                |
+| -------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| `plugins/caveman/skills/caveman/SKILL.md`                      | `skills/caveman/SKILL.md`                                                   |
+| `plugins/caveman/skills/caveman-compress/{SKILL.md, scripts/}` | `skills/caveman-compress/{SKILL.md, scripts/}`                              |
+| `plugins/caveman/skills/cavecrew/SKILL.md`                     | `skills/cavecrew/SKILL.md`                                                  |
+| `plugins/caveman/agents/cavecrew-*.md`                         | `agents/cavecrew-*.md`                                                      |
+| `dist/caveman.skill`                                           | ZIP of `skills/caveman/` (gitignored; rebuilt by CI on each push to `main`) |
 
 `caveman-commit`, `caveman-review`, `caveman-help`, and `caveman-stats` are **not** mirrored under `plugins/caveman/skills/` by CI. Claude Code reaches them through the standalone hook + skill install path and `npx skills` carries them to other agents. If you see `plugins/caveman/skills/caveman-stats/` checked in, treat it as a legacy hand-committed copy — the workflow in `.github/workflows/sync-skill.yml` does not touch it.
 

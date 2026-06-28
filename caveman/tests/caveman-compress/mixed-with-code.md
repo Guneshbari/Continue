@@ -14,10 +14,10 @@ const login = async (email: string, password: string) => {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email, password }),
-  });
-  const { accessToken, refreshToken } = await response.json();
-  return { accessToken, refreshToken };
-};
+  })
+  const { accessToken, refreshToken } = await response.json()
+  return { accessToken, refreshToken }
+}
 ```
 
 Access token expires in 15 min.
@@ -29,11 +29,11 @@ const refreshAccessToken = async (refreshToken: string) => {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ refreshToken }),
-  });
-  if (!response.ok) throw new Error('Refresh failed');
-  const { accessToken } = await response.json();
-  return accessToken;
-};
+  })
+  if (!response.ok) throw new Error('Refresh failed')
+  const { accessToken } = await response.json()
+  return accessToken
+}
 ```
 
 ## Creating Tasks
@@ -47,13 +47,13 @@ Optional: others use defaults
 
 ```typescript
 interface CreateTaskPayload {
-  projectId: string;
-  title: string;
-  description?: string;
-  assigneeId?: string;
-  priority?: 1 | 2 | 3 | 4 | 5;
-  dueDate?: string; // ISO 8601 format
-  labels?: string[];
+  projectId: string
+  title: string
+  description?: string
+  assigneeId?: string
+  priority?: 1 | 2 | 3 | 4 | 5
+  dueDate?: string // ISO 8601 format
+  labels?: string[]
 }
 
 const createTask = async (payload: CreateTaskPayload, token: string) => {
@@ -61,12 +61,12 @@ const createTask = async (payload: CreateTaskPayload, token: string) => {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(payload),
-  });
-  return response.json();
-};
+  })
+  return response.json()
+}
 ```
 
 Response includes: `id`, `createdAt`, `status` (default `"todo"`).
@@ -75,17 +75,17 @@ Response includes: `id`, `createdAt`, `status` (default `"todo"`).
 
 All errors return:
 
-* `code` — machine-readable
-* `message` — human-readable
-* `details` — optional extra info
+- `code` — machine-readable
+- `message` — human-readable
+- `details` — optional extra info
 
 Common errors:
 
-* `AUTH_TOKEN_EXPIRED` — refresh + retry
-* `AUTH_TOKEN_INVALID` — login again
-* `VALIDATION_ERROR` — check `details`
-* `NOT_FOUND` — resource missing / no access
-* `RATE_LIMIT_EXCEEDED` — wait (`Retry-After`)
+- `AUTH_TOKEN_EXPIRED` — refresh + retry
+- `AUTH_TOKEN_INVALID` — login again
+- `VALIDATION_ERROR` — check `details`
+- `NOT_FOUND` — resource missing / no access
+- `RATE_LIMIT_EXCEEDED` — wait (`Retry-After`)
 
 Pattern:
 
@@ -95,9 +95,9 @@ class ApiError extends Error {
     public code: string,
     public status: number,
     message: string,
-    public details?: Record<string, string[]>
+    public details?: Record<string, string[]>,
   ) {
-    super(message);
+    super(message)
   }
 }
 
@@ -108,15 +108,15 @@ const apiClient = async (url: string, options: RequestInit = {}) => {
       'Content-Type': 'application/json',
       ...options.headers,
     },
-  });
+  })
 
   if (!response.ok) {
-    const error = await response.json();
-    throw new ApiError(error.code, response.status, error.message, error.details);
+    const error = await response.json()
+    throw new ApiError(error.code, response.status, error.message, error.details)
   }
 
-  return response.json();
-};
+  return response.json()
+}
 ```
 
 ## Pagination
@@ -129,48 +129,47 @@ Pass as query param for next page.
 
 Defaults:
 
-* page size: 50
-* max: 100 (`limit`)
+- page size: 50
+- max: 100 (`limit`)
 
 Fetch all tasks:
 
 ```typescript
 const fetchAllTasks = async (projectId: string, token: string) => {
-  let cursor: string | undefined;
-  const allTasks = [];
+  let cursor: string | undefined
+  const allTasks = []
 
   do {
-    const params = new URLSearchParams({ limit: '50' });
-    if (cursor) params.set('cursor', cursor);
+    const params = new URLSearchParams({ limit: '50' })
+    if (cursor) params.set('cursor', cursor)
 
-    const response = await apiClient(
-      `/api/v2/projects/${projectId}/tasks?${params}`,
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
+    const response = await apiClient(`/api/v2/projects/${projectId}/tasks?${params}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
 
-    allTasks.push(...response.data);
-    cursor = response.cursor;
-  } while (cursor);
+    allTasks.push(...response.data)
+    cursor = response.cursor
+  } while (cursor)
 
-  return allTasks;
-};
+  return allTasks
+}
 ```
 
 ## Rate Limiting
 
 Limits:
 
-* Authenticated: 100 req/min
-* Unauthenticated: 20 req/min
+- Authenticated: 100 req/min
+- Unauthenticated: 20 req/min
 
 On exceed → 429 + `Retry-After`.
 
 Client strategy:
 
-* Use exponential backoff
-* Start with `Retry-After`
-* Double each retry
-* Max wait: 60s
+- Use exponential backoff
+- Start with `Retry-After`
+- Double each retry
+- Max wait: 60s
 
 Prevents thundering herd.
 
@@ -178,32 +177,22 @@ Prevents thundering herd.
 
 Supports outgoing webhooks for events:
 
-* task created, updated, deleted, assigned, status change
+- task created, updated, deleted, assigned, status change
 
 Configured in project settings.
 Sends POST with event payload.
 
 Security:
 
-* Header: `X-Taskflow-Signature`
-* HMAC-SHA256 of body using webhook secret
-* Always verify before processing
+- Header: `X-Taskflow-Signature`
+- HMAC-SHA256 of body using webhook secret
+- Always verify before processing
 
 ```typescript
-import crypto from 'crypto';
+import crypto from 'crypto'
 
-const verifyWebhookSignature = (
-  payload: string,
-  signature: string,
-  secret: string
-): boolean => {
-  const expected = crypto
-    .createHmac('sha256', secret)
-    .update(payload)
-    .digest('hex');
-  return crypto.timingSafeEqual(
-    Buffer.from(signature),
-    Buffer.from(expected)
-  );
-};
+const verifyWebhookSignature = (payload: string, signature: string, secret: string): boolean => {
+  const expected = crypto.createHmac('sha256', secret).update(payload).digest('hex')
+  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected))
+}
 ```

@@ -43,19 +43,25 @@ export default function RegisterPage() {
     <main className="auth-page">
       <div className="auth-card">
         <div className="auth-card__header">
-          <Link href="/" className="auth-card__brand">Continue</Link>
+          <Link href="/" className="auth-card__brand">
+            Continue
+          </Link>
           <h1 className="auth-card__title">Create account</h1>
           <p className="auth-card__subtitle">Start your gaming journey</p>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} noValidate className="auth-form">
           {serverError && (
-            <div className="auth-form__error" role="alert">{serverError}</div>
+            <div className="auth-form__error" role="alert">
+              {serverError}
+            </div>
           )}
 
           {/* Username */}
           <div className="form-field">
-            <label htmlFor="username" className="form-label">Username</label>
+            <label htmlFor="username" className="form-label">
+              Username
+            </label>
             <input
               id="username"
               type="text"
@@ -64,13 +70,17 @@ export default function RegisterPage() {
               {...register('username')}
             />
             {errors.username && (
-              <p className="form-error" role="alert">{errors.username.message}</p>
+              <p className="form-error" role="alert">
+                {errors.username.message}
+              </p>
             )}
           </div>
 
           {/* Email */}
           <div className="form-field">
-            <label htmlFor="email" className="form-label">Email</label>
+            <label htmlFor="email" className="form-label">
+              Email
+            </label>
             <input
               id="email"
               type="email"
@@ -79,19 +89,26 @@ export default function RegisterPage() {
               {...register('email')}
             />
             {errors.email && (
-              <p className="form-error" role="alert">{errors.email.message}</p>
+              <p className="form-error" role="alert">
+                {errors.email.message}
+              </p>
             )}
           </div>
 
           {/* Password */}
           <div className="form-field">
-            <label htmlFor="password" className="form-label">Password</label>
+            <label htmlFor="password" className="form-label">
+              Password
+            </label>
             <div className="form-input-wrap">
               <input
                 id="password"
                 type={showPassword ? 'text' : 'password'}
                 autoComplete="new-password"
-                className={cn('form-input form-input--with-icon', errors.password && 'form-input--error')}
+                className={cn(
+                  'form-input form-input--with-icon',
+                  errors.password && 'form-input--error',
+                )}
                 {...register('password')}
               />
               <button
@@ -104,20 +121,28 @@ export default function RegisterPage() {
               </button>
             </div>
             {errors.password && (
-              <p className="form-error" role="alert">{errors.password.message}</p>
+              <p className="form-error" role="alert">
+                {errors.password.message}
+              </p>
             )}
           </div>
 
           <button type="submit" disabled={isSubmitting} className="auth-form__submit">
             {isSubmitting ? (
-              <><Loader2 size={16} className="spin" aria-hidden="true" /> Creating account…</>
-            ) : 'Create account'}
+              <>
+                <Loader2 size={16} className="spin" aria-hidden="true" /> Creating account…
+              </>
+            ) : (
+              'Create account'
+            )}
           </button>
         </form>
 
         <p className="auth-card__footer">
           Already have an account?{' '}
-          <Link href="/login" className="auth-card__link">Sign in</Link>
+          <Link href="/login" className="auth-card__link">
+            Sign in
+          </Link>
         </p>
       </div>
     </main>

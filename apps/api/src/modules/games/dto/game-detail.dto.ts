@@ -1,5 +1,13 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { IsString, IsOptional, IsDateString, IsNumber, ValidateNested, IsArray, IsInt } from 'class-validator'
+import {
+  IsString,
+  IsOptional,
+  IsDateString,
+  IsNumber,
+  ValidateNested,
+  IsArray,
+  IsInt,
+} from 'class-validator'
 import { Type } from 'class-transformer'
 import { CoverManifestDto, BackdropManifestDto, ScreenshotDto } from './media-manifest.dto'
 import { GameTaxonomyDto } from './game-summary.dto'
@@ -113,7 +121,10 @@ export class GameDetailDto {
   @Type(() => CoverManifestDto)
   cover?: CoverManifestDto | null
 
-  @ApiPropertyOptional({ type: BackdropManifestDto, description: 'Hero banner backdrop image variants' })
+  @ApiPropertyOptional({
+    type: BackdropManifestDto,
+    description: 'Hero banner backdrop image variants',
+  })
   @IsOptional()
   @ValidateNested()
   @Type(() => BackdropManifestDto)

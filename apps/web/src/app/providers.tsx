@@ -23,9 +23,7 @@ import Lenis from 'lenis'
 function LenisProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     // Respect the user's OS-level reduced-motion preference
-    const prefersReducedMotion = window.matchMedia(
-      '(prefers-reduced-motion: reduce)'
-    ).matches
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
     if (prefersReducedMotion) return
 

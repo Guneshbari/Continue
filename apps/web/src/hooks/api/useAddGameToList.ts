@@ -6,13 +6,23 @@ export function useAddGameToList(username: string | undefined, token: string | u
   const queryClient = useQueryClient()
 
   const addMutation = useMutation({
-    mutationFn: async ({ listId, gameId, note }: { listId: string; gameId: string; note?: string }) => {
+    mutationFn: async ({
+      listId,
+      gameId,
+      note,
+    }: {
+      listId: string
+      gameId: string
+      note?: string
+    }) => {
       if (!token) throw new Error('Not authenticated')
       return listsApi.addItem(listId, token, gameId, note)
     },
     onSuccess: (data, variables) => {
       if (username) {
-        queryClient.invalidateQueries({ queryKey: ['users', username, 'lists', { gameId: variables.gameId }] })
+        queryClient.invalidateQueries({
+          queryKey: ['users', username, 'lists', { gameId: variables.gameId }],
+        })
         queryClient.invalidateQueries({ queryKey: queryKeys.users.lists(username) })
       }
     },
@@ -25,7 +35,9 @@ export function useAddGameToList(username: string | undefined, token: string | u
     },
     onSuccess: (data, variables) => {
       if (username) {
-        queryClient.invalidateQueries({ queryKey: ['users', username, 'lists', { gameId: variables.gameId }] })
+        queryClient.invalidateQueries({
+          queryKey: ['users', username, 'lists', { gameId: variables.gameId }],
+        })
         queryClient.invalidateQueries({ queryKey: queryKeys.users.lists(username) })
       }
     },

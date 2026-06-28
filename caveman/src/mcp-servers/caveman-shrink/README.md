@@ -23,12 +23,9 @@ Wrap any MCP server in your Claude Code (or other client) config:
   "mcpServers": {
     "fs-shrunk": {
       "command": "npx",
-      "args": [
-        "caveman-shrink",
-        "npx", "@modelcontextprotocol/server-filesystem", "/path/to/dir"
-      ]
-    }
-  }
+      "args": ["caveman-shrink", "npx", "@modelcontextprotocol/server-filesystem", "/path/to/dir"],
+    },
+  },
 }
 ```
 
@@ -44,10 +41,10 @@ By design, v1 is conservative:
 
 ## Configuration
 
-| Env var | Default | What |
-|---|---|---|
-| `CAVEMAN_SHRINK_FIELDS` | `description` | Comma-separated list of field names to compress |
-| `CAVEMAN_SHRINK_DEBUG` | `0` | Set to `1` to log per-field compression deltas to stderr |
+| Env var                 | Default       | What                                                     |
+| ----------------------- | ------------- | -------------------------------------------------------- |
+| `CAVEMAN_SHRINK_FIELDS` | `description` | Comma-separated list of field names to compress          |
+| `CAVEMAN_SHRINK_DEBUG`  | `0`           | Set to `1` to log per-field compression deltas to stderr |
 
 ## Status
 

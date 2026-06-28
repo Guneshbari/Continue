@@ -35,21 +35,20 @@ export function ReviewCard({ review, onEdit, onDelete }: ReviewCardProps) {
   })
 
   return (
-    <article className="review-card" aria-label={`Review by ${review.user.displayName ?? review.user.username}`}>
+    <article
+      className="review-card"
+      aria-label={`Review by ${review.user.displayName ?? review.user.username}`}
+    >
       <div className="review-card__header">
         <div className="review-card__user">
           {review.user.avatarUrl ? (
-            <img
-              src={review.user.avatarUrl}
-              alt=""
-              className="review-card__avatar"
-            />
+            <img src={review.user.avatarUrl} alt="" className="review-card__avatar" />
           ) : (
             <div className="review-card__avatar-placeholder">
               {(review.user.displayName ?? review.user.username).charAt(0).toUpperCase()}
             </div>
           )}
-          
+
           <div className="review-card__user-info">
             <span className="review-card__author">
               {review.user.displayName ?? review.user.username}
@@ -61,18 +60,12 @@ export function ReviewCard({ review, onEdit, onDelete }: ReviewCardProps) {
         </div>
 
         {/* Draft flag */}
-        {review.status === 'DRAFT' && (
-          <span className="review-card__draft-badge">Draft</span>
-        )}
+        {review.status === 'DRAFT' && <span className="review-card__draft-badge">Draft</span>}
 
         {/* Owner actions */}
         {isOwner && (
           <div className="review-card__actions">
-            <button
-              onClick={onEdit}
-              className="review-card__action-btn"
-              aria-label="Edit review"
-            >
+            <button onClick={onEdit} className="review-card__action-btn" aria-label="Edit review">
               <Edit2 size={14} />
             </button>
             <button
@@ -94,7 +87,7 @@ export function ReviewCard({ review, onEdit, onDelete }: ReviewCardProps) {
               {displayTitle && <h3 className="review-card__title">{displayTitle}</h3>}
               <p className="review-card__body">{displayBody}</p>
             </div>
-            
+
             <button
               type="button"
               onClick={() => setRevealed(true)}

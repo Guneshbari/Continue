@@ -1,6 +1,7 @@
 ---
 description: Activate caveman compression mode (lite | full | ultra | wenyan | off)
 ---
+
 Activate caveman mode: $ARGUMENTS
 
 If no level given, use full. If "off", deactivate.

@@ -21,10 +21,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     const displayName = user.displayName ?? user.username
     return {
       title: `${displayName} (@${user.username}) — Continue`,
-      description: user.bio ?? `${displayName}'s personal curated gaming profile and collections on Continue.`,
+      description:
+        user.bio ?? `${displayName}'s personal curated gaming profile and collections on Continue.`,
       openGraph: {
         title: `${displayName}'s Curator Profile — Continue`,
-        description: user.bio ?? `Explore collections, reviews, and game ratings by ${displayName}.`,
+        description:
+          user.bio ?? `Explore collections, reviews, and game ratings by ${displayName}.`,
         type: 'profile',
         username: user.username,
       },
@@ -69,20 +71,23 @@ export default async function UserProfilePage({ params }: PageProps) {
         listCount={user.listCount}
       />
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
         {/* Main Content Areas */}
-        <div className="lg:col-span-2 flex flex-col gap-8">
+        <div className="flex flex-col gap-8 lg:col-span-2">
           {/* Curated Collections */}
           <section className="flex flex-col gap-4" aria-labelledby="collections-heading">
-            <div className="flex items-center justify-between border-b border-border-subtle pb-2">
-              <h2 id="collections-heading" className="text-lg font-bold text-text-primary tracking-tight flex items-center gap-2">
+            <div className="border-border-subtle flex items-center justify-between border-b pb-2">
+              <h2
+                id="collections-heading"
+                className="text-text-primary flex items-center gap-2 text-lg font-bold tracking-tight"
+              >
                 <Layers size={18} className="text-accent" aria-hidden="true" />
                 Curated Collections
               </h2>
               {listsData.length > 0 && (
                 <Link
                   href={`/u/${username}/lists`}
-                  className="text-xs font-semibold text-accent hover:text-accent-muted transition-colors flex items-center gap-1"
+                  className="text-accent hover:text-accent-muted flex items-center gap-1 text-xs font-semibold transition-colors"
                 >
                   View all <ArrowRight size={12} aria-hidden="true" />
                 </Link>
@@ -93,21 +98,28 @@ export default async function UserProfilePage({ params }: PageProps) {
 
           {/* Recent Reviews */}
           <section className="flex flex-col gap-4" aria-labelledby="reviews-heading">
-            <div className="flex items-center justify-between border-b border-border-subtle pb-2">
-              <h2 id="reviews-heading" className="text-lg font-bold text-text-primary tracking-tight flex items-center gap-2">
+            <div className="border-border-subtle flex items-center justify-between border-b pb-2">
+              <h2
+                id="reviews-heading"
+                className="text-text-primary flex items-center gap-2 text-lg font-bold tracking-tight"
+              >
                 <MessageSquare size={18} className="text-accent" aria-hidden="true" />
                 Recent Reviews
               </h2>
               {reviewsData.data.length > 0 && (
                 <Link
                   href={`/u/${username}/reviews`}
-                  className="text-xs font-semibold text-accent hover:text-accent-muted transition-colors flex items-center gap-1"
+                  className="text-accent hover:text-accent-muted flex items-center gap-1 text-xs font-semibold transition-colors"
                 >
                   Full Archive <ArrowRight size={12} aria-hidden="true" />
                 </Link>
               )}
             </div>
-            <ProfileReviewGrid reviews={reviewsData.data.slice(0, 4)} username={username} isOwner={false} />
+            <ProfileReviewGrid
+              reviews={reviewsData.data.slice(0, 4)}
+              username={username}
+              isOwner={false}
+            />
           </section>
         </div>
 
@@ -124,10 +136,13 @@ export default async function UserProfilePage({ params }: PageProps) {
           </section>
 
           {/* Cinematic details section */}
-          <section className="p-5 rounded-xl bg-surface-raised border border-border-subtle flex flex-col gap-3">
-            <h4 className="text-[10px] font-bold text-text-muted uppercase tracking-wider">Tastes & Identity</h4>
-            <p className="text-xs text-text-secondary leading-relaxed">
-              This curator is actively building their catalog on Continue, helping players discover classic gems and brand-new interactive releases.
+          <section className="bg-surface-raised border-border-subtle flex flex-col gap-3 rounded-xl border p-5">
+            <h4 className="text-text-muted text-[10px] font-bold uppercase tracking-wider">
+              Tastes & Identity
+            </h4>
+            <p className="text-text-secondary text-xs leading-relaxed">
+              This curator is actively building their catalog on Continue, helping players discover
+              classic gems and brand-new interactive releases.
             </p>
           </section>
         </div>

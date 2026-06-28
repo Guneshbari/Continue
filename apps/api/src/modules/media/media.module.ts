@@ -12,10 +12,7 @@ import { MEDIA_PROCESSING_QUEUE, DEAD_LETTER_QUEUE } from '../queue/queue.consta
   imports: [
     PrismaModule,
     // Register the media-processing queue and DLQ dependencies inside MediaModule
-    BullModule.registerQueue(
-      { name: MEDIA_PROCESSING_QUEUE },
-      { name: DEAD_LETTER_QUEUE }
-    ),
+    BullModule.registerQueue({ name: MEDIA_PROCESSING_QUEUE }, { name: DEAD_LETTER_QUEUE }),
   ],
   providers: [
     MediaStorageService,

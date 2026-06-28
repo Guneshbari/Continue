@@ -66,11 +66,15 @@ export function HomeShelf({
         emblaApi?.scrollNext()
       }
     },
-    [emblaApi]
+    [emblaApi],
   )
 
   const viewAllAction = viewAllHref ? (
-    <Link href={viewAllHref} className="home-shelf__view-all" aria-label={`View all ${title} games`}>
+    <Link
+      href={viewAllHref}
+      className="home-shelf__view-all"
+      aria-label={`View all ${title} games`}
+    >
       View all
       <ArrowRight size={14} aria-hidden="true" />
     </Link>

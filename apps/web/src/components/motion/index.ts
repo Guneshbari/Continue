@@ -6,5 +6,11 @@ export { MotionScale } from './MotionScale'
 export { MotionCounter } from './MotionCounter'
 export { RouteTransition } from './RouteTransition'
 export { AmbientGlow } from './AmbientGlow'
-export { durations, easings, springPresets, staggerPresets, viewportDefaults } from './motion-config'
+export {
+  durations,
+  easings,
+  springPresets,
+  staggerPresets,
+  viewportDefaults,
+} from './motion-config'
 export { loadGsap } from './loadGsap'

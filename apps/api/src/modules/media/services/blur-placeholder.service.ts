@@ -27,7 +27,7 @@ export class BlurPlaceholderService {
         info.width,
         info.height,
         4,
-        4
+        4,
       )
 
       // 2. Generate tiny blurred low-res base64 image (WebP)
@@ -50,7 +50,8 @@ export class BlurPlaceholderService {
       // Graceful fallback
       return {
         blurhashString: 'L6PZ9jns.AY.-pAY00%y_Nj[t7t7', // default neutral gray blurhash fallback
-        tinyBase64Url: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7', // 1x1 transparent gif fallback
+        tinyBase64Url:
+          'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7', // 1x1 transparent gif fallback
       }
     }
   }

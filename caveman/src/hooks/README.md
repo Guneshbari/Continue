@@ -75,6 +75,7 @@ fi
 ```
 
 Badge examples:
+
 - `/caveman` → `[CAVEMAN]`
 - `/caveman ultra` → `[CAVEMAN:ULTRA]`
 - `/caveman wenyan` → `[CAVEMAN:WENYAN]`
@@ -99,6 +100,7 @@ SessionStart stdout is injected as hidden system context — Claude sees it, use
 If installed via plugin: disable the plugin — hooks deactivate automatically.
 
 If installed via the standalone Node installer:
+
 ```bash
 npx -y github:JuliusBrussee/caveman -- --uninstall
 # or, from a clone:
@@ -106,6 +108,7 @@ node bin/install.js --uninstall
 ```
 
 Or manually:
+
 1. Remove the caveman hook files from `$CLAUDE_CONFIG_DIR/hooks/` (default `~/.claude/hooks/`): `caveman-activate.js`, `caveman-mode-tracker.js`, `caveman-stats.js`, `caveman-config.js`, and `caveman-statusline.{sh,ps1}`.
 2. Remove the SessionStart, UserPromptSubmit, and statusLine entries from `$CLAUDE_CONFIG_DIR/settings.json`.
 3. Delete `$CLAUDE_CONFIG_DIR/.caveman-active` (and `$CLAUDE_CONFIG_DIR/.caveman-statusline-suffix` if you ran `/caveman-stats`).

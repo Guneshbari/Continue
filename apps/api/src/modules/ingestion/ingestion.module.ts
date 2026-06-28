@@ -21,7 +21,7 @@ import {
     BullModule.registerQueue(
       { name: GAME_SYNC_QUEUE },
       { name: MEDIA_PROCESSING_QUEUE },
-      { name: DEAD_LETTER_QUEUE }
+      { name: DEAD_LETTER_QUEUE },
     ),
   ],
   providers: [

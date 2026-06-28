@@ -24,10 +24,10 @@ interface ProfileReviewGridProps {
 export function ProfileReviewGrid({ reviews, username, isOwner }: ProfileReviewGridProps) {
   if (reviews.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center p-8 rounded-xl bg-surface-raised border border-border-subtle text-center min-h-[220px]">
+      <div className="bg-surface-raised border-border-subtle flex min-h-[220px] flex-col items-center justify-center rounded-xl border p-8 text-center">
         <MessageSquare size={32} className="text-text-muted mb-3" aria-hidden="true" />
-        <h3 className="text-lg font-bold text-text-primary mb-1">No reviews yet</h3>
-        <p className="text-sm text-text-muted max-w-sm mb-4">
+        <h3 className="text-text-primary mb-1 text-lg font-bold">No reviews yet</h3>
+        <p className="text-text-muted mb-4 max-w-sm text-sm">
           {isOwner
             ? "You haven't written any reviews yet. Share your thoughts on games you've completed!"
             : `${username} hasn't published any game reviews yet.`}
@@ -43,7 +43,7 @@ export function ProfileReviewGrid({ reviews, username, isOwner }: ProfileReviewG
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         {reviews.map((review) => {
           const cleanBody = review.body.replace(/<[^>]*>/g, '').slice(0, 180)
           const hasMore = review.body.length > 180
@@ -51,10 +51,13 @@ export function ProfileReviewGrid({ reviews, username, isOwner }: ProfileReviewG
           return (
             <div
               key={review.id}
-              className="flex gap-4 p-4 rounded-xl bg-surface-raised border border-border-subtle hover:border-border transition-all hover:translate-y-[-2px]"
+              className="bg-surface-raised border-border-subtle hover:border-border flex gap-4 rounded-xl border p-4 transition-all hover:translate-y-[-2px]"
             >
               {/* Game Cover */}
-              <Link href={`/games/${review.game.slug}`} className="relative flex-shrink-0 w-[72px] aspect-[3/4] overflow-hidden rounded-lg bg-surface-sunken border border-border-subtle group">
+              <Link
+                href={`/games/${review.game.slug}`}
+                className="bg-surface-sunken border-border-subtle group relative aspect-[3/4] w-[72px] flex-shrink-0 overflow-hidden rounded-lg border"
+              >
                 {review.game.coverUrl ? (
                   <Image
                     src={review.game.coverUrl}
@@ -64,21 +67,24 @@ export function ProfileReviewGrid({ reviews, username, isOwner }: ProfileReviewG
                     className="object-cover transition-transform group-hover:scale-105"
                   />
                 ) : (
-                  <div className="w-100% h-100% bg-gradient-to-br from-surface-overlay to-surface-raised" />
+                  <div className="w-100% h-100% from-surface-overlay to-surface-raised bg-gradient-to-br" />
                 )}
               </Link>
 
               {/* Review Content */}
-              <div className="flex flex-col justify-between flex-1 min-w-0">
+              <div className="flex min-w-0 flex-1 flex-col justify-between">
                 <div>
-                  <div className="flex items-baseline justify-between gap-2 mb-1">
+                  <div className="mb-1 flex items-baseline justify-between gap-2">
                     <Link
                       href={`/games/${review.game.slug}`}
-                      className="text-sm font-bold text-text-primary hover:text-accent transition-colors truncate"
+                      className="text-text-primary hover:text-accent truncate text-sm font-bold transition-colors"
                     >
                       {review.game.title}
                     </Link>
-                    <time className="text-[10px] text-text-muted shrink-0" dateTime={review.createdAt}>
+                    <time
+                      className="text-text-muted shrink-0 text-[10px]"
+                      dateTime={review.createdAt}
+                    >
                       {new Date(review.createdAt).toLocaleDateString('en-US', {
                         month: 'short',
                         year: 'numeric',
@@ -87,21 +93,21 @@ export function ProfileReviewGrid({ reviews, username, isOwner }: ProfileReviewG
                   </div>
 
                   {review.title && (
-                    <h4 className="text-xs font-semibold text-text-secondary mb-1 truncate">
+                    <h4 className="text-text-secondary mb-1 truncate text-xs font-semibold">
                       "{review.title}"
                     </h4>
                   )}
 
-                  <p className="text-xs text-text-muted leading-relaxed line-clamp-3">
+                  <p className="text-text-muted line-clamp-3 text-xs leading-relaxed">
                     {cleanBody}
                     {hasMore && '...'}
                   </p>
                 </div>
 
-                <div className="flex justify-end mt-2">
+                <div className="mt-2 flex justify-end">
                   <Link
                     href={`/u/${username}/reviews`}
-                    className="text-[11px] font-semibold text-accent hover:text-accent-muted transition-colors flex items-center gap-1"
+                    className="text-accent hover:text-accent-muted flex items-center gap-1 text-[11px] font-semibold transition-colors"
                   >
                     Read review <ArrowRight size={10} aria-hidden="true" />
                   </Link>

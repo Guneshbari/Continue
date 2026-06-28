@@ -1,4 +1,4 @@
-import type { TestingModule } from '@nestjs/testing';
+import type { TestingModule } from '@nestjs/testing'
 import { Test } from '@nestjs/testing'
 import { getQueueToken } from '@nestjs/bullmq'
 import type { Job, Queue } from 'bullmq'
@@ -166,7 +166,7 @@ describe('Queue Workers & Processors', () => {
         }),
         expect.objectContaining({
           jobId: 'dlq:game-sync:failed-job-1',
-        })
+        }),
       )
     })
 
@@ -233,7 +233,7 @@ describe('Queue Workers & Processors', () => {
         }),
         expect.objectContaining({
           jobId: 'dlq:media-processing:failed-media-1',
-        })
+        }),
       )
     })
   })
@@ -257,7 +257,7 @@ describe('Queue Workers & Processors', () => {
         expect.objectContaining({
           attempts: 3,
           backoff: { type: 'exponential', delay: 5000 },
-        })
+        }),
       )
       expect(result).toEqual({ status: 'delegated', limit: 20 })
     })
@@ -282,7 +282,7 @@ describe('Queue Workers & Processors', () => {
         { slug: 'game-a' },
         expect.objectContaining({
           jobId: 'game-sync:stale:game-a',
-        })
+        }),
       )
       expect(result).toEqual({ status: 'enqueued', count: 2 })
     })
@@ -293,9 +293,7 @@ describe('Queue Workers & Processors', () => {
         data: {},
       } as Job
 
-      prismaService.mediaAsset.findMany.mockResolvedValue([
-        { id: 'asset-1' },
-      ] as any)
+      prismaService.mediaAsset.findMany.mockResolvedValue([{ id: 'asset-1' }] as any)
 
       const result = await maintenanceWorker.process(job)
 
@@ -305,7 +303,7 @@ describe('Queue Workers & Processors', () => {
         { assetId: 'asset-1' },
         expect.objectContaining({
           jobId: 'media:retry:asset-1',
-        })
+        }),
       )
       expect(result).toEqual({ status: 'retried', count: 1 })
     })
@@ -335,7 +333,7 @@ describe('Queue Workers & Processors', () => {
         { assetId: 'asset-missing' },
         expect.objectContaining({
           jobId: 'media:integrity-reset:asset-missing',
-        })
+        }),
       )
       expect(result).toEqual({
         status: 'checked',

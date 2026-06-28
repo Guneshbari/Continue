@@ -29,7 +29,7 @@ export const discoveryApi = {
 
   async metadata(): Promise<GameFiltersResponse> {
     const raw = await apiClient.get<BackendMetadataResponse>('/discover/metadata')
-    
+
     // Normalize backend facets to UI-consumed GameFiltersResponse contract
     return {
       genres: raw.genres.map(({ id, slug, name }) => ({ id, slug, name })),

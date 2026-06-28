@@ -12,10 +12,10 @@ const login = async (email: string, password: string) => {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email, password }),
-  });
-  const { accessToken, refreshToken } = await response.json();
-  return { accessToken, refreshToken };
-};
+  })
+  const { accessToken, refreshToken } = await response.json()
+  return { accessToken, refreshToken }
+}
 ```
 
 The access token expires after 15 minutes. When you receive a 401 response, you should attempt to refresh the token:
@@ -26,11 +26,11 @@ const refreshAccessToken = async (refreshToken: string) => {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ refreshToken }),
-  });
-  if (!response.ok) throw new Error('Refresh failed');
-  const { accessToken } = await response.json();
-  return accessToken;
-};
+  })
+  if (!response.ok) throw new Error('Refresh failed')
+  const { accessToken } = await response.json()
+  return accessToken
+}
 ```
 
 ## Creating Tasks
@@ -39,13 +39,13 @@ To create a new task, you need to send a POST request to the tasks endpoint with
 
 ```typescript
 interface CreateTaskPayload {
-  projectId: string;
-  title: string;
-  description?: string;
-  assigneeId?: string;
-  priority?: 1 | 2 | 3 | 4 | 5;
-  dueDate?: string; // ISO 8601 format
-  labels?: string[];
+  projectId: string
+  title: string
+  description?: string
+  assigneeId?: string
+  priority?: 1 | 2 | 3 | 4 | 5
+  dueDate?: string // ISO 8601 format
+  labels?: string[]
 }
 
 const createTask = async (payload: CreateTaskPayload, token: string) => {
@@ -53,12 +53,12 @@ const createTask = async (payload: CreateTaskPayload, token: string) => {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(payload),
-  });
-  return response.json();
-};
+  })
+  return response.json()
+}
 ```
 
 The response will include the created task with a generated `id`, `createdAt` timestamp, and `status` set to "todo" by default.
@@ -83,9 +83,9 @@ class ApiError extends Error {
     public code: string,
     public status: number,
     message: string,
-    public details?: Record<string, string[]>
+    public details?: Record<string, string[]>,
   ) {
-    super(message);
+    super(message)
   }
 }
 
@@ -96,15 +96,15 @@ const apiClient = async (url: string, options: RequestInit = {}) => {
       'Content-Type': 'application/json',
       ...options.headers,
     },
-  });
+  })
 
   if (!response.ok) {
-    const error = await response.json();
-    throw new ApiError(error.code, response.status, error.message, error.details);
+    const error = await response.json()
+    throw new ApiError(error.code, response.status, error.message, error.details)
   }
 
-  return response.json();
-};
+  return response.json()
+}
 ```
 
 ## Pagination
@@ -115,24 +115,23 @@ The default page size is 50 items, which can be adjusted using the `limit` query
 
 ```typescript
 const fetchAllTasks = async (projectId: string, token: string) => {
-  let cursor: string | undefined;
-  const allTasks = [];
+  let cursor: string | undefined
+  const allTasks = []
 
   do {
-    const params = new URLSearchParams({ limit: '50' });
-    if (cursor) params.set('cursor', cursor);
+    const params = new URLSearchParams({ limit: '50' })
+    if (cursor) params.set('cursor', cursor)
 
-    const response = await apiClient(
-      `/api/v2/projects/${projectId}/tasks?${params}`,
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
+    const response = await apiClient(`/api/v2/projects/${projectId}/tasks?${params}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
 
-    allTasks.push(...response.data);
-    cursor = response.cursor;
-  } while (cursor);
+    allTasks.push(...response.data)
+    cursor = response.cursor
+  } while (cursor)
 
-  return allTasks;
-};
+  return allTasks
+}
 ```
 
 ## Rate Limiting
@@ -148,20 +147,10 @@ Taskflow supports outgoing webhooks for real-time event notifications. You can c
 Webhook payloads include an `X-Taskflow-Signature` header containing an HMAC-SHA256 signature of the request body using your webhook secret. Always verify this signature before processing the webhook to ensure the request is authentic.
 
 ```typescript
-import crypto from 'crypto';
+import crypto from 'crypto'
 
-const verifyWebhookSignature = (
-  payload: string,
-  signature: string,
-  secret: string
-): boolean => {
-  const expected = crypto
-    .createHmac('sha256', secret)
-    .update(payload)
-    .digest('hex');
-  return crypto.timingSafeEqual(
-    Buffer.from(signature),
-    Buffer.from(expected)
-  );
-};
+const verifyWebhookSignature = (payload: string, signature: string, secret: string): boolean => {
+  const expected = crypto.createHmac('sha256', secret).update(payload).digest('hex')
+  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected))
+}
 ```

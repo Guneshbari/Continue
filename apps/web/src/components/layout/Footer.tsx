@@ -33,9 +33,7 @@ export function Footer() {
             <Link href="/" className="footer__logo" aria-label="Continue - home">
               Continue
             </Link>
-            <p className="footer__tagline">
-              Discover. Review. Collect.
-            </p>
+            <p className="footer__tagline">Discover. Review. Collect.</p>
             <p className="footer__description">
               A cinematic game discovery platform for players who care about quality.
             </p>
@@ -47,7 +45,9 @@ export function Footer() {
             <ul className="footer__nav-list">
               {DISCOVER_LINKS.map((link) => (
                 <li key={link.href}>
-                  <Link href={link.href} className="footer__link">{link.label}</Link>
+                  <Link href={link.href} className="footer__link">
+                    {link.label}
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -59,7 +59,9 @@ export function Footer() {
             <ul className="footer__nav-list">
               {COMMUNITY_LINKS.map((link) => (
                 <li key={link.href}>
-                  <Link href={link.href} className="footer__link">{link.label}</Link>
+                  <Link href={link.href} className="footer__link">
+                    {link.label}
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -71,7 +73,9 @@ export function Footer() {
             <ul className="footer__nav-list">
               {COMPANY_LINKS.map((link) => (
                 <li key={link.href}>
-                  <Link href={link.href} className="footer__link">{link.label}</Link>
+                  <Link href={link.href} className="footer__link">
+                    {link.label}
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -84,9 +88,7 @@ export function Footer() {
             <p className="footer__copy">
               &copy; {new Date().getFullYear()} Continue. All rights reserved.
             </p>
-            <p className="footer__made-with">
-              Built for players, by players.
-            </p>
+            <p className="footer__made-with">Built for players, by players.</p>
           </div>
         </div>
       </footer>

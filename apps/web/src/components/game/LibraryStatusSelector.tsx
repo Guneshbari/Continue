@@ -12,7 +12,11 @@ interface LibraryStatusSelectorProps {
 
 export function LibraryStatusSelector({ gameId }: LibraryStatusSelectorProps) {
   const { guardAction, username, token } = useInteractionPermissions()
-  const { status, setStatus, isSettingStatus, isLoading } = useLibraryStatus(gameId, username, token)
+  const { status, setStatus, isSettingStatus, isLoading } = useLibraryStatus(
+    gameId,
+    username,
+    token,
+  )
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
 
@@ -49,7 +53,11 @@ export function LibraryStatusSelector({ gameId }: LibraryStatusSelectorProps) {
   if (isLoading) {
     return (
       <div className="library-status-loading">
-        <Loader2 size={14} className="spinner search-spin" style={{ animation: 'search-spin 0.8s linear infinite' }} />
+        <Loader2
+          size={14}
+          className="spinner search-spin"
+          style={{ animation: 'search-spin 0.8s linear infinite' }}
+        />
         <span>Syncing catalog...</span>
       </div>
     )
@@ -66,9 +74,13 @@ export function LibraryStatusSelector({ gameId }: LibraryStatusSelectorProps) {
           aria-haspopup="listbox"
         >
           {isSettingStatus ? (
-            <Loader2 size={14} className="spinner search-spin" style={{ animation: 'search-spin 0.8s linear infinite' }} />
+            <Loader2
+              size={14}
+              className="spinner search-spin"
+              style={{ animation: 'search-spin 0.8s linear infinite' }}
+            />
           ) : (
-            currentOption?.icon ?? <Bookmark size={14} />
+            (currentOption?.icon ?? <Bookmark size={14} />)
           )}
           <span>{currentOption?.label ?? 'Add to Catalog'}</span>
         </button>

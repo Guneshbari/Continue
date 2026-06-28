@@ -46,17 +46,18 @@ describe('IGDB Resiliency Spec', () => {
   describe('Twitch Access Token Serialization', () => {
     it('should serialize parallel getAccessToken calls to prevent duplicate Twitch requests', async () => {
       // Mock Twitch OAuth to return successfully with a delay
-      mockedAxios.post.mockImplementation(() =>
-        new Promise((resolve) =>
-          setTimeout(() => {
-            resolve({
-              data: {
-                access_token: 'new-serialized-token',
-                expires_in: 3600,
-              },
-            } as any)
-          }, 50)
-        )
+      mockedAxios.post.mockImplementation(
+        () =>
+          new Promise((resolve) =>
+            setTimeout(() => {
+              resolve({
+                data: {
+                  access_token: 'new-serialized-token',
+                  expires_in: 3600,
+                },
+              } as any)
+            }, 50),
+          ),
       )
 
       // Trigger parallel token requests
@@ -90,7 +91,7 @@ describe('IGDB Resiliency Spec', () => {
 
       // The 6th request should trip the breaker and fail immediately without hitting Axios
       await expect(apiService.searchGames('Halo')).rejects.toThrow(
-        'IGDB API provider suspended due to too many consecutive failures'
+        'IGDB API provider suspended due to too many consecutive failures',
       )
 
       // Expect Axios post calls count to still be exactly 5
@@ -102,7 +103,7 @@ describe('IGDB Resiliency Spec', () => {
     it('should automatically clear token cache, refresh access token, and retry request on 401', async () => {
       // Mock getAccessToken to return a stale token
       jest.spyOn(authService, 'getAccessToken').mockResolvedValue('stale-token')
-      
+
       const refreshSpy = jest.spyOn(authService, 'refreshAccessToken').mockResolvedValue(undefined)
 
       // First call returns 401, second call returns successful games list

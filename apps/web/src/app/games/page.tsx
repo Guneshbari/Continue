@@ -13,11 +13,25 @@ export const metadata: Metadata = {
 }
 
 interface PageProps {
-  searchParams: Promise<{ sort?: string; genre?: string; platform?: string; q?: string; cursor?: string }>
+  searchParams: Promise<{
+    sort?: string
+    genre?: string
+    platform?: string
+    q?: string
+    cursor?: string
+  }>
 }
 
-async function GameGrid({ sort, genre, platform, q }: {
-  sort?: string; genre?: string; platform?: string; q?: string
+async function GameGrid({
+  sort,
+  genre,
+  platform,
+  q,
+}: {
+  sort?: string
+  genre?: string
+  platform?: string
+  q?: string
 }) {
   let games: GameSummary[] = []
   try {
@@ -69,7 +83,7 @@ export default async function GamesPage({ searchParams }: PageProps) {
             <a
               key={opt.value}
               href={`/games?sort=${opt.value}`}
-              className={`games-page__sort-btn${sort === opt.value ? ' games-page__sort-btn--active' : ''}`}
+              className={`games-page__sort-btn${sort === opt.value ? 'games-page__sort-btn--active' : ''}`}
             >
               {opt.label}
             </a>
@@ -77,15 +91,17 @@ export default async function GamesPage({ searchParams }: PageProps) {
         </nav>
       </div>
 
-      <Suspense fallback={
-        <ul className="games-grid">
-          {getSkeletonKeys(12).map((skeletonKey) => (
-            <li key={skeletonKey}>
-              <GameCardBaseSkeleton />
-            </li>
-          ))}
-        </ul>
-      }>
+      <Suspense
+        fallback={
+          <ul className="games-grid">
+            {getSkeletonKeys(12).map((skeletonKey) => (
+              <li key={skeletonKey}>
+                <GameCardBaseSkeleton />
+              </li>
+            ))}
+          </ul>
+        }
+      >
         <GameGrid
           sort={sort}
           {...(params.genre ? { genre: params.genre } : {})}

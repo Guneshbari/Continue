@@ -10,17 +10,17 @@ import { MEDIA_PROCESSING_QUEUE, PROCESS_MEDIA_JOB } from '../../queue/queue.con
  * ----------------------------------------------------------------------
  * The Continue platform enforces cinematic visual rhythm. These rules must be
  * followed during the future asynchronous Sharp transformation worker phase:
- * 
+ *
  * 1. Aspect Ratio Normalization Rules:
  *    - COVER_* (COVER_SM, COVER_MD, COVER_LG): Enforce strict '2:3' ratio.
  *    - BACKDROP_HERO: Enforce strict '16:9' ratio.
  *    - GALLERY_HD: Enforce strict '16:9' ratio.
  *    - THUMBNAIL_BLUR: Enforce strict '1:1' ratio.
- * 
+ *
  * 2. Processing & Metatada Rules:
  *    - Normalize ratios during Sharp processing (crop/resize from center).
  *    - Store original aspect metadata (original width, height) in MediaVariant.
- * 
+ *
  * 3. Lifecycle States governed inside MediaAsset:
  *    - PENDING: Initial state, asset registered but no variants optimized.
  *    - PROCESSING: Lock state while background worker operates.
@@ -33,7 +33,7 @@ export class MediaSyncService {
 
   constructor(
     private readonly prisma: PrismaService,
-    @InjectQueue(MEDIA_PROCESSING_QUEUE) private readonly mediaQueue: Queue
+    @InjectQueue(MEDIA_PROCESSING_QUEUE) private readonly mediaQueue: Queue,
   ) {}
 
   /**
@@ -95,11 +95,13 @@ export class MediaSyncService {
             type: 'exponential',
             delay: 5000,
           },
-        }
+        },
       )
       this.logger.debug(`Enqueued media-processing job for asset ID: ${assetId}`)
     } catch (enqueueErr: any) {
-      this.logger.error(`❌ Failed to enqueue media-processing job for asset ${assetId}: ${enqueueErr.message}`)
+      this.logger.error(
+        `❌ Failed to enqueue media-processing job for asset ${assetId}: ${enqueueErr.message}`,
+      )
     }
 
     return assetId
@@ -110,9 +112,9 @@ export class MediaSyncService {
    */
   async resolveScreenshots(urls: string[], provider: 'igdb' | 'mock'): Promise<string[]> {
     const assetIds: string[] = []
-    
+
     // De-duplicate screenshot URLs array to avoid redundant queries and concurrency race conditions
-    const uniqueUrls = Array.from(new Set((urls ?? []).map(u => u.trim()))).filter(Boolean)
+    const uniqueUrls = Array.from(new Set((urls ?? []).map((u) => u.trim()))).filter(Boolean)
 
     for (const url of uniqueUrls) {
       const assetId = await this.resolveAsset(url, provider)

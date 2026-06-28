@@ -9,12 +9,14 @@ export const queryKeys = {
   shelves: {
     all: ['shelves'] as const,
     lists: () => [...queryKeys.shelves.all, 'list'] as const,
-    detail: (kind: string, limit?: number) => [...queryKeys.shelves.lists(), { kind, limit }] as const,
+    detail: (kind: string, limit?: number) =>
+      [...queryKeys.shelves.lists(), { kind, limit }] as const,
   },
   search: {
     all: ['search'] as const,
     query: (q: string, limit?: number) => [...queryKeys.search.all, 'query', { q, limit }] as const,
-    suggestions: (q: string, limit?: number) => [...queryKeys.search.all, 'suggestions', { q, limit }] as const,
+    suggestions: (q: string, limit?: number) =>
+      [...queryKeys.search.all, 'suggestions', { q, limit }] as const,
   },
   discover: {
     all: ['discover'] as const,
@@ -34,4 +36,3 @@ export const queryKeys = {
     list: (gameId: string) => ['reviews', 'list', gameId] as const,
   },
 }
-

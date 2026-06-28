@@ -79,26 +79,52 @@ export function GameDetailClient({ slug }: GameDetailClientProps) {
             {/* Left aspect cover skeleton */}
             <div className="game-detail__sidebar-group">
               <div className="game-detail__cover-wrap">
-                <Skeleton className="game-detail__cover-placeholder" style={{ aspectRatio: '3/4', width: '220px', borderRadius: 'var(--radius-lg)' }} />
+                <Skeleton
+                  className="game-detail__cover-placeholder"
+                  style={{ aspectRatio: '3/4', width: '220px', borderRadius: 'var(--radius-lg)' }}
+                />
               </div>
-              <div className="interactive-card-skeleton" style={{ height: '140px', background: 'var(--color-bg-tertiary)', borderRadius: 'var(--radius-lg)', marginTop: '1.5rem' }} />
+              <div
+                className="interactive-card-skeleton"
+                style={{
+                  height: '140px',
+                  background: 'var(--color-bg-tertiary)',
+                  borderRadius: 'var(--radius-lg)',
+                  marginTop: '1.5rem',
+                }}
+              />
             </div>
 
             {/* Right aspect details skeleton */}
             <div className="game-detail__main">
               <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.5rem' }}>
-                <Skeleton className="skeleton-line" style={{ width: '80px', height: '1.5rem', borderRadius: 'var(--radius-sm)' }} />
-                <Skeleton className="skeleton-line" style={{ width: '100px', height: '1.5rem', borderRadius: 'var(--radius-sm)' }} />
+                <Skeleton
+                  className="skeleton-line"
+                  style={{ width: '80px', height: '1.5rem', borderRadius: 'var(--radius-sm)' }}
+                />
+                <Skeleton
+                  className="skeleton-line"
+                  style={{ width: '100px', height: '1.5rem', borderRadius: 'var(--radius-sm)' }}
+                />
               </div>
-              <Skeleton className="skeleton-line" style={{ width: '60%', height: '3rem', marginBottom: '1.5rem' }} />
+              <Skeleton
+                className="skeleton-line"
+                style={{ width: '60%', height: '3rem', marginBottom: '1.5rem' }}
+              />
               <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem' }}>
                 <Skeleton className="skeleton-line" style={{ width: '60px', height: '1rem' }} />
                 <Skeleton className="skeleton-line" style={{ width: '80px', height: '1rem' }} />
                 <Skeleton className="skeleton-line" style={{ width: '120px', height: '1rem' }} />
               </div>
               <div className="game-detail__description-box">
-                <Skeleton className="skeleton-line" style={{ width: '100%', height: '1rem', marginBottom: '0.75rem' }} />
-                <Skeleton className="skeleton-line" style={{ width: '95%', height: '1rem', marginBottom: '0.75rem' }} />
+                <Skeleton
+                  className="skeleton-line"
+                  style={{ width: '100%', height: '1rem', marginBottom: '0.75rem' }}
+                />
+                <Skeleton
+                  className="skeleton-line"
+                  style={{ width: '95%', height: '1rem', marginBottom: '0.75rem' }}
+                />
                 <Skeleton className="skeleton-line" style={{ width: '80%', height: '1rem' }} />
               </div>
             </div>
@@ -121,9 +147,7 @@ export function GameDetailClient({ slug }: GameDetailClientProps) {
   }
 
   const g = game
-  const releaseYear = g.releaseDate
-    ? new Date(g.releaseDate).getFullYear()
-    : null
+  const releaseYear = g.releaseDate ? new Date(g.releaseDate).getFullYear() : null
 
   // Filter out the current game from suggestions
   const relatedSuggestions = SUGGESTED_GAMES.filter((item) => item.slug !== slug).slice(0, 3)
@@ -195,7 +219,10 @@ export function GameDetailClient({ slug }: GameDetailClientProps) {
             {/* Micro stats banner */}
             <div className="game-detail__meta">
               {g.avgRating && (
-                <span className="game-detail__meta-item" aria-label={`Rating score: ${g.avgRating.toFixed(1)} out of 10`}>
+                <span
+                  className="game-detail__meta-item"
+                  aria-label={`Rating score: ${g.avgRating.toFixed(1)} out of 10`}
+                >
                   <Star size={14} fill="currentColor" aria-hidden="true" />
                   {g.avgRating.toFixed(1)}
                 </span>

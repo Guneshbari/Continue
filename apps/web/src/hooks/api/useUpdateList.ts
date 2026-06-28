@@ -7,7 +7,13 @@ export function useUpdateList(username: string | undefined, token: string | unde
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({ listId, payload }: { listId: string; payload: Partial<CreateListPayload> }) => {
+    mutationFn: async ({
+      listId,
+      payload,
+    }: {
+      listId: string
+      payload: Partial<CreateListPayload>
+    }) => {
       if (!token) throw new Error('Not authenticated')
       return listsApi.update(listId, token, payload)
     },

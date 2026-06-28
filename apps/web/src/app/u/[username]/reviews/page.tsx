@@ -47,7 +47,7 @@ export default async function UserReviewsPage({ params }: PageProps) {
       {/* Back Link */}
       <Link
         href={`/u/${username}`}
-        className="inline-flex items-center gap-1.5 text-xs font-semibold text-text-muted hover:text-accent transition-colors mb-6"
+        className="text-text-muted hover:text-accent mb-6 inline-flex items-center gap-1.5 text-xs font-semibold transition-colors"
       >
         <ArrowLeft size={14} aria-hidden="true" />
         Back to {name}'s Profile
@@ -55,11 +55,12 @@ export default async function UserReviewsPage({ params }: PageProps) {
 
       {/* Page Header */}
       <header className="mb-8">
-        <h1 className="text-3xl font-extrabold text-text-primary tracking-tight mb-2">
+        <h1 className="text-text-primary mb-2 text-3xl font-extrabold tracking-tight">
           {name}'s Review Archive
         </h1>
-        <p className="text-sm text-text-secondary leading-relaxed max-w-xl">
-          Analytical reflections, editorial impressions, and game diaries written by @{user.username}.
+        <p className="text-text-secondary max-w-xl text-sm leading-relaxed">
+          Analytical reflections, editorial impressions, and game diaries written by @
+          {user.username}.
         </p>
       </header>
 

@@ -59,12 +59,20 @@ export const listsApi = {
     const res = await apiClient.get<{ data: ListDetail }>(`/lists/${slug}`, token)
     return res.data
   },
-  async update(id: string, token: string, payload: Partial<CreateListPayload>): Promise<ListSummary> {
+  async update(
+    id: string,
+    token: string,
+    payload: Partial<CreateListPayload>,
+  ): Promise<ListSummary> {
     const res = await apiClient.patch<{ data: ListSummary }>(`/lists/${id}`, payload, token)
     return res.data
   },
   async reorderItems(listId: string, gameIds: string[], token: string): Promise<ListDetail> {
-    const res = await apiClient.patch<{ data: ListDetail }>(`/lists/${listId}/reorder`, { gameIds }, token)
+    const res = await apiClient.patch<{ data: ListDetail }>(
+      `/lists/${listId}/reorder`,
+      { gameIds },
+      token,
+    )
     return res.data
   },
   delete(id: string, token: string): Promise<void> {

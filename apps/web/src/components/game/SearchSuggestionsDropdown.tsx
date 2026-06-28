@@ -51,7 +51,11 @@ export function SearchSuggestionsDropdown({
   const isQueryEmpty = query.trim().length === 0
 
   return (
-    <div className="search-suggest-dropdown animate-fade-in" role="listbox" aria-label="Search suggestions">
+    <div
+      className="search-suggest-dropdown animate-fade-in"
+      role="listbox"
+      aria-label="Search suggestions"
+    >
       {/* ─── Recent Searches (when input is empty) ─── */}
       {isQueryEmpty && (
         <div className="search-recent-container">
@@ -65,14 +69,20 @@ export function SearchSuggestionsDropdown({
                 className="search-recent-clear"
                 aria-label="Clear recent searches"
               >
-                <Trash2 size={12} style={{ display: 'inline', marginRight: '0.25rem', marginTop: '-2px' }} />
+                <Trash2
+                  size={12}
+                  style={{ display: 'inline', marginRight: '0.25rem', marginTop: '-2px' }}
+                />
                 Clear All
               </button>
             )}
           </div>
 
           {recentSearches.length === 0 ? (
-            <p className="search-page__hint" style={{ marginTop: '0.5rem', marginBottom: '0.5rem', fontSize: '0.82rem' }}>
+            <p
+              className="search-page__hint"
+              style={{ marginTop: '0.5rem', marginBottom: '0.5rem', fontSize: '0.82rem' }}
+            >
               No recent searches.
             </p>
           ) : (
@@ -87,9 +97,17 @@ export function SearchSuggestionsDropdown({
                       className={`search-suggest-item ${
                         highlighted ? 'search-suggest-item--highlighted' : ''
                       }`}
-                      style={{ width: '100%', background: 'none', border: 'none', textAlign: 'left' }}
+                      style={{
+                        width: '100%',
+                        background: 'none',
+                        border: 'none',
+                        textAlign: 'left',
+                      }}
                     >
-                      <Clock size={14} style={{ color: 'var(--color-text-muted)', flexShrink: 0 }} />
+                      <Clock
+                        size={14}
+                        style={{ color: 'var(--color-text-muted)', flexShrink: 0 }}
+                      />
                       <span className="search-suggest-item__title">{term}</span>
                     </button>
                   </li>
@@ -104,15 +122,21 @@ export function SearchSuggestionsDropdown({
       {!isQueryEmpty && (
         <div>
           <h3 className="search-suggest-title">Suggestions</h3>
-          
+
           {loading && suggestions.length === 0 && (
-            <p className="search-page__hint" style={{ marginTop: '0.5rem', marginBottom: '0.5rem', fontSize: '0.82rem' }}>
+            <p
+              className="search-page__hint"
+              style={{ marginTop: '0.5rem', marginBottom: '0.5rem', fontSize: '0.82rem' }}
+            >
               Fetching suggestions…
             </p>
           )}
 
           {!loading && suggestions.length === 0 && query.trim().length >= 2 && (
-            <p className="search-page__hint" style={{ marginTop: '0.5rem', marginBottom: '0.5rem', fontSize: '0.82rem' }}>
+            <p
+              className="search-page__hint"
+              style={{ marginTop: '0.5rem', marginBottom: '0.5rem', fontSize: '0.82rem' }}
+            >
               No matching suggestions. Press enter to search.
             </p>
           )}
@@ -141,7 +165,10 @@ export function SearchSuggestionsDropdown({
                             className="search-result-card__img"
                           />
                         ) : (
-                          <div className="search-result-card__cover-placeholder" aria-hidden="true" />
+                          <div
+                            className="search-result-card__cover-placeholder"
+                            aria-hidden="true"
+                          />
                         )}
                       </div>
 
@@ -150,13 +177,19 @@ export function SearchSuggestionsDropdown({
                         <span className="search-suggest-item__title">{game.title}</span>
                         <span className="search-suggest-item__meta">
                           {game.releaseDate && `${new Date(game.releaseDate).getFullYear()} · `}
-                          {game.genres?.slice(0, 1).map((g) => g.name).join('')}
+                          {game.genres
+                            ?.slice(0, 1)
+                            .map((g) => g.name)
+                            .join('')}
                         </span>
                       </div>
 
                       {/* Rating */}
                       {game.avgRating !== null && (
-                        <div className="search-result-card__rating" style={{ position: 'relative', top: 'auto', right: 'auto' }}>
+                        <div
+                          className="search-result-card__rating"
+                          style={{ position: 'relative', top: 'auto', right: 'auto' }}
+                        >
                           <Star size={10} fill="currentColor" />
                           <span>{game.avgRating.toFixed(1)}</span>
                         </div>

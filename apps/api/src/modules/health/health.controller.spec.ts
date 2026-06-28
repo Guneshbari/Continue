@@ -1,4 +1,4 @@
-import type { TestingModule } from '@nestjs/testing';
+import type { TestingModule } from '@nestjs/testing'
 import { Test } from '@nestjs/testing'
 import { getQueueToken } from '@nestjs/bullmq'
 import { HealthController } from './health.controller'
@@ -24,16 +24,24 @@ describe('HealthController', () => {
     } as any
 
     mockGameSyncQueue = {
-      getJobCounts: jest.fn().mockResolvedValue({ active: 1, waiting: 2, completed: 3, failed: 0, delayed: 0 }),
+      getJobCounts: jest
+        .fn()
+        .mockResolvedValue({ active: 1, waiting: 2, completed: 3, failed: 0, delayed: 0 }),
     }
     mockMediaQueue = {
-      getJobCounts: jest.fn().mockResolvedValue({ active: 0, waiting: 0, completed: 10, failed: 1, delayed: 0 }),
+      getJobCounts: jest
+        .fn()
+        .mockResolvedValue({ active: 0, waiting: 0, completed: 10, failed: 1, delayed: 0 }),
     }
     mockMaintenanceQueue = {
-      getJobCounts: jest.fn().mockResolvedValue({ active: 0, waiting: 1, completed: 5, failed: 0, delayed: 0 }),
+      getJobCounts: jest
+        .fn()
+        .mockResolvedValue({ active: 0, waiting: 1, completed: 5, failed: 0, delayed: 0 }),
     }
     mockDeadLetterQueue = {
-      getJobCounts: jest.fn().mockResolvedValue({ active: 0, waiting: 0, completed: 0, failed: 0, delayed: 0 }),
+      getJobCounts: jest
+        .fn()
+        .mockResolvedValue({ active: 0, waiting: 0, completed: 0, failed: 0, delayed: 0 }),
     }
 
     const module: TestingModule = await Test.createTestingModule({
@@ -69,7 +77,7 @@ describe('HealthController', () => {
           status: 'OK',
           uptime: expect.any(Number),
           memory: expect.any(Object),
-        })
+        }),
       )
     })
   })
@@ -93,7 +101,7 @@ describe('HealthController', () => {
           details: expect.objectContaining({
             database: { status: 'healthy', error: null },
           }),
-        })
+        }),
       )
     })
 
@@ -114,7 +122,7 @@ describe('HealthController', () => {
           details: expect.objectContaining({
             database: { status: 'unhealthy', error: 'Connection failure' },
           }),
-        })
+        }),
       )
     })
   })
@@ -139,9 +147,15 @@ describe('HealthController', () => {
           status: 'OK',
           queues: expect.objectContaining({
             [GAME_SYNC_QUEUE]: { active: 1, waiting: 2, completed: 3, failed: 0, delayed: 0 },
-            [MEDIA_PROCESSING_QUEUE]: { active: 0, waiting: 0, completed: 10, failed: 1, delayed: 0 },
+            [MEDIA_PROCESSING_QUEUE]: {
+              active: 0,
+              waiting: 0,
+              completed: 10,
+              failed: 1,
+              delayed: 0,
+            },
           }),
-        })
+        }),
       )
     })
 
@@ -160,7 +174,7 @@ describe('HealthController', () => {
         expect.objectContaining({
           status: 'UNHEALTHY',
           error: 'Redis Unavailable',
-        })
+        }),
       )
     })
 
@@ -170,7 +184,13 @@ describe('HealthController', () => {
         send: jest.fn(),
       } as any
 
-      mockGameSyncQueue.getJobCounts.mockResolvedValue({ active: 1, waiting: 1500, completed: 3, failed: 0, delayed: 0 })
+      mockGameSyncQueue.getJobCounts.mockResolvedValue({
+        active: 1,
+        waiting: 1500,
+        completed: 3,
+        failed: 0,
+        delayed: 0,
+      })
 
       await controller.queueHealth(mockRes)
 
@@ -179,8 +199,10 @@ describe('HealthController', () => {
         expect.objectContaining({
           status: 'OK',
           backpressureStatus: 'warning',
-          warnings: expect.arrayContaining([expect.stringContaining('Game sync queue backlog is high')]),
-        })
+          warnings: expect.arrayContaining([
+            expect.stringContaining('Game sync queue backlog is high'),
+          ]),
+        }),
       )
     })
 
@@ -190,7 +212,13 @@ describe('HealthController', () => {
         send: jest.fn(),
       } as any
 
-      mockGameSyncQueue.getJobCounts.mockResolvedValue({ active: 1, waiting: 2500, completed: 3, failed: 0, delayed: 0 })
+      mockGameSyncQueue.getJobCounts.mockResolvedValue({
+        active: 1,
+        waiting: 2500,
+        completed: 3,
+        failed: 0,
+        delayed: 0,
+      })
 
       await controller.queueHealth(mockRes)
 
@@ -199,8 +227,10 @@ describe('HealthController', () => {
         expect.objectContaining({
           status: 'UNHEALTHY',
           backpressureStatus: 'critical',
-          warnings: expect.arrayContaining([expect.stringContaining('Game sync queue backlog is critical')]),
-        })
+          warnings: expect.arrayContaining([
+            expect.stringContaining('Game sync queue backlog is critical'),
+          ]),
+        }),
       )
     })
   })

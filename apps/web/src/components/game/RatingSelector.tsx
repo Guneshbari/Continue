@@ -77,16 +77,16 @@ export function RatingSelector({ gameId, slug }: RatingSelectorProps) {
 
       {loading ? (
         <div className="rating-selector__loading">
-          <Loader2 size={16} className="rating-selector__spinner search-spin" style={{ animation: 'search-spin 0.8s linear infinite' }} />
+          <Loader2
+            size={16}
+            className="rating-selector__spinner search-spin"
+            style={{ animation: 'search-spin 0.8s linear infinite' }}
+          />
           <span>Fetching rating...</span>
         </div>
       ) : (
         <div className="rating-selector__body">
-          <div
-            className="rating-selector__stars"
-            role="radiogroup"
-            aria-label="Rate 1 to 10 stars"
-          >
+          <div className="rating-selector__stars" role="radiogroup" aria-label="Rate 1 to 10 stars">
             {STAR_VALUES.map((n) => {
               const active = (hovered || selected) >= n
               return (
@@ -122,9 +122,22 @@ export function RatingSelector({ gameId, slug }: RatingSelectorProps) {
         </div>
       )}
 
-      {error && <span className="rating-selector__error" role="alert">{error}</span>}
+      {error && (
+        <span className="rating-selector__error" role="alert">
+          {error}
+        </span>
+      )}
       {!isAuthenticated && (
-        <span className="rating-selector__guest-hint" style={{ fontSize: '0.72rem', color: 'var(--color-text-muted)', textAlign: 'center', marginTop: '0.25rem', fontWeight: 500 }}>
+        <span
+          className="rating-selector__guest-hint"
+          style={{
+            fontSize: '0.72rem',
+            color: 'var(--color-text-muted)',
+            textAlign: 'center',
+            marginTop: '0.25rem',
+            fontWeight: 500,
+          }}
+        >
           Click a star to sign in and rate
         </span>
       )}

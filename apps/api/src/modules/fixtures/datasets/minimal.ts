@@ -4,8 +4,10 @@ export const MINIMAL_GAMES: FixtureGame[] = [
   {
     slug: 'hollow-knight',
     title: 'Hollow Knight',
-    description: 'A challenging 2D action-adventure through a vast, ruined kingdom of insects and heroes.',
-    summary: 'Forge your own path in Hollow Knight! An epic action adventure through a vast ruined kingdom of insects and heroes.',
+    description:
+      'A challenging 2D action-adventure through a vast, ruined kingdom of insects and heroes.',
+    summary:
+      'Forge your own path in Hollow Knight! An epic action adventure through a vast ruined kingdom of insects and heroes.',
     storyline: null,
     releaseDate: '2017-02-24',
     igdbId: 27789,
@@ -79,8 +81,10 @@ export const MINIMAL_GAMES: FixtureGame[] = [
   {
     slug: 'celeste',
     title: 'Celeste',
-    description: 'Help Madeline survive her inner demons on her journey to the top of Celeste Mountain.',
-    summary: 'Celeste is a precise, challenging platformer with a heartfelt story about mental health.',
+    description:
+      'Help Madeline survive her inner demons on her journey to the top of Celeste Mountain.',
+    summary:
+      'Celeste is a precise, challenging platformer with a heartfelt story about mental health.',
     storyline: null,
     releaseDate: '2018-01-25',
     igdbId: 66894,
@@ -130,7 +134,8 @@ export const MINIMAL_GAMES: FixtureGame[] = [
     slug: 'dead-cells',
     title: 'Dead Cells',
     description: 'A rogue-lite, metroidvania action-platformer.',
-    summary: 'Explore a sprawling, ever-changing castle... assuming you\'re able to fight your way past its keepers.',
+    summary:
+      "Explore a sprawling, ever-changing castle... assuming you're able to fight your way past its keepers.",
     storyline: null,
     releaseDate: '2018-08-07',
     igdbId: 38246,
@@ -205,7 +210,8 @@ export const MINIMAL_GAMES: FixtureGame[] = [
     slug: 'shovel-knight',
     title: 'Shovel Knight: Treasure Trove',
     description: 'Shovel Knight is a sweeping classic action-adventure game with awesome gameplay.',
-    summary: 'Become Shovel Knight, wielder of the Shovel Blade, as he runs, jumps, and battles in a quest for his lost beloved.',
+    summary:
+      'Become Shovel Knight, wielder of the Shovel Blade, as he runs, jumps, and battles in a quest for his lost beloved.',
     storyline: null,
     releaseDate: '2014-06-26',
     igdbId: 7413,
@@ -229,8 +235,9 @@ export const MINIMAL_GAMES: FixtureGame[] = [
   {
     slug: 'undertale',
     title: 'Undertale',
-    description: 'The RPG game where you don\'t have to destroy anyone.',
-    summary: 'In this RPG, you control a human who falls underground into the world of monsters. Now you must find your way out... or stay trapped forever.',
+    description: "The RPG game where you don't have to destroy anyone.",
+    summary:
+      'In this RPG, you control a human who falls underground into the world of monsters. Now you must find your way out... or stay trapped forever.',
     storyline: null,
     releaseDate: '2015-09-15',
     igdbId: 13176,

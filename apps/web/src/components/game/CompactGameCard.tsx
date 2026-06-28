@@ -23,11 +23,7 @@ export function CompactGameCard({ game, className, rank }: CompactGameCardProps)
     : game.title
 
   return (
-    <Link
-      href={href}
-      className={cn('compact-game-card', className)}
-      aria-label={ariaLabel}
-    >
+    <Link href={href} className={cn('compact-game-card', className)} aria-label={ariaLabel}>
       {rank !== undefined && (
         <span className="compact-game-card__rank" aria-hidden="true">
           {rank}
@@ -57,10 +53,7 @@ export function CompactGameCard({ game, className, rank }: CompactGameCardProps)
             <span className="compact-game-card__genre">{game.genres[0]?.name}</span>
           )}
           {game.releaseDate && (
-            <time
-              className="compact-game-card__year"
-              dateTime={game.releaseDate}
-            >
+            <time className="compact-game-card__year" dateTime={game.releaseDate}>
               {new Date(game.releaseDate).getFullYear()}
             </time>
           )}

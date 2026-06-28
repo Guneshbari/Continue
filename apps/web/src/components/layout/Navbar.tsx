@@ -41,18 +41,10 @@ export function Navbar() {
   } else if (user) {
     actions = (
       <>
-        <Link
-          href={`/u/${user.username}`}
-          className="navbar__icon-btn"
-          aria-label="Your profile"
-        >
+        <Link href={`/u/${user.username}`} className="navbar__icon-btn" aria-label="Your profile">
           <User size={20} aria-hidden="true" />
         </Link>
-        <button
-          onClick={handleLogout}
-          className="navbar__btn-ghost"
-          aria-label="Sign out"
-        >
+        <button onClick={handleLogout} className="navbar__btn-ghost" aria-label="Sign out">
           <LogOut size={16} style={{ display: 'inline', marginRight: '0.25rem' }} />
           Sign out
         </button>
@@ -111,7 +103,9 @@ export function Navbar() {
               aria-label="Search games (Ctrl+K)"
             >
               <Search size={20} aria-hidden="true" />
-              <kbd className="navbar__search-kbd" aria-hidden="true">⌘K</kbd>
+              <kbd className="navbar__search-kbd" aria-hidden="true">
+                ⌘K
+              </kbd>
             </button>
 
             {actions}

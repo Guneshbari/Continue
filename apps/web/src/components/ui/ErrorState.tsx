@@ -21,45 +21,40 @@ export const ErrorState = React.forwardRef<HTMLDivElement, ErrorStateProps>(
       retryLabel = 'Try Again',
       ...props
     },
-    ref
+    ref,
   ) => {
     return (
       <CinematicSurface
         ref={ref}
         elevation="sunken"
         className={cn(
-          'flex flex-col items-center justify-center text-center p-8 md:p-12 border border-[var(--color-error)]/20 bg-[var(--color-surface-sunken)] select-none',
-          className
+          'border-[var(--color-error)]/20 flex select-none flex-col items-center justify-center border bg-[var(--color-surface-sunken)] p-8 text-center md:p-12',
+          className,
         )}
         role="alert"
         aria-live="assertive"
         {...props}
       >
-        <div className="flex items-center justify-center w-12 h-12 rounded-full bg-[oklch(15%_0.05_25)] border border-[oklch(25%_0.08_25)] text-[var(--color-error)] mb-4 animate-fade-in shadow-lg shadow-[oklch(15%_0.05_25_/_0.25)]">
+        <div className="animate-fade-in mb-4 flex h-12 w-12 items-center justify-center rounded-full border border-[oklch(25%_0.08_25)] bg-[oklch(15%_0.05_25)] text-[var(--color-error)] shadow-lg shadow-[oklch(15%_0.05_25_/_0.25)]">
           <AlertOctagon className="h-6 w-6" aria-hidden="true" />
         </div>
 
-        <h3 className="font-ui text-base font-bold text-[var(--color-text-primary)] mb-2">
+        <h3 className="font-ui mb-2 text-base font-bold text-[var(--color-text-primary)]">
           {title}
         </h3>
 
-        <p className="font-ui text-sm text-[var(--color-text-muted)] max-w-[42ch] mb-6 leading-relaxed">
+        <p className="font-ui mb-6 max-w-[42ch] text-sm leading-relaxed text-[var(--color-text-muted)]">
           {message}
         </p>
 
         {onRetry && (
-          <Button
-            variant="danger"
-            size="sm"
-            onClick={onRetry}
-            className="animate-fade-in"
-          >
+          <Button variant="danger" size="sm" onClick={onRetry} className="animate-fade-in">
             {retryLabel}
           </Button>
         )}
       </CinematicSurface>
     )
-  }
+  },
 )
 
 ErrorState.displayName = 'ErrorState'

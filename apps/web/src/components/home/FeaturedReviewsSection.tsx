@@ -10,7 +10,10 @@ type FeaturedReviewsSectionProps = Readonly<{
   hideHeader?: boolean | undefined
 }>
 
-export function FeaturedReviewsSection({ reviews, hideHeader = false }: FeaturedReviewsSectionProps) {
+export function FeaturedReviewsSection({
+  reviews,
+  hideHeader = false,
+}: FeaturedReviewsSectionProps) {
   if (reviews.length === 0) return null
 
   return (
@@ -35,11 +38,7 @@ export function FeaturedReviewsSection({ reviews, hideHeader = false }: Featured
                 aria-label={`Review of ${review.game.title} by ${review.user.displayName}`}
               >
                 {/* Quote icon */}
-                <Quote
-                  size={20}
-                  className="featured-review-card__quote-icon"
-                  aria-hidden="true"
-                />
+                <Quote size={20} className="featured-review-card__quote-icon" aria-hidden="true" />
 
                 {/* Review body */}
                 <blockquote className="featured-review-card__body max-w-[var(--measure-review)]">
@@ -62,15 +61,11 @@ export function FeaturedReviewsSection({ reviews, hideHeader = false }: Featured
                         sizes="48px"
                       />
                     </div>
-                    <span className="featured-review-card__game-title">
-                      {review.game.title}
-                    </span>
+                    <span className="featured-review-card__game-title">{review.game.title}</span>
                   </Link>
 
                   <div className="featured-review-card__meta">
-                    <span className="featured-review-card__author">
-                      {review.user.displayName}
-                    </span>
+                    <span className="featured-review-card__author">{review.user.displayName}</span>
                     <MetadataBadge
                       variant="warning"
                       size="sm"
@@ -89,4 +84,3 @@ export function FeaturedReviewsSection({ reviews, hideHeader = false }: Featured
     </section>
   )
 }
-

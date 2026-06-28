@@ -29,7 +29,11 @@ export function FeaturedReviewSpotlight({ review }: FeaturedReviewSpotlightProps
 
             <MotionFade direction="up" delay={0.2}>
               <div className="featured-review-spotlight__quote-wrap">
-                <QuoteIcon className="featured-review-spotlight__quote-icon" size={48} aria-hidden="true" />
+                <QuoteIcon
+                  className="featured-review-spotlight__quote-icon"
+                  size={48}
+                  aria-hidden="true"
+                />
                 <blockquote className="featured-review-spotlight__quote">
                   <p>“{review.body}”</p>
                 </blockquote>
@@ -42,9 +46,7 @@ export function FeaturedReviewSpotlight({ review }: FeaturedReviewSpotlightProps
                   <span className="featured-review-spotlight__author-name">
                     {review.user.displayName}
                   </span>
-                  <span className="featured-review-spotlight__author-title">
-                    Continue Reviewer
-                  </span>
+                  <span className="featured-review-spotlight__author-title">Continue Reviewer</span>
                 </div>
 
                 <div className="featured-review-spotlight__rating-wrap">
@@ -89,7 +91,9 @@ export function FeaturedReviewSpotlight({ review }: FeaturedReviewSpotlightProps
                       className="featured-review-spotlight__img"
                     />
                     <div className="featured-review-spotlight__game-badge">
-                      <span className="featured-review-spotlight__game-title">{review.game.title}</span>
+                      <span className="featured-review-spotlight__game-title">
+                        {review.game.title}
+                      </span>
                     </div>
                   </div>
                 </Link>

@@ -8,7 +8,7 @@ export function useQueryInvalidation() {
     invalidateGame: async (slug: string, gameId?: string) => {
       // Invalidate game details
       await queryClient.invalidateQueries({ queryKey: queryKeys.games.detail(slug) })
-      
+
       // If we have gameId, invalidate user rating and reviews for this game
       if (gameId) {
         await queryClient.invalidateQueries({ queryKey: queryKeys.ratings.me(gameId) })

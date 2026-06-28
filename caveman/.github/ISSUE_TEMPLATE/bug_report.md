@@ -5,12 +5,15 @@ labels: bug
 ---
 
 **What happen**
+
 <!-- What caveman do wrong -->
 
 **Expected**
+
 <!-- What caveman should do -->
 
 **Before/after example**
+
 ```
 Input: [your prompt]
 Got:   [what caveman said]
@@ -18,8 +21,9 @@ Want:  [what caveman should say]
 ```
 
 **Platform**
+
 - [ ] Claude Code
 - [ ] Codex
-- [ ] Other: ___
+- [ ] Other: \_\_\_
 
 **Version / install method**

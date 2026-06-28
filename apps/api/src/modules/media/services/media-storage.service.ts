@@ -24,7 +24,9 @@ export class MediaStorageService {
     try {
       await fs.mkdir(path.join(this.baseStorageDir, 'media', 'originals'), { recursive: true })
       await fs.mkdir(path.join(this.baseStorageDir, 'media', 'assets'), { recursive: true })
-      this.logger.log(`📁 Media storage directories initialized successfully at: ${this.baseStorageDir}`)
+      this.logger.log(
+        `📁 Media storage directories initialized successfully at: ${this.baseStorageDir}`,
+      )
     } catch (err: any) {
       this.logger.error(`❌ Failed to initialize media storage directory: ${err.message}`)
     }
@@ -46,7 +48,7 @@ export class MediaStorageService {
       'media',
       'assets',
       assetId,
-      `${role.toLowerCase()}.${format.toLowerCase()}`
+      `${role.toLowerCase()}.${format.toLowerCase()}`,
     )
   }
 
@@ -88,7 +90,7 @@ export class MediaStorageService {
     assetId: string,
     role: string,
     format: string,
-    buffer: Buffer
+    buffer: Buffer,
   ): Promise<string> {
     const physicalPath = this.getVariantPhysicalPath(assetId, role, format)
     const parentDir = path.dirname(physicalPath)
@@ -97,7 +99,9 @@ export class MediaStorageService {
     await fs.mkdir(parentDir, { recursive: true })
     await fs.writeFile(physicalPath, buffer)
 
-    this.logger.debug(`💾 Saved optimized variant: assets/${assetId}/${role.toLowerCase()}.${format}`)
+    this.logger.debug(
+      `💾 Saved optimized variant: assets/${assetId}/${role.toLowerCase()}.${format}`,
+    )
     return this.getVariantPublicUrl(assetId, role, format)
   }
 

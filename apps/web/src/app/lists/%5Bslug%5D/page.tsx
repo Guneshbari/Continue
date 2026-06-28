@@ -16,7 +16,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     const title = `${list.title} by ${list.user.displayName ?? list.user.username} — Continue`
     return {
       title,
-      description: list.description ?? `A curated collection of games compiled by ${list.user.username} on Continue.`,
+      description:
+        list.description ??
+        `A curated collection of games compiled by ${list.user.username} on Continue.`,
       openGraph: {
         title,
         description: list.description ?? `Check out this curated collection of games.`,
@@ -43,16 +45,16 @@ export default async function CuratedCollectionDetailPage({ params }: PageProps)
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
-    'name': list.title,
-    'description': list.description ?? `A curated collection of games on Continue.`,
-    'numberOfItems': list.items.length,
-    'itemListElement': list.items.map((item, index) => ({
+    name: list.title,
+    description: list.description ?? `A curated collection of games on Continue.`,
+    numberOfItems: list.items.length,
+    itemListElement: list.items.map((item, index) => ({
       '@type': 'ListItem',
-      'position': index + 1,
-      'item': {
+      position: index + 1,
+      item: {
         '@type': 'VideoGame',
-        'name': item.game.title,
-        'url': `${process.env.NEXT_PUBLIC_APP_URL ?? 'https://continue.app'}/games/${item.game.slug}`,
+        name: item.game.title,
+        url: `${process.env.NEXT_PUBLIC_APP_URL ?? 'https://continue.app'}/games/${item.game.slug}`,
       },
     })),
   }
@@ -67,7 +69,7 @@ export default async function CuratedCollectionDetailPage({ params }: PageProps)
       {/* Back Link */}
       <Link
         href={`/u/${list.user.username}/lists`}
-        className="inline-flex items-center gap-1.5 text-xs font-semibold text-text-muted hover:text-accent transition-colors mb-6"
+        className="text-text-muted hover:text-accent mb-6 inline-flex items-center gap-1.5 text-xs font-semibold transition-colors"
       >
         <ArrowLeft size={14} aria-hidden="true" />
         All lists by {curatorName}

@@ -1,4 +1,4 @@
-import type { TestingModule } from '@nestjs/testing';
+import type { TestingModule } from '@nestjs/testing'
 import { Test } from '@nestjs/testing'
 import { MediaProcessingService } from './media-processing.service'
 import { PrismaService } from '../../../common/prisma/prisma.service'
@@ -24,7 +24,7 @@ jest.mock('sharp', () => {
       channels: [
         { mean: 120, stdev: 45 }, // Red
         { mean: 100, stdev: 40 }, // Green
-        { mean: 80, stdev: 35 },  // Blue
+        { mean: 80, stdev: 35 }, // Blue
       ],
     }),
   }))

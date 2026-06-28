@@ -21,6 +21,7 @@ The primary bottleneck is the database query that loads the task list. The curre
 The secondary issue is on the frontend. The task list component renders all tasks at once without any form of virtualization. React's reconciliation algorithm struggles with a DOM tree containing 500+ task cards, each with multiple child elements, tooltips, and dropdown menus.
 
 Proposed solutions:
+
 1. Add a JOIN to the task query to load assignees in a single query instead of N+1
 2. Add a composite index on `tasks(project_id, status, updated_at)` for the default sort order
 3. Implement cursor-based pagination on the API (load 50 tasks at a time)

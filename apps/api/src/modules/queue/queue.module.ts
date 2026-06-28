@@ -1,4 +1,4 @@
-import type { OnModuleInit} from '@nestjs/common';
+import type { OnModuleInit } from '@nestjs/common'
 import { Module, Logger } from '@nestjs/common'
 import { HttpAdapterHost } from '@nestjs/core'
 import { ConfigService } from '@nestjs/config'
@@ -32,7 +32,7 @@ import { MaintenanceWorker } from './workers/maintenance.worker'
           },
           defaultJobOptions: {
             removeOnComplete: 100, // keep last 100 successful jobs
-            removeOnFail: 500,     // keep last 500 failed jobs (non-permanently failed)
+            removeOnFail: 500, // keep last 500 failed jobs (non-permanently failed)
           },
         }
       },
@@ -42,7 +42,7 @@ import { MaintenanceWorker } from './workers/maintenance.worker'
       { name: GAME_SYNC_QUEUE },
       { name: MEDIA_PROCESSING_QUEUE },
       { name: MAINTENANCE_QUEUE },
-      { name: DEAD_LETTER_QUEUE }
+      { name: DEAD_LETTER_QUEUE },
     ),
   ],
   providers: [MaintenanceWorker],
@@ -56,7 +56,7 @@ export class QueueModule implements OnModuleInit {
     @InjectQueue(GAME_SYNC_QUEUE) private readonly gameSyncQueue: Queue,
     @InjectQueue(MEDIA_PROCESSING_QUEUE) private readonly mediaQueue: Queue,
     @InjectQueue(MAINTENANCE_QUEUE) private readonly maintenanceQueue: Queue,
-    @InjectQueue(DEAD_LETTER_QUEUE) private readonly deadLetterQueue: Queue
+    @InjectQueue(DEAD_LETTER_QUEUE) private readonly deadLetterQueue: Queue,
   ) {}
 
   async onModuleInit() {
@@ -103,7 +103,7 @@ export class QueueModule implements OnModuleInit {
         {
           repeat: { pattern: '0 0 * * *' },
           jobId: 'sync-popular-games-repeat',
-        }
+        },
       )
 
       // Schedule refreshStaleMetadata every Sunday at 2 AM
@@ -113,7 +113,7 @@ export class QueueModule implements OnModuleInit {
         {
           repeat: { pattern: '0 2 * * 0' },
           jobId: 'refresh-stale-metadata-repeat',
-        }
+        },
       )
 
       // Schedule cleanupFailedMedia every Sunday at 3 AM
@@ -123,7 +123,7 @@ export class QueueModule implements OnModuleInit {
         {
           repeat: { pattern: '0 3 * * 0' },
           jobId: 'cleanup-failed-media-repeat',
-        }
+        },
       )
 
       // Schedule verifyMediaIntegrity every day at 4 AM
@@ -133,7 +133,7 @@ export class QueueModule implements OnModuleInit {
         {
           repeat: { pattern: '0 4 * * *' },
           jobId: 'verify-media-integrity-repeat',
-        }
+        },
       )
 
       this.logger.log('📅 Repeatable cron tasks scheduled successfully on the maintenance queue.')

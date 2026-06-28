@@ -37,9 +37,7 @@ export function RatingWidget({ gameId, avgRating, ratingCount }: Props) {
       {/* Community avg */}
       <div className="rating-widget__avg">
         <Star size={16} className="rating-widget__star-icon" aria-hidden="true" />
-        <span className="rating-widget__score">
-          {avgRating ? avgRating.toFixed(1) : '-'}
-        </span>
+        <span className="rating-widget__score">{avgRating ? avgRating.toFixed(1) : '-'}</span>
         <span className="rating-widget__count">
           {ratingCount > 0 ? `${ratingCount} ratings` : 'No ratings yet'}
         </span>
@@ -54,7 +52,7 @@ export function RatingWidget({ gameId, avgRating, ratingCount }: Props) {
               <button
                 key={n}
                 disabled={saving}
-                className={`rating-widget__star-btn${(hovered || selected) >= n ? ' rating-widget__star-btn--lit' : ''}`}
+                className={`rating-widget__star-btn${(hovered || selected) >= n ? 'rating-widget__star-btn--lit' : ''}`}
                 onMouseEnter={() => setHovered(n)}
                 onMouseLeave={() => setHovered(0)}
                 onClick={() => handleRate(n)}
@@ -64,9 +62,7 @@ export function RatingWidget({ gameId, avgRating, ratingCount }: Props) {
               </button>
             ))}
           </div>
-          {selected > 0 && (
-            <p className="rating-widget__selected">{selected}/10</p>
-          )}
+          {selected > 0 && <p className="rating-widget__selected">{selected}/10</p>}
         </div>
       ) : (
         <a href="/login" className="rating-widget__login-cta">

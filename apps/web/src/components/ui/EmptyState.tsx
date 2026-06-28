@@ -13,44 +13,42 @@ export interface EmptyStateProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 export const EmptyState = React.forwardRef<HTMLDivElement, EmptyStateProps>(
-  ({ className, title, description, icon: Icon = HelpCircle, actionLabel, onAction, ...props }, ref) => {
+  (
+    { className, title, description, icon: Icon = HelpCircle, actionLabel, onAction, ...props },
+    ref,
+  ) => {
     return (
       <CinematicSurface
         ref={ref}
         elevation="sunken"
         className={cn(
-          'flex flex-col items-center justify-center text-center p-8 md:p-12 border border-dashed border-[var(--color-border)] select-none',
-          className
+          'flex select-none flex-col items-center justify-center border border-dashed border-[var(--color-border)] p-8 text-center md:p-12',
+          className,
         )}
         {...props}
       >
-        <div className="flex items-center justify-center w-12 h-12 rounded-full bg-[var(--color-surface-raised)] border border-[var(--color-border-subtle)] text-[var(--color-text-secondary)] mb-4 animate-fade-in shadow-inner">
+        <div className="animate-fade-in mb-4 flex h-12 w-12 items-center justify-center rounded-full border border-[var(--color-border-subtle)] bg-[var(--color-surface-raised)] text-[var(--color-text-secondary)] shadow-inner">
           <Icon className="h-6 w-6 opacity-80" aria-hidden="true" />
         </div>
-        
-        <h3 className="font-ui text-base font-bold text-[var(--color-text-primary)] mb-2">
+
+        <h3 className="font-ui mb-2 text-base font-bold text-[var(--color-text-primary)]">
           {title}
         </h3>
 
         {description && (
-          <p className="font-ui text-sm text-[var(--color-text-muted)] max-w-[42ch] mb-6 leading-relaxed">
+          <p className="font-ui mb-6 max-w-[42ch] text-sm leading-relaxed text-[var(--color-text-muted)]">
             {description}
           </p>
         )}
 
         {actionLabel && onAction && (
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={onAction}
-            className="animate-fade-in"
-          >
+          <Button variant="secondary" size="sm" onClick={onAction} className="animate-fade-in">
             {actionLabel}
           </Button>
         )}
       </CinematicSurface>
     )
-  }
+  },
 )
 
 EmptyState.displayName = 'EmptyState'

@@ -17,9 +17,11 @@ export function ResponsiveGameGrid({ games, onClearFilters }: ResponsiveGameGrid
   const router = useRouter()
   const pathname = usePathname()
 
-  const handleClear = onClearFilters || (() => {
-    router.push(pathname)
-  })
+  const handleClear =
+    onClearFilters ||
+    (() => {
+      router.push(pathname)
+    })
 
   return (
     <div className="responsive-game-grid-container">

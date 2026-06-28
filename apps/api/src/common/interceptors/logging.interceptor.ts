@@ -22,7 +22,8 @@ export class LoggingInterceptor implements NestInterceptor {
       tap({
         next: () => {
           const duration = Date.now() - startMs
-          const statusCode = ctx.switchToHttp().getResponse<{ statusCode: number }>().statusCode ?? 200
+          const statusCode =
+            ctx.switchToHttp().getResponse<{ statusCode: number }>().statusCode ?? 200
           this.logger.log(`${method} ${url} ${statusCode} +${duration}ms`)
         },
         error: (err: unknown) => {

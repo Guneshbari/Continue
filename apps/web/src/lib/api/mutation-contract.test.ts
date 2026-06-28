@@ -16,21 +16,45 @@ export function verifyMutationContracts() {
   const ratingMePromise: Promise<RatingResponse | null> = ratingsApi.myRating(gameId, token)
 
   // 2. Reviews API
-  const reviewListPromise: Promise<{ data: ReviewResponse[] }> = reviewsApi.list(gameId, 10, 'cursor')
-  const reviewCreatePromise: Promise<ReviewResponse> = reviewsApi.create(gameId, { body: 'Great game!', score: 9 } as any, token)
-  const reviewUpdatePromise: Promise<ReviewResponse> = reviewsApi.update(gameId, reviewId, { body: 'Updated body' }, token)
+  const reviewListPromise: Promise<{ data: ReviewResponse[] }> = reviewsApi.list(
+    gameId,
+    10,
+    'cursor',
+  )
+  const reviewCreatePromise: Promise<ReviewResponse> = reviewsApi.create(
+    gameId,
+    { body: 'Great game!', score: 9 } as any,
+    token,
+  )
+  const reviewUpdatePromise: Promise<ReviewResponse> = reviewsApi.update(
+    gameId,
+    reviewId,
+    { body: 'Updated body' },
+    token,
+  )
   const reviewRemovePromise: Promise<void> = reviewsApi.remove(gameId, reviewId, token)
 
   // 3. Library API
-  const librarySetStatusPromise: Promise<void> = libraryApi.setStatus(username, token, gameId, 'playing')
+  const librarySetStatusPromise: Promise<void> = libraryApi.setStatus(
+    username,
+    token,
+    gameId,
+    'playing',
+  )
 
   // 4. Lists API
   const listCreatePromise: Promise<ListSummary> = listsApi.create(token, { title: 'My List' })
   const listByUserPromise: Promise<ListSummary[]> = listsApi.byUser(username, token, gameId)
   const listGetOnePromise: Promise<ListDetail> = listsApi.getOne(username, 'my-list', token)
   const listGetBySlugPromise: Promise<ListDetail> = listsApi.getBySlug('my-list', token)
-  const listUpdatePromise: Promise<ListSummary> = listsApi.update(listId, token, { title: 'Updated List' })
-  const listReorderPromise: Promise<ListDetail> = listsApi.reorderItems(listId, ['game-1', 'game-2'], token)
+  const listUpdatePromise: Promise<ListSummary> = listsApi.update(listId, token, {
+    title: 'Updated List',
+  })
+  const listReorderPromise: Promise<ListDetail> = listsApi.reorderItems(
+    listId,
+    ['game-1', 'game-2'],
+    token,
+  )
   const listDeletePromise: Promise<void> = listsApi.delete(listId, token)
   const listAddItemPromise: Promise<ListItem> = listsApi.addItem(listId, token, gameId, 'My note')
   const listRemoveItemPromise: Promise<void> = listsApi.removeItem(listId, gameId, token)

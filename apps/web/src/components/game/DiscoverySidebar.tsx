@@ -30,7 +30,7 @@ export function DiscoverySidebar() {
                   href={item.href}
                   className={cn(
                     'discovery-sidebar__link',
-                    active && 'discovery-sidebar__link--active'
+                    active && 'discovery-sidebar__link--active',
                   )}
                   aria-current={active ? 'page' : undefined}
                 >

@@ -1,10 +1,26 @@
 import {
-  Controller, Get, Post, Patch, Delete,
-  Param, Body, Request, HttpCode, HttpStatus, Query, ParseIntPipe, DefaultValuePipe,
+  Controller,
+  Get,
+  Post,
+  Patch,
+  Delete,
+  Param,
+  Body,
+  Request,
+  HttpCode,
+  HttpStatus,
+  Query,
+  ParseIntPipe,
+  DefaultValuePipe,
 } from '@nestjs/common'
 import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery } from '@nestjs/swagger'
 import { ListsService } from './lists.service'
-import type { CreateListDto, UpdateListDto, AddListItemDto, ReorderListItemsDto } from './dto/list.dto'
+import type {
+  CreateListDto,
+  UpdateListDto,
+  AddListItemDto,
+  ReorderListItemsDto,
+} from './dto/list.dto'
 import { CurrentUser, type AuthUser } from '../auth/decorators/current-user.decorator'
 import { Public } from '../auth/decorators/public.decorator'
 
@@ -17,11 +33,11 @@ export class ListsController {
 
   @Public()
   @Get('lists/discovery')
-  @ApiOperation({ summary: 'Public list discovery for homepage — top public lists with cover mosaics' })
+  @ApiOperation({
+    summary: 'Public list discovery for homepage — top public lists with cover mosaics',
+  })
   @ApiQuery({ name: 'limit', required: false, example: 3 })
-  findDiscovery(
-    @Query('limit', new DefaultValuePipe(3), ParseIntPipe) limit: number,
-  ) {
+  findDiscovery(@Query('limit', new DefaultValuePipe(3), ParseIntPipe) limit: number) {
     return this.listsService.findPublicDiscovery(Math.min(limit, 12))
   }
 
@@ -70,11 +86,7 @@ export class ListsController {
   @Patch('lists/:id')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update a list' })
-  update(
-    @Param('id') id: string,
-    @CurrentUser() user: AuthUser,
-    @Body() dto: UpdateListDto,
-  ) {
+  update(@Param('id') id: string, @CurrentUser() user: AuthUser, @Body() dto: UpdateListDto) {
     return this.listsService.update(id, user.id, dto)
   }
 
@@ -102,11 +114,7 @@ export class ListsController {
   @Post('lists/:id/items')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Add game to list' })
-  addItem(
-    @Param('id') id: string,
-    @CurrentUser() user: AuthUser,
-    @Body() dto: AddListItemDto,
-  ) {
+  addItem(@Param('id') id: string, @CurrentUser() user: AuthUser, @Body() dto: AddListItemDto) {
     return this.listsService.addItem(id, user.id, dto)
   }
 

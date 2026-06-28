@@ -42,19 +42,19 @@ export default async function GameDetailPage({ params }: PageProps) {
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'VideoGame',
-    'name': game.title,
-    'description': game.description ?? `Rate and review ${game.title} on Continue.`,
-    ...(game.coverUrl && { 'image': game.coverUrl }),
-    ...(game.releaseDate && { 'datePublished': game.releaseDate }),
-    ...(game.developer && { 'author': { '@type': 'Organization', 'name': game.developer } }),
-    ...(game.publisher && { 'publisher': { '@type': 'Organization', 'name': game.publisher } }),
+    name: game.title,
+    description: game.description ?? `Rate and review ${game.title} on Continue.`,
+    ...(game.coverUrl && { image: game.coverUrl }),
+    ...(game.releaseDate && { datePublished: game.releaseDate }),
+    ...(game.developer && { author: { '@type': 'Organization', name: game.developer } }),
+    ...(game.publisher && { publisher: { '@type': 'Organization', name: game.publisher } }),
     ...(game.avgRating && {
-      'aggregateRating': {
+      aggregateRating: {
         '@type': 'AggregateRating',
-        'ratingValue': game.avgRating,
-        'bestRating': 10,
-        'worstRating': 1,
-        'ratingCount': game.ratingCount || 1,
+        ratingValue: game.avgRating,
+        bestRating: 10,
+        worstRating: 1,
+        ratingCount: game.ratingCount || 1,
       },
     }),
   }

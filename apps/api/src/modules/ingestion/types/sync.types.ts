@@ -12,11 +12,11 @@ export interface SyncContext {
 }
 
 export interface TaxonomyResolutionResult {
-  genres: string[]      // DB IDs
-  platforms: string[]   // DB IDs
-  themes: string[]      // DB IDs
-  developers: string[]  // DB IDs
-  publishers: string[]  // DB IDs
+  genres: string[] // DB IDs
+  platforms: string[] // DB IDs
+  themes: string[] // DB IDs
+  developers: string[] // DB IDs
+  publishers: string[] // DB IDs
   franchiseId: string | null
 }
 

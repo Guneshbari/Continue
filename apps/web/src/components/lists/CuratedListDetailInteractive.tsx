@@ -14,7 +14,7 @@ import {
   ChevronDown,
   Loader2,
   Trash2,
-  Layers
+  Layers,
 } from 'lucide-react'
 import { listsApi, type ListDetail, type ListItem } from '@/lib/api/lists'
 import { useAuth } from '@/lib/auth/AuthContext'
@@ -90,7 +90,7 @@ export function CuratedListDetailInteractive({ list }: CuratedListDetailProps) {
   const handleReorder = async (newItems: ListItem[]) => {
     if (!token) return
     const backup = [...items]
-    
+
     // 1. Update UI Optimistically
     setItems(newItems)
     setReorderError(null)
@@ -189,19 +189,24 @@ export function CuratedListDetailInteractive({ list }: CuratedListDetailProps) {
     <div className="flex flex-col gap-8">
       {/* Reorder sync status / error banner */}
       {reorderError && (
-        <div className="fixed bottom-6 right-6 z-overlay bg-error text-text-primary px-4 py-3 rounded-lg shadow-lg text-xs font-bold animate-pulse">
+        <div className="z-overlay bg-error text-text-primary fixed bottom-6 right-6 animate-pulse rounded-lg px-4 py-3 text-xs font-bold shadow-lg">
           {reorderError}
         </div>
       )}
 
       {/* Header Container */}
-      <header className="relative p-6 md:p-8 rounded-2xl bg-surface-raised border border-border-subtle shadow-xl">
+      <header className="bg-surface-raised border-border-subtle relative rounded-2xl border p-6 shadow-xl md:p-8">
         {isEditingMetadata ? (
           <form onSubmit={handleSaveMetadata} className="flex flex-col gap-4">
             {metaError && <div className="list-modal__error">{metaError}</div>}
-            
+
             <div className="flex flex-col gap-1">
-              <label htmlFor="edit-title" className="text-[10px] font-bold text-text-muted uppercase tracking-wider">Title</label>
+              <label
+                htmlFor="edit-title"
+                className="text-text-muted text-[10px] font-bold uppercase tracking-wider"
+              >
+                Title
+              </label>
               <input
                 id="edit-title"
                 required
@@ -220,7 +225,12 @@ export function CuratedListDetailInteractive({ list }: CuratedListDetailProps) {
             </div>
 
             <div className="flex flex-col gap-1">
-              <label htmlFor="edit-desc" className="text-[10px] font-bold text-text-muted uppercase tracking-wider">Description</label>
+              <label
+                htmlFor="edit-desc"
+                className="text-text-muted text-[10px] font-bold uppercase tracking-wider"
+              >
+                Description
+              </label>
               <textarea
                 id="edit-desc"
                 value={description}
@@ -239,13 +249,18 @@ export function CuratedListDetailInteractive({ list }: CuratedListDetailProps) {
             </div>
 
             <div className="flex items-center gap-4">
-              <div className="flex flex-col gap-1 flex-1">
-                <label htmlFor="edit-visibility" className="text-[10px] font-bold text-text-muted uppercase tracking-wider">Visibility</label>
+              <div className="flex flex-1 flex-col gap-1">
+                <label
+                  htmlFor="edit-visibility"
+                  className="text-text-muted text-[10px] font-bold uppercase tracking-wider"
+                >
+                  Visibility
+                </label>
                 <select
                   id="edit-visibility"
                   value={visibility}
                   onChange={(e) => setVisibility(e.target.value as any)}
-                  className="bg-surface-sunken border border-border rounded-md px-3 py-1.5 text-xs text-text-primary focus:outline-none"
+                  className="bg-surface-sunken border-border text-text-primary rounded-md border px-3 py-1.5 text-xs focus:outline-none"
                 >
                   <option value="PUBLIC">Public</option>
                   <option value="UNLISTED">Unlisted</option>
@@ -274,44 +289,51 @@ export function CuratedListDetailInteractive({ list }: CuratedListDetailProps) {
             </div>
           </form>
         ) : (
-          <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-2">
-                <span className="text-xs font-bold text-text-muted uppercase tracking-wider flex items-center gap-1">
+          <div className="flex flex-col justify-between gap-6 md:flex-row md:items-start">
+            <div className="min-w-0 flex-1">
+              <div className="mb-2 flex items-center gap-2">
+                <span className="text-text-muted flex items-center gap-1 text-xs font-bold uppercase tracking-wider">
                   {visibilityIcon[list.visibility]}
                   {list.visibility} List
                 </span>
                 {syncing && (
-                  <span className="text-[10px] text-accent font-semibold animate-pulse flex items-center gap-1">
+                  <span className="text-accent flex animate-pulse items-center gap-1 text-[10px] font-semibold">
                     <Loader2 size={10} className="spinner" /> Reordering synced...
                   </span>
                 )}
               </div>
 
-              <h1 className="text-3xl md:text-4xl font-extrabold text-text-primary tracking-tight leading-tight mb-2">
+              <h1 className="text-text-primary mb-2 text-3xl font-extrabold leading-tight tracking-tight md:text-4xl">
                 {list.title}
               </h1>
 
               {list.description ? (
-                <p className="text-sm text-text-secondary leading-relaxed max-w-2xl select-text">
+                <p className="text-text-secondary max-w-2xl select-text text-sm leading-relaxed">
                   {list.description}
                 </p>
               ) : (
                 isCurator && (
                   <button
                     onClick={() => setIsEditingMetadata(true)}
-                    className="text-xs text-text-muted italic hover:underline"
+                    className="text-text-muted text-xs italic hover:underline"
                   >
                     Add a description for this collection...
                   </button>
                 )
               )}
 
-              <div className="flex items-center gap-3 mt-4 text-xs font-medium">
+              <div className="mt-4 flex items-center gap-3 text-xs font-medium">
                 <span className="text-text-muted">Curated by</span>
-                <Link href={`/u/${list.user.username}`} className="font-bold text-text-secondary hover:text-accent transition-colors flex items-center gap-1.5">
+                <Link
+                  href={`/u/${list.user.username}`}
+                  className="text-text-secondary hover:text-accent flex items-center gap-1.5 font-bold transition-colors"
+                >
                   {list.user.avatarUrl && (
-                    <img src={list.user.avatarUrl} alt="" className="w-5 h-5 rounded-full object-cover border border-border" />
+                    <img
+                      src={list.user.avatarUrl}
+                      alt=""
+                      className="border-border h-5 w-5 rounded-full border object-cover"
+                    />
                   )}
                   {list.user.displayName ?? list.user.username}
                 </Link>
@@ -324,7 +346,7 @@ export function CuratedListDetailInteractive({ list }: CuratedListDetailProps) {
 
             {/* Curator Tools Panel */}
             {isCurator && token && (
-              <div className="flex flex-col md:flex-row gap-2 shrink-0 w-full md:w-auto">
+              <div className="flex w-full shrink-0 flex-col gap-2 md:w-auto md:flex-row">
                 <button
                   onClick={() => setIsEditingMetadata(true)}
                   className="btn btn--secondary btn--sm btn--icon justify-center"
@@ -349,17 +371,17 @@ export function CuratedListDetailInteractive({ list }: CuratedListDetailProps) {
 
       {/* Items List */}
       {items.length === 0 ? (
-        <div className="flex flex-col items-center justify-center p-12 rounded-xl bg-surface-raised border border-border-subtle text-center min-h-[220px]">
+        <div className="bg-surface-raised border-border-subtle flex min-h-[220px] flex-col items-center justify-center rounded-xl border p-12 text-center">
           <Layers size={36} className="text-text-muted mb-4 animate-pulse" aria-hidden="true" />
-          <h3 className="text-lg font-bold text-text-primary mb-1">List is empty</h3>
-          <p className="text-sm text-text-muted max-w-sm">
+          <h3 className="text-text-primary mb-1 text-lg font-bold">List is empty</h3>
+          <p className="text-text-muted max-w-sm text-sm">
             {isCurator
               ? 'Find your favorite games and click "Add to List" on their pages to build your collection!'
               : 'This curator has not added any games to this collection yet.'}
           </p>
         </div>
       ) : (
-        <ol className="flex flex-col gap-4 list-none m-0 p-0" role="list">
+        <ol className="m-0 flex list-none flex-col gap-4 p-0" role="list">
           {items.map((item, index) => {
             const isDragging = draggedIndex === index
 
@@ -370,19 +392,22 @@ export function CuratedListDetailInteractive({ list }: CuratedListDetailProps) {
                 onDragStart={(e) => handleDragStart(e, index)}
                 onDragOver={(e) => handleDragOver(e, index)}
                 onDrop={(e) => handleDrop(e, index)}
-                className={`flex items-center gap-4 p-4 rounded-xl bg-surface-raised border transition-all ${
-                  isDragging ? 'opacity-40 scale-95 border-accent' : 'border-border-subtle'
-                } ${isReordering ? 'cursor-grab active:cursor-grabbing hover:border-border' : ''}`}
+                className={`bg-surface-raised flex items-center gap-4 rounded-xl border p-4 transition-all ${
+                  isDragging ? 'border-accent scale-95 opacity-40' : 'border-border-subtle'
+                } ${isReordering ? 'hover:border-border cursor-grab active:cursor-grabbing' : ''}`}
               >
                 {/* Position Badge */}
-                <span className="text-sm font-extrabold text-text-muted w-6 text-center select-none" aria-hidden="true">
+                <span
+                  className="text-text-muted w-6 select-none text-center text-sm font-extrabold"
+                  aria-hidden="true"
+                >
                   {index + 1}
                 </span>
 
                 {/* Cover Poster */}
                 <Link
                   href={`/games/${item.game.slug}`}
-                  className="relative flex-shrink-0 w-12 aspect-[3/4] rounded-md overflow-hidden bg-surface-sunken border border-border-subtle shadow-md"
+                  className="bg-surface-sunken border-border-subtle relative aspect-[3/4] w-12 flex-shrink-0 overflow-hidden rounded-md border shadow-md"
                 >
                   {item.game.coverUrl ? (
                     <Image
@@ -393,40 +418,44 @@ export function CuratedListDetailInteractive({ list }: CuratedListDetailProps) {
                       className="object-cover"
                     />
                   ) : (
-                    <div className="w-100% h-100 bg-gradient-to-br from-surface-overlay to-surface-raised" />
+                    <div className="w-100% h-100 from-surface-overlay to-surface-raised bg-gradient-to-br" />
                   )}
                 </Link>
 
                 {/* Details */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-baseline gap-2 mb-0.5">
+                <div className="min-w-0 flex-1">
+                  <div className="mb-0.5 flex items-baseline gap-2">
                     <Link
                       href={`/games/${item.game.slug}`}
-                      className="text-sm font-bold text-text-primary hover:text-accent transition-colors truncate"
+                      className="text-text-primary hover:text-accent truncate text-sm font-bold transition-colors"
                     >
                       {item.game.title}
                     </Link>
                     {item.game.releaseDate && (
-                      <span className="text-[10px] text-text-muted font-semibold">
+                      <span className="text-text-muted text-[10px] font-semibold">
                         ({new Date(item.game.releaseDate).getFullYear()})
                       </span>
                     )}
                   </div>
 
                   {item.note ? (
-                    <p className="text-xs text-text-secondary italic leading-relaxed truncate select-text">
+                    <p className="text-text-secondary select-text truncate text-xs italic leading-relaxed">
                       "{item.note}"
                     </p>
                   ) : (
-                    isCurator && !isReordering && (
-                      <span className="text-[10px] text-text-muted italic">No note added.</span>
+                    isCurator &&
+                    !isReordering && (
+                      <span className="text-text-muted text-[10px] italic">No note added.</span>
                     )
                   )}
                 </div>
 
                 {/* Score */}
                 {item.game.avgRating !== null && (
-                  <div className="flex items-center gap-1 text-xs text-warning font-bold mr-2 select-none" aria-label={`Avg score: ${item.game.avgRating.toFixed(1)}`}>
+                  <div
+                    className="text-warning mr-2 flex select-none items-center gap-1 text-xs font-bold"
+                    aria-label={`Avg score: ${item.game.avgRating.toFixed(1)}`}
+                  >
                     <Star size={11} className="fill-current" />
                     <span>{item.game.avgRating.toFixed(1)}</span>
                   </div>
@@ -434,13 +463,13 @@ export function CuratedListDetailInteractive({ list }: CuratedListDetailProps) {
 
                 {/* Keyboard Reordering Controls */}
                 {isReordering && (
-                  <div className="flex items-center gap-1.5 shrink-0" aria-label="Reorder actions">
+                  <div className="flex shrink-0 items-center gap-1.5" aria-label="Reorder actions">
                     <button
                       type="button"
                       disabled={index === 0}
                       onClick={() => moveItem(index, 'TOP')}
                       title="Move to Top"
-                      className="p-1.5 rounded bg-surface-sunken hover:bg-surface-overlay border border-border-subtle disabled:opacity-30 disabled:pointer-events-none text-text-secondary hover:text-accent transition-colors"
+                      className="bg-surface-sunken hover:bg-surface-overlay border-border-subtle text-text-secondary hover:text-accent rounded border p-1.5 transition-colors disabled:pointer-events-none disabled:opacity-30"
                     >
                       ⤒
                     </button>
@@ -449,7 +478,7 @@ export function CuratedListDetailInteractive({ list }: CuratedListDetailProps) {
                       disabled={index === 0}
                       onClick={() => moveItem(index, 'UP')}
                       title="Move Up"
-                      className="p-1.5 rounded bg-surface-sunken hover:bg-surface-overlay border border-border-subtle disabled:opacity-30 disabled:pointer-events-none text-text-secondary hover:text-accent transition-colors flex items-center justify-center"
+                      className="bg-surface-sunken hover:bg-surface-overlay border-border-subtle text-text-secondary hover:text-accent flex items-center justify-center rounded border p-1.5 transition-colors disabled:pointer-events-none disabled:opacity-30"
                     >
                       <ChevronUp size={12} />
                     </button>
@@ -458,7 +487,7 @@ export function CuratedListDetailInteractive({ list }: CuratedListDetailProps) {
                       disabled={index === items.length - 1}
                       onClick={() => moveItem(index, 'DOWN')}
                       title="Move Down"
-                      className="p-1.5 rounded bg-surface-sunken hover:bg-surface-overlay border border-border-subtle disabled:opacity-30 disabled:pointer-events-none text-text-secondary hover:text-accent transition-colors flex items-center justify-center"
+                      className="bg-surface-sunken hover:bg-surface-overlay border-border-subtle text-text-secondary hover:text-accent flex items-center justify-center rounded border p-1.5 transition-colors disabled:pointer-events-none disabled:opacity-30"
                     >
                       <ChevronDown size={12} />
                     </button>
@@ -467,7 +496,7 @@ export function CuratedListDetailInteractive({ list }: CuratedListDetailProps) {
                       disabled={index === items.length - 1}
                       onClick={() => moveItem(index, 'BOTTOM')}
                       title="Move to Bottom"
-                      className="p-1.5 rounded bg-surface-sunken hover:bg-surface-overlay border border-border-subtle disabled:opacity-30 disabled:pointer-events-none text-text-secondary hover:text-accent transition-colors"
+                      className="bg-surface-sunken hover:bg-surface-overlay border-border-subtle text-text-secondary hover:text-accent rounded border p-1.5 transition-colors disabled:pointer-events-none disabled:opacity-30"
                     >
                       ⤓
                     </button>
@@ -475,7 +504,7 @@ export function CuratedListDetailInteractive({ list }: CuratedListDetailProps) {
                       type="button"
                       onClick={() => handleDeleteListItem(item.game.id)}
                       title="Remove game"
-                      className="p-1.5 rounded bg-surface-sunken hover:bg-error/10 hover:border-error/20 border border-border-subtle text-text-secondary hover:text-error transition-colors flex items-center justify-center"
+                      className="bg-surface-sunken hover:bg-error/10 hover:border-error/20 border-border-subtle text-text-secondary hover:text-error flex items-center justify-center rounded border p-1.5 transition-colors"
                     >
                       <Trash2 size={12} />
                     </button>

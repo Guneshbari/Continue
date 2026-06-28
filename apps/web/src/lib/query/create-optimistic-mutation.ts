@@ -22,9 +22,8 @@ export function useOptimisticMutation<TData = any, TError = any, TVariables = an
   return useMutation<TData, TError, TVariables, { previousData: any; targetKey: any[] }>({
     mutationFn,
     onMutate: async (variables) => {
-      const targetKey = typeof queryKeyToUpdate === 'function'
-        ? queryKeyToUpdate(variables)
-        : queryKeyToUpdate
+      const targetKey =
+        typeof queryKeyToUpdate === 'function' ? queryKeyToUpdate(variables) : queryKeyToUpdate
 
       // Cancel outgoing refetches
       await queryClient.cancelQueries({ queryKey: targetKey })

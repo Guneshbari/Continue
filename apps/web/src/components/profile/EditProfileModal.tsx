@@ -73,7 +73,12 @@ export function EditProfileModal({
   return (
     <div
       className="list-modal"
-      style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 'var(--z-modal)' }}
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        zIndex: 'var(--z-modal)',
+      }}
       role="dialog"
       aria-modal="true"
       aria-labelledby="edit-profile-title"
@@ -86,7 +91,14 @@ export function EditProfileModal({
       />
       <div className="list-modal__content" style={{ width: '100%', maxWidth: '480px' }}>
         <div className="list-modal__header">
-          <h2 id="edit-profile-title" style={{ fontFamily: 'var(--font-display)', fontSize: '1.5rem', letterSpacing: '0.03em' }}>
+          <h2
+            id="edit-profile-title"
+            style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: '1.5rem',
+              letterSpacing: '0.03em',
+            }}
+          >
             Edit Profile
           </h2>
           <button className="list-modal__close" onClick={onClose} aria-label="Close modal">
@@ -98,7 +110,16 @@ export function EditProfileModal({
           {error && <div className="list-modal__error">{error}</div>}
 
           <div className="list-modal__field">
-            <label htmlFor="display-name" style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--color-text-secondary)', marginBottom: '0.25rem' }}>
+            <label
+              htmlFor="display-name"
+              style={{
+                fontSize: '0.75rem',
+                textTransform: 'uppercase',
+                letterSpacing: '0.05em',
+                color: 'var(--color-text-secondary)',
+                marginBottom: '0.25rem',
+              }}
+            >
               Display Name
             </label>
             <input
@@ -118,7 +139,16 @@ export function EditProfileModal({
           </div>
 
           <div className="list-modal__field">
-            <label htmlFor="bio-input" style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--color-text-secondary)', marginBottom: '0.25rem' }}>
+            <label
+              htmlFor="bio-input"
+              style={{
+                fontSize: '0.75rem',
+                textTransform: 'uppercase',
+                letterSpacing: '0.05em',
+                color: 'var(--color-text-secondary)',
+                marginBottom: '0.25rem',
+              }}
+            >
               Bio
             </label>
             <textarea
@@ -140,7 +170,16 @@ export function EditProfileModal({
           </div>
 
           <div className="list-modal__field">
-            <label htmlFor="avatar-url" style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--color-text-secondary)', marginBottom: '0.25rem' }}>
+            <label
+              htmlFor="avatar-url"
+              style={{
+                fontSize: '0.75rem',
+                textTransform: 'uppercase',
+                letterSpacing: '0.05em',
+                color: 'var(--color-text-secondary)',
+                marginBottom: '0.25rem',
+              }}
+            >
               Avatar URL
             </label>
             <input

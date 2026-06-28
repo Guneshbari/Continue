@@ -21,6 +21,7 @@ Main bottleneck: N+1 query. Load all tasks, then per-task query for assignee pro
 Frontend issue: task list render all at once, no virtualization. React struggle with 500+ task cards each with children, tooltips, dropdowns.
 
 Proposed solutions:
+
 1. Add JOIN to load assignees in one query
 2. Add composite index on `tasks(project_id, status, updated_at)`
 3. Cursor-based pagination on API (50 tasks/page)

@@ -168,17 +168,36 @@ export function EditorialHeroSkeleton() {
     <div className="editorial-hero editorial-hero--skeleton" aria-hidden="true">
       <div className="editorial-hero__content">
         <div className="editorial-hero__left">
-          <div className="skeleton-pulse" style={{ width: '120px', height: '22px', borderRadius: '4px', marginBottom: '1rem' }} />
-          <div className="skeleton-pulse" style={{ width: '70%', height: '80px', borderRadius: '6px', marginBottom: '1rem' }} />
-          <div className="skeleton-pulse" style={{ width: '85%', height: '48px', borderRadius: '4px', marginBottom: '1.5rem' }} />
+          <div
+            className="skeleton-pulse"
+            style={{ width: '120px', height: '22px', borderRadius: '4px', marginBottom: '1rem' }}
+          />
+          <div
+            className="skeleton-pulse"
+            style={{ width: '70%', height: '80px', borderRadius: '6px', marginBottom: '1rem' }}
+          />
+          <div
+            className="skeleton-pulse"
+            style={{ width: '85%', height: '48px', borderRadius: '4px', marginBottom: '1.5rem' }}
+          />
           <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.75rem' }}>
             {[80, 70, 100].map((w, i) => (
-              <div key={i} className="skeleton-pulse" style={{ width: `${w}px`, height: '22px', borderRadius: '4px' }} />
+              <div
+                key={i}
+                className="skeleton-pulse"
+                style={{ width: `${w}px`, height: '22px', borderRadius: '4px' }}
+              />
             ))}
           </div>
           <div style={{ display: 'flex', gap: '0.75rem' }}>
-            <div className="skeleton-pulse" style={{ width: '140px', height: '44px', borderRadius: '8px' }} />
-            <div className="skeleton-pulse" style={{ width: '120px', height: '44px', borderRadius: '8px' }} />
+            <div
+              className="skeleton-pulse"
+              style={{ width: '140px', height: '44px', borderRadius: '8px' }}
+            />
+            <div
+              className="skeleton-pulse"
+              style={{ width: '120px', height: '44px', borderRadius: '8px' }}
+            />
           </div>
         </div>
         <div className="editorial-hero__right">

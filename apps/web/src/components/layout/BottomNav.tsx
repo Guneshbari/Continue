@@ -25,7 +25,8 @@ export function BottomNav() {
       <ul className="bottom-nav__list" role="list">
         {BOTTOM_NAV_LINKS.map(({ label, href, icon: Icon }) => {
           const basePath = href.split('?')[0] ?? ''
-          const isActive = pathname === href ||
+          const isActive =
+            pathname === href ||
             (basePath !== '/' && pathname.startsWith(basePath) && !href.includes('?'))
           return (
             <li key={href} className="bottom-nav__item">

@@ -50,7 +50,7 @@ describe('FirebaseAuthGuard', () => {
 
   const createMockContext = (authHeader?: string, isPublic = false): ExecutionContext => {
     ;(reflector.getAllAndOverride as jest.Mock).mockReturnValue(isPublic)
-    
+
     const request = {
       headers: authHeader ? { authorization: authHeader } : {},
       user: undefined,

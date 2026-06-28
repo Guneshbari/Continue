@@ -6,11 +6,11 @@ generated output token counts.
 
 ## The three arms
 
-| Arm | System prompt |
-|-----|--------------|
-| `__baseline__` | none |
-| `__terse__` | `Answer concisely.` |
-| `<skill>` | `Answer concisely.\n\n{SKILL.md}` |
+| Arm            | System prompt                     |
+| -------------- | --------------------------------- |
+| `__baseline__` | none                              |
+| `__terse__`    | `Answer concisely.`               |
+| `<skill>`      | `Answer concisely.\n\n{SKILL.md}` |
 
 The honest delta for any skill is **`<skill>` vs `__terse__`** — i.e.
 how much the skill itself adds on top of a plain "be terse" instruction.

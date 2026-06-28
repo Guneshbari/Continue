@@ -18,27 +18,27 @@ State: React Context (global), TanStack Query (server state + caching).
 
 Code structure:
 
-* `src/app/` — App Router
-* `src/components/` — shared components
-* `src/lib/` — utilities
-* `src/types/` — type definitions
+- `src/app/` — App Router
+- `src/components/` — shared components
+- `src/lib/` — utilities
+- `src/types/` — type definitions
 
 ### Backend
 
 Node.js + Express API, port 3001 (dev).
 Pattern: controller-service-repository.
 
-* controllers handle HTTP
-* services contain business logic
-* repositories manage DB access
+- controllers handle HTTP
+- services contain business logic
+- repositories manage DB access
 
 Structure under `server/src/`:
 
-* `server/src/controllers/` — route handlers + validation
-* `server/src/services/` — business logic
-* `server/src/repositories/` — DB queries (Knex.js)
-* `server/src/middleware/` — auth, rate limit, errors
-* `server/src/jobs/` — background jobs (BullMQ)
+- `server/src/controllers/` — route handlers + validation
+- `server/src/services/` — business logic
+- `server/src/repositories/` — DB queries (Knex.js)
+- `server/src/middleware/` — auth, rate limit, errors
+- `server/src/jobs/` — background jobs (BullMQ)
 
 ### Database
 
@@ -68,24 +68,24 @@ Pre-commit: Husky + lint-staged run linters.
 
 Rules:
 
-* Use strict TypeScript
-* Avoid `any`, if used explain why
-* Prefer interfaces over type aliases
-* Use discriminated unions for state
+- Use strict TypeScript
+- Avoid `any`, if used explain why
+- Prefer interfaces over type aliases
+- Use discriminated unions for state
 
 ### Testing
 
 Test suite:
 
-* Unit: `*.test.ts`, Vitest + Testing Library
-* Integration: `tests/integration/`, real PostgreSQL (Docker), run `npm run test:integration`
-* E2E: `tests/e2e/`, Playwright, CI only
+- Unit: `*.test.ts`, Vitest + Testing Library
+- Integration: `tests/integration/`, real PostgreSQL (Docker), run `npm run test:integration`
+- E2E: `tests/e2e/`, Playwright, CI only
 
 Rules:
 
-* Test behavior, not implementation
-* Mock external services
-* Do NOT mock DB in integration tests
+- Test behavior, not implementation
+- Mock external services
+- Do NOT mock DB in integration tests
 
 ## Git Workflow
 
@@ -100,9 +100,9 @@ Types: feat, fix, refactor, test, docs, chore, perf
 
 Rules:
 
-* Require ≥1 approval
-* CI must pass
-* Prefer squash merge
+- Require ≥1 approval
+- CI must pass
+- Prefer squash merge
 
 ## Common Commands
 
@@ -135,12 +135,12 @@ docker compose up -d     # Start all services locally with Docker
 
 Required env vars. Copy `.env.example` → `.env.local`.
 
-* `DATABASE_URL` — PostgreSQL connection string (`postgresql://user:pass@localhost:5432/taskflow`)
-* `REDIS_URL` — Redis connection string (`redis://localhost:6379`)
-* `JWT_SECRET` — JWT signing key (≥32 chars)
-* `NEXT_PUBLIC_API_URL` — API URL (`http://localhost:3001`)
-* `SLACK_WEBHOOK_URL` — optional Slack webhook
-* `GITHUB_TOKEN` — optional GitHub token
+- `DATABASE_URL` — PostgreSQL connection string (`postgresql://user:pass@localhost:5432/taskflow`)
+- `REDIS_URL` — Redis connection string (`redis://localhost:6379`)
+- `JWT_SECRET` — JWT signing key (≥32 chars)
+- `NEXT_PUBLIC_API_URL` — API URL (`http://localhost:3001`)
+- `SLACK_WEBHOOK_URL` — optional Slack webhook
+- `GITHUB_TOKEN` — optional GitHub token
 
 ## Known Issues
 
@@ -154,8 +154,7 @@ Required env vars. Copy `.env.example` → `.env.local`.
 
 ## Team
 
-* Alex Chen — tech lead, backend + infra
-* Maya Patel — frontend lead, design system
-* Jordan Kim — full-stack, Slack + GitHub integrations
-* Sam Rivera — backend, dashboard performance
-
+- Alex Chen — tech lead, backend + infra
+- Maya Patel — frontend lead, design system
+- Jordan Kim — full-stack, Slack + GitHub integrations
+- Sam Rivera — backend, dashboard performance

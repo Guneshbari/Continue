@@ -4,7 +4,11 @@ import type { LibraryStatus } from '@/lib/api/library-api'
 import { listsApi } from '@/lib/api/lists'
 import { queryKeys } from '@/lib/query/query-keys'
 
-export function useLibraryStatus(gameId: string, username: string | undefined, token: string | undefined) {
+export function useLibraryStatus(
+  gameId: string,
+  username: string | undefined,
+  token: string | undefined,
+) {
   const queryClient = useQueryClient()
   const queryKey = ['users', username, 'lists', { gameId }]
 
@@ -18,7 +22,9 @@ export function useLibraryStatus(gameId: string, username: string | undefined, t
   })
 
   const statusSlugs = ['playing', 'completed', 'dropped', 'backlog', 'wishlist']
-  const activeList = lists.find((l) => statusSlugs.includes(l.slug) && l.items && l.items.length > 0)
+  const activeList = lists.find(
+    (l) => statusSlugs.includes(l.slug) && l.items && l.items.length > 0,
+  )
   const currentStatus: LibraryStatus = activeList ? (activeList.slug as LibraryStatus) : 'none'
 
   const mutation = useMutation({

@@ -1,5 +1,14 @@
 export interface MediaVariantDTO {
-  role: 'COVER_SM' | 'COVER_MD' | 'COVER_LG' | 'BACKDROP_HERO' | 'GALLERY_HD' | 'THUMBNAIL_BLUR' | 'AVATAR_SM' | 'AVATAR_MD' | 'LOGO_TRANSPARENT'
+  role:
+    | 'COVER_SM'
+    | 'COVER_MD'
+    | 'COVER_LG'
+    | 'BACKDROP_HERO'
+    | 'GALLERY_HD'
+    | 'THUMBNAIL_BLUR'
+    | 'AVATAR_SM'
+    | 'AVATAR_MD'
+    | 'LOGO_TRANSPARENT'
   url: string
   width: number | null
   height: number | null
@@ -33,7 +42,9 @@ export interface PrismaMediaAsset {
 /**
  * Maps a Prisma MediaAsset relation (including its variants) to the canonical DTO.
  */
-export function mapMediaAsset(asset: PrismaMediaAsset | null | undefined): CanonicalMediaDTO | null {
+export function mapMediaAsset(
+  asset: PrismaMediaAsset | null | undefined,
+): CanonicalMediaDTO | null {
   if (!asset) return null
   return {
     rawUrl: asset.rawUrl,
@@ -61,4 +72,3 @@ export function getVariantUrl(
   const variant = (asset.variants ?? []).find((v) => v.role === role)
   return variant ? variant.url : asset.rawUrl
 }
-

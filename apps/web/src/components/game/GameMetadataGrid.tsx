@@ -16,8 +16,10 @@ export function GameMetadataGrid({ game }: GameMetadataGridProps) {
 
   return (
     <section className="game-metadata-grid" aria-labelledby="metadata-heading">
-      <h2 id="metadata-heading" className="sr-only">Game Information</h2>
-      
+      <h2 id="metadata-heading" className="sr-only">
+        Game Information
+      </h2>
+
       <div className="metadata-grid">
         {/* Release Date */}
         <div className="metadata-item">
@@ -60,7 +62,9 @@ export function GameMetadataGrid({ game }: GameMetadataGridProps) {
           </span>
           <div className="metadata-tags">
             {game.platforms.map((p) => (
-              <span key={p.id} className="metadata-tag">{p.name}</span>
+              <span key={p.id} className="metadata-tag">
+                {p.name}
+              </span>
             ))}
           </div>
         </div>
@@ -75,7 +79,9 @@ export function GameMetadataGrid({ game }: GameMetadataGridProps) {
           </span>
           <div className="metadata-tags">
             {game.tags.map((t) => (
-              <span key={t.id} className="metadata-tag">{t.name}</span>
+              <span key={t.id} className="metadata-tag">
+                {t.name}
+              </span>
             ))}
           </div>
         </div>

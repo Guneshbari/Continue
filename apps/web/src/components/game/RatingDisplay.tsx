@@ -7,7 +7,12 @@ interface RatingDisplayProps {
   className?: string
 }
 
-export function RatingDisplay({ rating, maxRating = 10, size = 14, className = '' }: RatingDisplayProps) {
+export function RatingDisplay({
+  rating,
+  maxRating = 10,
+  size = 14,
+  className = '',
+}: RatingDisplayProps) {
   const rounded = Math.round(rating * 10) / 10
 
   const getRatingColor = (val: number) => {
@@ -19,8 +24,8 @@ export function RatingDisplay({ rating, maxRating = 10, size = 14, className = '
   const color = getRatingColor(rounded)
 
   return (
-    <div 
-      className={`flex items-center gap-1 font-bold text-xs select-none ${className}`} 
+    <div
+      className={`flex select-none items-center gap-1 text-xs font-bold ${className}`}
       style={{ color }}
       aria-label={`Rating: ${rounded} out of ${maxRating}`}
     >

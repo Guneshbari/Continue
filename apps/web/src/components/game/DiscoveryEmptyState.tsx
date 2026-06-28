@@ -7,7 +7,14 @@ interface DiscoveryEmptyStateProps {
 export function DiscoveryEmptyState({ onClearFilters }: DiscoveryEmptyStateProps) {
   return (
     <div className="games-grid-empty" style={{ padding: '4rem 2rem' }}>
-      <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1rem', color: 'var(--color-text-muted)' }}>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          marginBottom: '1rem',
+          color: 'var(--color-text-muted)',
+        }}
+      >
         <Compass size={36} aria-hidden="true" />
       </div>
       <h3 className="games-grid-empty__title">No games discovered</h3>
@@ -15,7 +22,11 @@ export function DiscoveryEmptyState({ onClearFilters }: DiscoveryEmptyStateProps
         No titles match your active filters (genre, platform, year, rating).
       </p>
       {onClearFilters && (
-        <button onClick={onClearFilters} className="pagination-loader-btn" aria-label="Clear active discovery filters">
+        <button
+          onClick={onClearFilters}
+          className="pagination-loader-btn"
+          aria-label="Clear active discovery filters"
+        >
           Clear Filters
         </button>
       )}

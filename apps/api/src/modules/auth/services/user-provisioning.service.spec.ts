@@ -29,10 +29,7 @@ describe('UserProvisioningService', () => {
     }
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        UserProvisioningService,
-        { provide: PrismaService, useValue: mockPrisma },
-      ],
+      providers: [UserProvisioningService, { provide: PrismaService, useValue: mockPrisma }],
     }).compile()
 
     service = module.get<UserProvisioningService>(UserProvisioningService)
@@ -71,7 +68,6 @@ describe('UserProvisioningService', () => {
     ;(prisma.user.findUnique as jest.Mock)
       .mockResolvedValueOnce(null) // by firebaseUid
       .mockResolvedValueOnce(existingUser as any) // by email
-
     ;(prisma.user.update as jest.Mock).mockResolvedValueOnce({
       ...existingUser,
       firebaseUid: 'uid-123',

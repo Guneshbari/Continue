@@ -53,9 +53,11 @@ export class AddListItemDto {
 }
 
 export class ReorderListItemsDto {
-  @ApiProperty({ type: [String], description: 'Ordered list of game IDs representing the new positions' })
+  @ApiProperty({
+    type: [String],
+    description: 'Ordered list of game IDs representing the new positions',
+  })
   @IsArray()
   @IsString({ each: true })
   gameIds!: string[]
 }
-

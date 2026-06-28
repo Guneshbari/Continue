@@ -30,14 +30,18 @@ export class ProviderSyncService {
     const provider = this.igdbAuth.isOfflineMode() ? 'mock' : 'igdb'
 
     try {
-      this.logger.log(`[CorrelationID: ${cid}] 🚀 Starting synchronization for slug: "${slug}" (Provider: ${provider})`)
+      this.logger.log(
+        `[CorrelationID: ${cid}] 🚀 Starting synchronization for slug: "${slug}" (Provider: ${provider})`,
+      )
 
       // 1. Search for game to resolve external details (offline or live)
       const matches = await this.igdbApi.searchGames(slug, 1)
       const matchedGame = matches.find((g: ProviderGame) => g.slug === slug) ?? matches[0]
 
       if (!matchedGame) {
-        this.logger.warn(`[CorrelationID: ${cid}] ⚠️ Game slug "${slug}" not found in external provider.`)
+        this.logger.warn(
+          `[CorrelationID: ${cid}] ⚠️ Game slug "${slug}" not found in external provider.`,
+        )
         return {
           status: 'failed',
           entityId: null,
@@ -47,7 +51,7 @@ export class ProviderSyncService {
       }
 
       const syncResult = await this.executeSyncLifecycle(matchedGame, provider, cid)
-      
+
       const durationMs = Date.now() - startTime
       console.log(
         JSON.stringify({
@@ -58,7 +62,7 @@ export class ProviderSyncService {
           slug: matchedGame.slug,
           externalId: matchedGame.externalId,
           durationMs,
-        })
+        }),
       )
 
       return syncResult
@@ -82,7 +86,9 @@ export class ProviderSyncService {
     const provider = this.igdbAuth.isOfflineMode() ? 'mock' : 'igdb'
 
     try {
-      this.logger.log(`[CorrelationID: ${cid}] 🚀 Starting synchronization for external ID: ${id} (Provider: ${provider})`)
+      this.logger.log(
+        `[CorrelationID: ${cid}] 🚀 Starting synchronization for external ID: ${id} (Provider: ${provider})`,
+      )
 
       const matchedGame = await this.igdbApi.fetchGameById(id)
 
@@ -108,12 +114,14 @@ export class ProviderSyncService {
           slug: matchedGame.slug,
           externalId: matchedGame.externalId,
           durationMs,
-        })
+        }),
       )
 
       return syncResult
     } catch (err: any) {
-      this.logger.error(`[CorrelationID: ${cid}] ❌ Sync failed for external ID ${id}: ${err.message}`)
+      this.logger.error(
+        `[CorrelationID: ${cid}] ❌ Sync failed for external ID ${id}: ${err.message}`,
+      )
       return {
         status: 'failed',
         entityId: null,
@@ -128,13 +136,19 @@ export class ProviderSyncService {
    */
   async syncPopularGames(limit = 10, correlationId?: string): Promise<SyncResult[]> {
     const cid = correlationId || `sync-popular-${Math.random().toString(36).substring(2, 9)}`
-    this.logger.log(`[CorrelationID: ${cid}] 🚀 Starting popular games synchronization (Limit: ${limit})...`)
+    this.logger.log(
+      `[CorrelationID: ${cid}] 🚀 Starting popular games synchronization (Limit: ${limit})...`,
+    )
     try {
       const games = await this.igdbApi.fetchPopularGames(limit)
       const results: SyncResult[] = []
 
       for (const game of games) {
-        const result = await this.executeSyncLifecycle(game, this.igdbAuth.isOfflineMode() ? 'mock' : 'igdb', cid)
+        const result = await this.executeSyncLifecycle(
+          game,
+          this.igdbAuth.isOfflineMode() ? 'mock' : 'igdb',
+          cid,
+        )
         results.push(result)
       }
 
@@ -150,19 +164,27 @@ export class ProviderSyncService {
    */
   async syncSearchResults(query: string, limit = 5, correlationId?: string): Promise<SyncResult[]> {
     const cid = correlationId || `sync-search-${Math.random().toString(36).substring(2, 9)}`
-    this.logger.log(`[CorrelationID: ${cid}] 🚀 Starting search results synchronization for query: "${query}" (Limit: ${limit})...`)
+    this.logger.log(
+      `[CorrelationID: ${cid}] 🚀 Starting search results synchronization for query: "${query}" (Limit: ${limit})...`,
+    )
     try {
       const games = await this.igdbApi.searchGames(query, limit)
       const results: SyncResult[] = []
 
       for (const game of games) {
-        const result = await this.executeSyncLifecycle(game, this.igdbAuth.isOfflineMode() ? 'mock' : 'igdb', cid)
+        const result = await this.executeSyncLifecycle(
+          game,
+          this.igdbAuth.isOfflineMode() ? 'mock' : 'igdb',
+          cid,
+        )
         results.push(result)
       }
 
       return results
     } catch (err: any) {
-      this.logger.error(`[CorrelationID: ${cid}] ❌ Search sync failed for "${query}": ${err.message}`)
+      this.logger.error(
+        `[CorrelationID: ${cid}] ❌ Search sync failed for "${query}": ${err.message}`,
+      )
       return [{ status: 'failed', entityId: null, externalId: null, errors: [err.message] }]
     }
   }
@@ -172,11 +194,13 @@ export class ProviderSyncService {
   private async executeSyncLifecycle(
     game: ProviderGame,
     provider: 'igdb' | 'mock',
-    correlationId?: string
+    correlationId?: string,
   ): Promise<SyncResult> {
     const cid = correlationId || `sync-lifecycle-${Math.random().toString(36).substring(2, 9)}`
-    
-    this.logger.log(`[CorrelationID: ${cid}] Starting database write operations for game: "${game.title}"`)
+
+    this.logger.log(
+      `[CorrelationID: ${cid}] Starting database write operations for game: "${game.title}"`,
+    )
 
     // Check if game exists to determine create/update status
     const existingGame = await this.prisma.game.findUnique({
@@ -198,7 +222,10 @@ export class ProviderSyncService {
         // 2. Resolve media assets
         const coverId = await this.mediaSync.resolveAsset(game.coverUrl, provider)
         const backdropId = await this.mediaSync.resolveAsset(game.backdropUrl, provider)
-        const screenshotAssetIds = await this.mediaSync.resolveScreenshots(game.screenshots, provider)
+        const screenshotAssetIds = await this.mediaSync.resolveScreenshots(
+          game.screenshots,
+          provider,
+        )
 
         // 3. Persist the main game tree
         const entityId = await this.gameSync.syncGame(
@@ -217,7 +244,7 @@ export class ProviderSyncService {
       {
         maxWait: 5000,
         timeout: 15000,
-      }
+      },
     )
   }
 }

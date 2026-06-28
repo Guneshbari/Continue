@@ -87,7 +87,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const logout = useCallback(async () => {
-    const activeToken = accessToken || (typeof window !== 'undefined' ? (window as any).__access_token : null)
+    const activeToken =
+      accessToken || (typeof window !== 'undefined' ? (window as any).__access_token : null)
     if (activeToken) {
       try {
         await authApi.logout(activeToken)
@@ -104,7 +105,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [accessToken])
 
   return (
-    <AuthContext.Provider value={{ user, accessToken, token: accessToken, login, logout, isLoading }}>
+    <AuthContext.Provider
+      value={{ user, accessToken, token: accessToken, login, logout, isLoading }}
+    >
       {children}
     </AuthContext.Provider>
   )

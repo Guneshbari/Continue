@@ -21,27 +21,28 @@ interface PageProps {
 }
 
 const SORT_MAP: Record<string, GamesListParams['sort']> = {
-  'trending': 'trending',
+  trending: 'trending',
   'top-rated': 'top-rated',
   'most-reviewed': 'most-reviewed',
   'new-releases': 'new',
-  'upcoming': 'upcoming',
+  upcoming: 'upcoming',
 }
 
 const TITLE_MAP: Record<string, string> = {
-  'trending': 'Trending Now',
+  trending: 'Trending Now',
   'top-rated': 'Top Rated Acclaimed',
   'most-reviewed': 'Most Reviewed Collections',
   'new-releases': 'New Releases',
-  'upcoming': 'Upcoming Releases',
+  upcoming: 'Upcoming Releases',
 }
 
 const DESC_MAP: Record<string, string> = {
-  'trending': 'Check out the most active, popular, and talked-about games on Continue right now.',
-  'top-rated': 'Acclaimed masterpieces and highly rated hits reviewed by Continue community members.',
+  trending: 'Check out the most active, popular, and talked-about games on Continue right now.',
+  'top-rated':
+    'Acclaimed masterpieces and highly rated hits reviewed by Continue community members.',
   'most-reviewed': 'The most discussed, reviewed, and analyzed titles across the entire community.',
   'new-releases': 'Fresh out of the developer oven — recently launched games hot on the press.',
-  'upcoming': 'Highly anticipated releases coming down the pipe. Keep these on your radar.',
+  upcoming: 'Highly anticipated releases coming down the pipe. Keep these on your radar.',
 }
 
 export async function generateMetadata({
@@ -60,7 +61,8 @@ export async function generateMetadata({
 
   return {
     title: `${title} — Continue`,
-    description: DESC_MAP[p.sort] ?? 'Browse and discover games by category, genre, platform and more.',
+    description:
+      DESC_MAP[p.sort] ?? 'Browse and discover games by category, genre, platform and more.',
     robots,
   }
 }
@@ -77,7 +79,11 @@ export default async function DiscoverSortPage({ params }: PageProps) {
   const desc = DESC_MAP[sortKey]
 
   return (
-    <ResponsiveContainer as="main" className="discovery-layout-container" style={{ paddingTop: '2.5rem', paddingBottom: '4rem' }}>
+    <ResponsiveContainer
+      as="main"
+      className="discovery-layout-container"
+      style={{ paddingTop: '2.5rem', paddingBottom: '4rem' }}
+    >
       <div className="discovery-page-hero">
         <div className="discovery-page-hero__meta">
           <span className="discovery-page-hero__tag">EDITORIAL SECTION</span>
@@ -86,13 +92,23 @@ export default async function DiscoverSortPage({ params }: PageProps) {
         </div>
       </div>
 
-      <Suspense fallback={
-        <div className="discovery-grid-layout" style={{ opacity: 0.5 }}>
-          <div className="discovery-main-content">
-            <div className="discovery-filter-bar-skeleton" style={{ height: '2.5rem', marginBottom: '1.5rem', background: 'var(--color-bg-tertiary)', borderRadius: 'var(--radius-md)' }} />
+      <Suspense
+        fallback={
+          <div className="discovery-grid-layout" style={{ opacity: 0.5 }}>
+            <div className="discovery-main-content">
+              <div
+                className="discovery-filter-bar-skeleton"
+                style={{
+                  height: '2.5rem',
+                  marginBottom: '1.5rem',
+                  background: 'var(--color-bg-tertiary)',
+                  borderRadius: 'var(--radius-md)',
+                }}
+              />
+            </div>
           </div>
-        </div>
-      }>
+        }
+      >
         <DiscoverSortClient sortKey={sortKey} />
       </Suspense>
     </ResponsiveContainer>

@@ -6,19 +6,9 @@ import { AuthController } from './auth.controller'
 import { PrismaModule } from '../../common/prisma/prisma.module'
 
 @Module({
-  imports: [
-    PrismaModule,
-    FirebaseAdminModule,
-  ],
-  providers: [
-    UserProvisioningService,
-    FirebaseAuthGuard,
-  ],
+  imports: [PrismaModule, FirebaseAdminModule],
+  providers: [UserProvisioningService, FirebaseAuthGuard],
   controllers: [AuthController],
-  exports: [
-    FirebaseAdminModule,
-    UserProvisioningService,
-    FirebaseAuthGuard,
-  ],
+  exports: [FirebaseAdminModule, UserProvisioningService, FirebaseAuthGuard],
 })
 export class AuthModule {}

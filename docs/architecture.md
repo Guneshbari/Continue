@@ -24,16 +24,16 @@ No microservices. Single VPS initially. Scale via vertical first, horizontal lat
 
 ## Key Decisions
 
-| Decision | Choice | Reason |
-|---|---|---|
-| Rendering | SSR-first | SEO for discovery pages |
-| API style | REST + versioning | Predictable, cacheable |
-| Pagination | Cursor-based | Consistent UX for infinite scroll |
-| Auth | JWT (access + refresh) | Stateless, VPS-friendly |
-| Search (v1) | Postgres pg_trgm | Zero infra dependency |
-| Search (v2) | Meilisearch | When scale demands |
-| ORM | Prisma | Type safety, migration tooling |
-| Adapter | Fastify | 2-3x throughput vs Express |
+| Decision    | Choice                 | Reason                            |
+| ----------- | ---------------------- | --------------------------------- |
+| Rendering   | SSR-first              | SEO for discovery pages           |
+| API style   | REST + versioning      | Predictable, cacheable            |
+| Pagination  | Cursor-based           | Consistent UX for infinite scroll |
+| Auth        | JWT (access + refresh) | Stateless, VPS-friendly           |
+| Search (v1) | Postgres pg_trgm       | Zero infra dependency             |
+| Search (v2) | Meilisearch            | When scale demands                |
+| ORM         | Prisma                 | Type safety, migration tooling    |
+| Adapter     | Fastify                | 2-3x throughput vs Express        |
 
 ## Module Boundaries
 

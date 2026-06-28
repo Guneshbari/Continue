@@ -23,7 +23,7 @@ export function useInteractionPermissions() {
     userId: user?.id,
     username: user?.username || undefined,
     token: token || undefined,
-    
+
     canRate: () => !!user,
     canReview: () => !!user,
     canManageLists: () => !!user,
@@ -31,6 +31,6 @@ export function useInteractionPermissions() {
 
     guardAction: (action?: () => void) => {
       return ensureAuth(action)
-    }
+    },
   }
 }

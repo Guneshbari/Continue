@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { PrismaService } from '../../../common/prisma/prisma.service'
-import type { ProviderGame} from '../../providers/contracts/provider.contracts';
+import type { ProviderGame } from '../../providers/contracts/provider.contracts'
 import type { TaxonomyResolutionResult } from '../types/sync.types'
 
 @Injectable()
@@ -19,7 +19,6 @@ export class GameSyncService {
     media: { coverId: string | null; backdropId: string | null },
     screenshotAssetIds: string[],
   ): Promise<string> {
-    
     // ── 1. Upsert the Core Game entity ────────────────────────────────────────
     const game = await this.prisma.game.upsert({
       where: { slug: providerGame.slug },
@@ -241,7 +240,9 @@ export class GameSyncService {
 
     // Diff
     const toAdd = incoming.filter((v: { youtubeId: string }) => !existingIds.includes(v.youtubeId))
-    const toRemove = existing.filter((v: { youtubeId: string }) => !incomingIds.includes(v.youtubeId))
+    const toRemove = existing.filter(
+      (v: { youtubeId: string }) => !incomingIds.includes(v.youtubeId),
+    )
 
     // 1. Delete removed trailers
     if (toRemove.length > 0) {

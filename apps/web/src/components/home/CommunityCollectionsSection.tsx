@@ -10,7 +10,10 @@ type CommunityCollectionsSectionProps = Readonly<{
   hideHeader?: boolean | undefined
 }>
 
-export function CommunityCollectionsSection({ collections, hideHeader = false }: CommunityCollectionsSectionProps) {
+export function CommunityCollectionsSection({
+  collections,
+  hideHeader = false,
+}: CommunityCollectionsSectionProps) {
   if (collections.length === 0) return null
 
   return (
@@ -79,4 +82,3 @@ export function CommunityCollectionsSection({ collections, hideHeader = false }:
     </section>
   )
 }
-

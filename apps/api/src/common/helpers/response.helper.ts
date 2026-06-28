@@ -20,10 +20,7 @@ export function ok<T>(data: T): { data: T } {
 }
 
 /** Paginated list response */
-export function paginated<T>(
-  data: T[],
-  meta: PaginatedMeta,
-): { data: T[]; meta: PaginatedMeta } {
+export function paginated<T>(data: T[], meta: PaginatedMeta): { data: T[]; meta: PaginatedMeta } {
   return { data, meta }
 }
 

@@ -93,19 +93,19 @@ irm https://raw.githubusercontent.com/JuliusBrussee/caveman/main/install.ps1 | i
 **Trigger:** type `/caveman` or say "talk like caveman". Stop with "normal mode".
 
 One agent only, manual command, or any of 30+ other agents → [**INSTALL.md**](./INSTALL.md).
-Install break? Open agent, say *"Read CLAUDE.md and INSTALL.md, install caveman for me."* Agent fix own brain.
+Install break? Open agent, say _"Read CLAUDE.md and INSTALL.md, install caveman for me."_ Agent fix own brain.
 
 ## What You Get
 
-| Skill | What |
-|---|---|
-| `/caveman [lite\|full\|ultra\|wenyan]` | Compress every reply. Levels stick until session end. |
-| `/caveman-commit` | Conventional Commit messages, ≤50 char subject. Why over what. |
-| `/caveman-review` | One-line PR comments: `L42: 🔴 bug: user null. Add guard.` |
-| `/caveman-stats` | Real session token usage + lifetime savings + USD. Tweetable line via `--share`. |
-| `/caveman-compress <file>` | Rewrite memory file (e.g. `CLAUDE.md`) into caveman-speak. Cuts ~46% input tokens every session. Code/URLs/paths byte-preserved. |
-| `caveman-shrink` | MCP middleware. Wraps any MCP server, compresses tool descriptions. [npm](https://www.npmjs.com/package/caveman-shrink). |
-| `cavecrew-*` | Caveman subagents (investigator/builder/reviewer). ~60% fewer tokens than vanilla, main context lasts longer. |
+| Skill                                  | What                                                                                                                             |
+| -------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `/caveman [lite\|full\|ultra\|wenyan]` | Compress every reply. Levels stick until session end.                                                                            |
+| `/caveman-commit`                      | Conventional Commit messages, ≤50 char subject. Why over what.                                                                   |
+| `/caveman-review`                      | One-line PR comments: `L42: 🔴 bug: user null. Add guard.`                                                                       |
+| `/caveman-stats`                       | Real session token usage + lifetime savings + USD. Tweetable line via `--share`.                                                 |
+| `/caveman-compress <file>`             | Rewrite memory file (e.g. `CLAUDE.md`) into caveman-speak. Cuts ~46% input tokens every session. Code/URLs/paths byte-preserved. |
+| `caveman-shrink`                       | MCP middleware. Wraps any MCP server, compresses tool descriptions. [npm](https://www.npmjs.com/package/caveman-shrink).         |
+| `cavecrew-*`                           | Caveman subagents (investigator/builder/reviewer). ~60% fewer tokens than vanilla, main context lasts longer.                    |
 
 **Statusline badge** — Claude Code shows `[CAVEMAN] ⛏ 12.4k` (lifetime tokens saved). Updates every `/caveman-stats` run. Set `CAVEMAN_STATUSLINE_SAVINGS=0` to silence.
 
@@ -116,36 +116,38 @@ Auto-activate every session: Claude Code, Codex, Gemini (built-in). Cursor / Win
 Real token counts from the Claude API. Average **65% output reduction** across 10 prompts (range 22-87%).
 
 <!-- BENCHMARK-TABLE-START -->
-| Task | Normal | Caveman | Saved |
-|------|-------:|--------:|------:|
-| Explain React re-render bug | 1180 | 159 | 87% |
-| Fix auth middleware token expiry | 704 | 121 | 83% |
-| Set up PostgreSQL connection pool | 2347 | 380 | 84% |
-| Explain git rebase vs merge | 702 | 292 | 58% |
-| Refactor callback to async/await | 387 | 301 | 22% |
-| Architecture: microservices vs monolith | 446 | 310 | 30% |
-| Review PR for security issues | 678 | 398 | 41% |
-| Docker multi-stage build | 1042 | 290 | 72% |
-| Debug PostgreSQL race condition | 1200 | 232 | 81% |
-| Implement React error boundary | 3454 | 456 | 87% |
-| **Average** | **1214** | **294** | **65%** |
+
+| Task                                    |   Normal | Caveman |   Saved |
+| --------------------------------------- | -------: | ------: | ------: |
+| Explain React re-render bug             |     1180 |     159 |     87% |
+| Fix auth middleware token expiry        |      704 |     121 |     83% |
+| Set up PostgreSQL connection pool       |     2347 |     380 |     84% |
+| Explain git rebase vs merge             |      702 |     292 |     58% |
+| Refactor callback to async/await        |      387 |     301 |     22% |
+| Architecture: microservices vs monolith |      446 |     310 |     30% |
+| Review PR for security issues           |      678 |     398 |     41% |
+| Docker multi-stage build                |     1042 |     290 |     72% |
+| Debug PostgreSQL race condition         |     1200 |     232 |     81% |
+| Implement React error boundary          |     3454 |     456 |     87% |
+| **Average**                             | **1214** | **294** | **65%** |
+
 <!-- BENCHMARK-TABLE-END -->
 
 Raw data and reproduction script: [`benchmarks/`](./benchmarks/). Three-arm eval harness (baseline / terse / skill) lives in [`evals/`](./evals/) — caveman compared against `Answer concisely.` not against verbose default, so the delta is honest.
 
 **caveman-compress receipts** (real memory files):
 
-| File | Original | Compressed | Saved |
-|---|---:|---:|---:|
-| `claude-md-preferences.md` | 706 | 285 | **59.6%** |
-| `project-notes.md` | 1145 | 535 | **53.3%** |
-| `claude-md-project.md` | 1122 | 636 | **43.3%** |
-| `todo-list.md` | 627 | 388 | **38.1%** |
-| `mixed-with-code.md` | 888 | 560 | **36.9%** |
-| **Average** | **898** | **481** | **46%** |
+| File                       | Original | Compressed |     Saved |
+| -------------------------- | -------: | ---------: | --------: |
+| `claude-md-preferences.md` |      706 |        285 | **59.6%** |
+| `project-notes.md`         |     1145 |        535 | **53.3%** |
+| `claude-md-project.md`     |     1122 |        636 | **43.3%** |
+| `todo-list.md`             |      627 |        388 | **38.1%** |
+| `mixed-with-code.md`       |      888 |        560 | **36.9%** |
+| **Average**                |  **898** |    **481** |   **46%** |
 
 > [!IMPORTANT]
-> Caveman only affects output tokens — thinking/reasoning tokens untouched. Caveman no make brain smaller. Caveman make *mouth* smaller. Biggest win is **readability and speed**, cost savings a bonus.
+> Caveman only affects output tokens — thinking/reasoning tokens untouched. Caveman no make brain smaller. Caveman make _mouth_ smaller. Biggest win is **readability and speed**, cost savings a bonus.
 
 A March 2026 paper ["Brevity Constraints Reverse Performance Hierarchies in Language Models"](https://arxiv.org/abs/2604.00025) found that constraining large models to brief responses **improved accuracy by 26 points** on certain benchmarks. Verbose not always better. Sometimes less word = more correct.
 
@@ -161,7 +163,7 @@ Maintainer detail (hook architecture, file ownership, CI sync) live in [CLAUDE.m
 
 ## Lobster, Meet Rock 🦞🪨
 
-[**OpenClaw**](https://openclaw.ai) the self-host gateway. One box, many agent inside (Claude Code, Codex, Pi, OpenCode), wired to your Slack / Discord / iMessage / Telegram / whatever. Tagline: *"The lobster way."* Lobster strong. Lobster smart. Lobster also talk a lot.
+[**OpenClaw**](https://openclaw.ai) the self-host gateway. One box, many agent inside (Claude Code, Codex, Pi, OpenCode), wired to your Slack / Discord / iMessage / Telegram / whatever. Tagline: _"The lobster way."_ Lobster strong. Lobster smart. Lobster also talk a lot.
 
 Caveman teach lobster brevity — same canonical installer, scoped to one agent:
 
@@ -176,7 +178,7 @@ npx -y github:JuliusBrussee/caveman -- --only openclaw
 Two thing happen, no more:
 
 1. **Skill drop** at `~/.openclaw/workspace/skills/caveman/SKILL.md` — spec-correct frontmatter (`version`, `always: true`), discoverable by `openclaw skills list`. Skill not auto-inject (OpenClaw load skill on demand) — that why we also do step 2.
-2. **SOUL.md nudge.** Tiny marker-fenced block appended to `~/.openclaw/workspace/SOUL.md`. OpenClaw inject SOUL.md into *every* turn under "Project Context" (12K-per-file, 60K total — block well under). Lobster terse from message one. No `/caveman` per session. No nag.
+2. **SOUL.md nudge.** Tiny marker-fenced block appended to `~/.openclaw/workspace/SOUL.md`. OpenClaw inject SOUL.md into _every_ turn under "Project Context" (12K-per-file, 60K total — block well under). Lobster terse from message one. No `/caveman` per session. No nag.
 
 ```
 ~/.openclaw/workspace/
@@ -193,14 +195,14 @@ Lobster claw still sharp. Lobster mouth now small. Brain still big.
 
 Four tools. One philosophy: **agent do more with less**.
 
-| Repo | What |
-|------|------|
-| [**caveman**](https://github.com/JuliusBrussee/caveman) *(you here)* | Output compression — *why use many token when few do trick* |
-| [**cavemem**](https://github.com/JuliusBrussee/cavemem) | Cross-agent memory — *why agent forget when agent can remember* |
-| [**cavekit**](https://github.com/JuliusBrussee/cavekit) | Spec-driven build loop — *why agent guess when agent can know* |
-| [**cavegemma**](https://github.com/JuliusBrussee/finetune-caveman) | Gemma 4 31B fine-tuned on caveman pairs — *why prompt every turn when weight remember* |
+| Repo                                                                 | What                                                                                   |
+| -------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| [**caveman**](https://github.com/JuliusBrussee/caveman) _(you here)_ | Output compression — _why use many token when few do trick_                            |
+| [**cavemem**](https://github.com/JuliusBrussee/cavemem)              | Cross-agent memory — _why agent forget when agent can remember_                        |
+| [**cavekit**](https://github.com/JuliusBrussee/cavekit)              | Spec-driven build loop — _why agent guess when agent can know_                         |
+| [**cavegemma**](https://github.com/JuliusBrussee/finetune-caveman)   | Gemma 4 31B fine-tuned on caveman pairs — _why prompt every turn when weight remember_ |
 
-Compose: cavekit drive build, caveman compress what agent *say*, cavemem compress what agent *remember*, cavegemma bake compression into weight. One rock. Two rock. Three rock. Four rock. That it.
+Compose: cavekit drive build, caveman compress what agent _say_, cavemem compress what agent _remember_, cavegemma bake compression into weight. One rock. Two rock. Three rock. Four rock. That it.
 
 ## Links
 

@@ -21,7 +21,11 @@ export function AddToListDialog({ gameId, gameTitle, isOpen, onClose }: Props) {
   const [creating, setCreating] = useState(false)
   const [createError, setCreateError] = useState<string | null>(null)
 
-  const { data: lists = [], isLoading, refetch } = useQuery({
+  const {
+    data: lists = [],
+    isLoading,
+    refetch,
+  } = useQuery({
     queryKey: ['users', username, 'lists', { gameId }],
     queryFn: () => {
       if (!username) return []
@@ -50,7 +54,10 @@ export function AddToListDialog({ gameId, gameTitle, isOpen, onClose }: Props) {
     if (!newTitle.trim()) return
     setCreateError(null)
     try {
-      const list = await createListMutation.mutateAsync({ title: newTitle.trim(), visibility: 'PRIVATE' })
+      const list = await createListMutation.mutateAsync({
+        title: newTitle.trim(),
+        visibility: 'PRIVATE',
+      })
       setNewTitle('')
       setCreating(false)
       await addGame({ listId: list.id, gameId })
@@ -64,7 +71,12 @@ export function AddToListDialog({ gameId, gameTitle, isOpen, onClose }: Props) {
 
   return (
     <dialog className="list-modal" open aria-labelledby="add-to-list-title">
-      <button type="button" className="list-modal__backdrop" onClick={onClose} aria-label="Close dialog" />
+      <button
+        type="button"
+        className="list-modal__backdrop"
+        onClick={onClose}
+        aria-label="Close dialog"
+      />
       <div className="list-modal__content">
         <div className="list-modal__header">
           <h2 id="add-to-list-title">Collect "{gameTitle}"</h2>
@@ -76,10 +88,13 @@ export function AddToListDialog({ gameId, gameTitle, isOpen, onClose }: Props) {
         <div className="list-modal__form">
           {isLoading ? (
             <div className="flex justify-center p-8">
-              <Loader2 className="spinner search-spin" style={{ animation: 'search-spin 0.8s linear infinite' }} />
+              <Loader2
+                className="spinner search-spin"
+                style={{ animation: 'search-spin 0.8s linear infinite' }}
+              />
             </div>
           ) : (
-            <div className="flex flex-col gap-2 max-h-[300px] overflow-y-auto pr-1">
+            <div className="flex max-h-[300px] flex-col gap-2 overflow-y-auto pr-1">
               {lists.map((list) => {
                 const hasGame = list.items && list.items.length > 0
                 return (
@@ -100,19 +115,31 @@ export function AddToListDialog({ gameId, gameTitle, isOpen, onClose }: Props) {
                 )
               })}
               {lists.length === 0 && !creating && (
-                <p className="text-center text-xs text-text-muted py-6">You have no collections yet.</p>
+                <p className="text-text-muted py-6 text-center text-xs">
+                  You have no collections yet.
+                </p>
               )}
             </div>
           )}
 
           {creating ? (
-            <div className="add-to-list__new" style={{ borderTop: '1px solid var(--color-border-subtle)', paddingTop: '1rem', marginTop: '1rem' }}>
+            <div
+              className="add-to-list__new"
+              style={{
+                borderTop: '1px solid var(--color-border-subtle)',
+                paddingTop: '1rem',
+                marginTop: '1rem',
+              }}
+            >
               <input
                 autoFocus
                 className="add-to-list__new-input"
                 placeholder="Collection name…"
                 value={newTitle}
-                onChange={(e) => { setNewTitle(e.target.value); setCreateError(null) }}
+                onChange={(e) => {
+                  setNewTitle(e.target.value)
+                  setCreateError(null)
+                }}
                 onKeyDown={(e) => e.key === 'Enter' && handleCreate()}
                 maxLength={80}
               />
@@ -121,7 +148,10 @@ export function AddToListDialog({ gameId, gameTitle, isOpen, onClose }: Props) {
                 <button
                   type="button"
                   className="add-to-list__new-cancel"
-                  onClick={() => { setCreating(false); setCreateError(null) }}
+                  onClick={() => {
+                    setCreating(false)
+                    setCreateError(null)
+                  }}
                 >
                   Cancel
                 </button>
@@ -131,7 +161,15 @@ export function AddToListDialog({ gameId, gameTitle, isOpen, onClose }: Props) {
                   onClick={handleCreate}
                   disabled={!newTitle.trim() || createListMutation.isPending}
                 >
-                  {createListMutation.isPending ? <Loader2 size={14} className="spinner search-spin" style={{ animation: 'search-spin 0.8s linear infinite' }} /> : 'Create'}
+                  {createListMutation.isPending ? (
+                    <Loader2
+                      size={14}
+                      className="spinner search-spin"
+                      style={{ animation: 'search-spin 0.8s linear infinite' }}
+                    />
+                  ) : (
+                    'Create'
+                  )}
                 </button>
               </div>
             </div>

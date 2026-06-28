@@ -35,9 +35,9 @@ export const gamesApi = {
     if (params.minRating) qs.set('minRating', String(params.minRating))
     if (params.maxRating) qs.set('maxRating', String(params.maxRating))
     if (params.minReviewCount) qs.set('minReviewCount', String(params.minReviewCount))
-    
+
     qs.sort()
-    
+
     const query = qs.toString()
     return apiClient.get(`/games${query ? `?${query}` : ''}`)
   },

@@ -50,4 +50,3 @@ export class UpdateReviewDto {
   @IsBoolean()
   isSpoiler?: boolean
 }
-

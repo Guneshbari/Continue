@@ -47,7 +47,9 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
     } else {
       document.body.style.overflow = ''
     }
-    return () => { document.body.style.overflow = '' }
+    return () => {
+      document.body.style.overflow = ''
+    }
   }, [isOpen])
 
   if (!isOpen) return null
@@ -55,18 +57,10 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
   return (
     <>
       {/* Backdrop */}
-      <div
-        className="mobile-nav__backdrop"
-        onClick={onClose}
-        aria-hidden="true"
-      />
+      <div className="mobile-nav__backdrop" onClick={onClose} aria-hidden="true" />
 
       {/* Drawer */}
-      <nav
-        className="mobile-nav"
-        id="mobile-nav"
-        aria-label="Mobile navigation"
-      >
+      <nav className="mobile-nav" id="mobile-nav" aria-label="Mobile navigation">
         <div className="mobile-nav__header">
           <span className="mobile-nav__brand">Continue</span>
           <button
@@ -80,7 +74,8 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
 
         <ul className="mobile-nav__list" role="list">
           {NAV_LINKS.map((link) => {
-            const isActive = pathname === link.href || pathname.startsWith(link.href.split('?')[0] ?? '')
+            const isActive =
+              pathname === link.href || pathname.startsWith(link.href.split('?')[0] ?? '')
             return (
               <li key={link.href}>
                 <Link

@@ -44,7 +44,6 @@ export class FixtureLoaderService {
     this.logger.log(`Fixture scenario "${scenario}" loaded successfully.`)
   }
 
-
   // ─── Taxonomy Pre-seeding ─────────────────────────────────────────────────
 
   private async upsertTaxonomies(games: FixtureGame[]): Promise<void> {
@@ -250,15 +249,11 @@ export class FixtureLoaderService {
 
     // Insert all join rows
     await Promise.all([
-      ...genres.map((g) =>
-        this.prisma.gameGenre.create({ data: { gameId, genreId: g.id } }),
-      ),
+      ...genres.map((g) => this.prisma.gameGenre.create({ data: { gameId, genreId: g.id } })),
       ...platforms.map((p) =>
         this.prisma.gamePlatform.create({ data: { gameId, platformId: p.id } }),
       ),
-      ...themes.map((t) =>
-        this.prisma.gameTheme.create({ data: { gameId, themeId: t.id } }),
-      ),
+      ...themes.map((t) => this.prisma.gameTheme.create({ data: { gameId, themeId: t.id } })),
       ...developers.map((d) =>
         this.prisma.gameDeveloper.create({ data: { gameId, developerId: d.id } }),
       ),

@@ -12,7 +12,12 @@ type GameCardBaseProps = Readonly<{
   priority?: boolean
 }>
 
-export function GameCardBase({ game, variant = 'discovery', className, priority = false }: GameCardBaseProps) {
+export function GameCardBase({
+  game,
+  variant = 'discovery',
+  className,
+  priority = false,
+}: GameCardBaseProps) {
   const href = `/games/${game.slug}`
   const ariaLabel = game.avgRating
     ? `${game.title}, rated ${game.avgRating.toFixed(1)} out of 10`
@@ -39,7 +44,7 @@ export function GameCardBase({ game, variant = 'discovery', className, priority 
           <div className="game-card__main-list">
             <h3 className="game-card__title-list">{game.title}</h3>
             {game.genres?.length > 0 && (
-              <MetadataBadgeGroup className="mt-1.5 mb-2">
+              <MetadataBadgeGroup className="mb-2 mt-1.5">
                 {game.genres.slice(0, 2).map((g) => (
                   <MetadataBadge key={g.id} variant="accent">
                     {g.name}
@@ -179,12 +184,18 @@ export function GameCardBaseSkeleton({
 }: Readonly<{ variant?: GameCardBaseProps['variant']; className?: string }>) {
   if (variant === 'list') {
     return (
-      <div className={cn('game-card game-card--list game-card--skeleton', className)} aria-hidden="true">
+      <div
+        className={cn('game-card game-card--list game-card--skeleton', className)}
+        aria-hidden="true"
+      >
         <div className="game-card__cover-list skeleton-pulse" />
         <div className="game-card__info-list">
           <div className="game-card__main-list">
             <div className="skeleton-line skeleton-line--title" style={{ width: '180px' }} />
-            <div className="skeleton-line skeleton-line--short" style={{ width: '100px', marginTop: '0.5rem' }} />
+            <div
+              className="skeleton-line skeleton-line--short"
+              style={{ width: '100px', marginTop: '0.5rem' }}
+            />
           </div>
         </div>
       </div>
@@ -193,7 +204,10 @@ export function GameCardBaseSkeleton({
 
   if (variant === 'homepage') {
     return (
-      <div className={cn('game-card game-card--homepage game-card--skeleton', className)} aria-hidden="true">
+      <div
+        className={cn('game-card game-card--homepage game-card--skeleton', className)}
+        aria-hidden="true"
+      >
         <div className="game-card__cover">
           <div className="game-card__artwork skeleton-pulse" />
         </div>
@@ -202,7 +216,10 @@ export function GameCardBaseSkeleton({
   }
 
   return (
-    <div className={cn('game-card', `game-card--${variant}`, 'game-card--skeleton', className)} aria-hidden="true">
+    <div
+      className={cn('game-card', `game-card--${variant}`, 'game-card--skeleton', className)}
+      aria-hidden="true"
+    >
       <div className="game-card__cover skeleton-pulse" />
       <div className="game-card__info">
         <div className="skeleton-line skeleton-line--title" />

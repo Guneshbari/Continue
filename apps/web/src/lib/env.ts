@@ -10,7 +10,10 @@ export const env = {
    * In Docker: set to http://api:3001/api/v1 to skip external networking.
    * Defaults to apiUrl for local dev compatibility.
    */
-  internalApiUrl: process.env.INTERNAL_API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001/api/v1',
+  internalApiUrl:
+    process.env.INTERNAL_API_URL ??
+    process.env.NEXT_PUBLIC_API_URL ??
+    'http://localhost:3001/api/v1',
 
   appUrl: process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000',
   appVersion: process.env.NEXT_PUBLIC_APP_VERSION ?? '0.0.0',

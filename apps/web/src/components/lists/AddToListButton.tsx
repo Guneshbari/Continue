@@ -19,7 +19,7 @@ export function AddToListButton({ gameId, gameTitle }: Props) {
       <div className="add-to-list">
         <button
           className="add-to-list__trigger"
-          onClick={() => window.location.href = '/login'}
+          onClick={() => (window.location.href = '/login')}
           title={`Add ${gameTitle} to a list`}
         >
           <List size={16} aria-hidden="true" />

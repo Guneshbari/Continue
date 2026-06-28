@@ -36,7 +36,10 @@ export const usersApi = {
     return apiClient.get(`/users/${username}/lists`)
   },
 
-  async updateProfile(token: string, payload: { displayName?: string; bio?: string; avatarUrl?: string }): Promise<UserProfile> {
+  async updateProfile(
+    token: string,
+    payload: { displayName?: string; bio?: string; avatarUrl?: string },
+  ): Promise<UserProfile> {
     const res = await apiClient.patch<{ data: UserProfile }>('/users/me', payload, token)
     return res.data
   },

@@ -12,17 +12,17 @@ const BASE_BROKEN_GAMES: FixtureGame[] = [
     igdbRating: null,
     igdbRatingCount: null,
     status: null,
-    coverUrl: null,               // No cover — should render placeholder
+    coverUrl: null, // No cover — should render placeholder
     backdropUrl: null,
-    genres: [],                   // No genres — should render fallback tag
-    platforms: [],                // No platforms — tests empty platform list
+    genres: [], // No genres — should render fallback tag
+    platforms: [], // No platforms — tests empty platform list
     themes: [],
     developers: [],
     publishers: [],
     franchise: null,
     trailers: [],
     screenshots: [],
-    avgRating: null,              // No ratings at all
+    avgRating: null, // No ratings at all
     ratingCount: 0,
     fixtureVersion: 1,
   },
@@ -32,7 +32,7 @@ const BASE_BROKEN_GAMES: FixtureGame[] = [
     description: 'An experimental title with no confirmed release date and minimal metadata.',
     summary: null,
     storyline: null,
-    releaseDate: null,            // No release date — tests "TBA" fallback
+    releaseDate: null, // No release date — tests "TBA" fallback
     igdbId: null,
     igdbRating: null,
     igdbRatingCount: null,
@@ -43,7 +43,7 @@ const BASE_BROKEN_GAMES: FixtureGame[] = [
     platforms: ['pc'],
     themes: [],
     developers: ['Unknown Studio'],
-    publishers: [],               // No publisher — tests empty publisher list
+    publishers: [], // No publisher — tests empty publisher list
     franchise: null,
     trailers: [],
     screenshots: [],
@@ -72,14 +72,14 @@ const BASE_BROKEN_GAMES: FixtureGame[] = [
     franchise: null,
     trailers: [],
     screenshots: [],
-    avgRating: null,              // avgRating null despite igdbRating existing
-    ratingCount: 0,              // Zero community ratings
+    avgRating: null, // avgRating null despite igdbRating existing
+    ratingCount: 0, // Zero community ratings
     fixtureVersion: 1,
   },
   {
     slug: 'missing-description-game',
     title: 'No Synopsis Available',
-    description: null,           // No description — tests synopsis fallback rendering
+    description: null, // No description — tests synopsis fallback rendering
     summary: null,
     storyline: null,
     releaseDate: '2019-08-14',
@@ -96,7 +96,7 @@ const BASE_BROKEN_GAMES: FixtureGame[] = [
     publishers: ['Mystery Pub'],
     franchise: null,
     trailers: [],
-    screenshots: [],             // No screenshots — tests empty gallery state
+    screenshots: [], // No screenshots — tests empty gallery state
     avgRating: 5.0,
     ratingCount: 1,
     fixtureVersion: 1,
@@ -112,8 +112,8 @@ const BASE_BROKEN_GAMES: FixtureGame[] = [
     igdbRating: null,
     igdbRatingCount: null,
     status: null,
-    coverUrl: null,              // No cover
-    backdropUrl: null,           // No backdrop
+    coverUrl: null, // No cover
+    backdropUrl: null, // No backdrop
     genres: [],
     platforms: [],
     themes: [],
@@ -135,11 +135,15 @@ const GENERATED_BROKEN_GAMES: FixtureGame[] = Array.from({ length: 25 }, (_, ind
 
   let title = `Broken Metadata Case ${i}`
   let coverUrl: string | null = 'https://images.igdb.com/igdb/image/upload/t_cover_big/co1rgi.jpg'
-  let backdropUrl: string | null = 'https://images.igdb.com/igdb/image/upload/t_screenshot_big/scfm9u.jpg'
-  let description: string | null = `This is broken metadata case number ${i} which isolates specific empty-state fallbacks.`
+  let backdropUrl: string | null =
+    'https://images.igdb.com/igdb/image/upload/t_screenshot_big/scfm9u.jpg'
+  let description: string | null =
+    `This is broken metadata case number ${i} which isolates specific empty-state fallbacks.`
   let genres: string[] = ['adventure']
   let platforms: string[] = ['pc']
-  let screenshots: string[] = ['https://images.igdb.com/igdb/image/upload/t_screenshot_big/scfm9u.jpg']
+  let screenshots: string[] = [
+    'https://images.igdb.com/igdb/image/upload/t_screenshot_big/scfm9u.jpg',
+  ]
   let highContrastBackdrop: 'bright' | 'dark' | null = null
 
   if (group === 0) {
@@ -155,9 +159,10 @@ const GENERATED_BROKEN_GAMES: FixtureGame[] = Array.from({ length: 25 }, (_, ind
     title = `High Contrast Theme ${i}`
     highContrastBackdrop = i % 2 === 0 ? 'bright' : 'dark'
     // Solid white or black placeholder image URLs to simulate extreme contrast
-    backdropUrl = i % 2 === 0
-      ? 'https://images.igdb.com/igdb/image/upload/t_screenshot_big/scfm9w.jpg' // bright white-heavy image
-      : 'https://images.igdb.com/igdb/image/upload/t_screenshot_big/scfm9v.jpg' // dark black-heavy image
+    backdropUrl =
+      i % 2 === 0
+        ? 'https://images.igdb.com/igdb/image/upload/t_screenshot_big/scfm9w.jpg' // bright white-heavy image
+        : 'https://images.igdb.com/igdb/image/upload/t_screenshot_big/scfm9v.jpg' // dark black-heavy image
   } else if (group === 3) {
     // Group 3: No cover (coverUrl = null)
     title = `Missing Visual Cover ${i}`

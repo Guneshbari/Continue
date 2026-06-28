@@ -132,7 +132,8 @@ export async function autoSeedDatabase(prisma: PrismaClient) {
       {
         slug: 'elden-ring',
         title: 'Elden Ring',
-        description: 'Rise, Tarnished, and be guided by grace to brandish the power of the Elden Ring and become an Elden Lord in the Lands Between.',
+        description:
+          'Rise, Tarnished, and be guided by grace to brandish the power of the Elden Ring and become an Elden Lord in the Lands Between.',
         coverUrl: 'https://images.igdb.com/igdb/image/upload/t_cover_big/co4jni.webp',
         bannerUrl: 'https://images.igdb.com/igdb/image/upload/t_screenshot_big/scs9vk.webp',
         releaseDate: new Date('2022-02-25'),
@@ -147,7 +148,8 @@ export async function autoSeedDatabase(prisma: PrismaClient) {
       {
         slug: 'baldurs-gate-3',
         title: "Baldur's Gate 3",
-        description: 'Gather your party and return to the Forgotten Realms in a tale of fellowship and betrayal, sacrifice and survival.',
+        description:
+          'Gather your party and return to the Forgotten Realms in a tale of fellowship and betrayal, sacrifice and survival.',
         coverUrl: 'https://images.igdb.com/igdb/image/upload/t_cover_big/co6li1.webp',
         bannerUrl: 'https://images.igdb.com/igdb/image/upload/t_screenshot_big/sctc2q.webp',
         releaseDate: new Date('2023-08-03'),
@@ -162,7 +164,8 @@ export async function autoSeedDatabase(prisma: PrismaClient) {
       {
         slug: 'hades-ii',
         title: 'Hades II',
-        description: 'The next rogue-like game from the creators of the award-winning Hades. Battle out of the Underworld as the immortal Princess of the Underworld.',
+        description:
+          'The next rogue-like game from the creators of the award-winning Hades. Battle out of the Underworld as the immortal Princess of the Underworld.',
         coverUrl: 'https://images.igdb.com/igdb/image/upload/t_cover_big/co7hxj.webp',
         bannerUrl: 'https://images.igdb.com/igdb/image/upload/t_screenshot_big/sctu71.webp',
         releaseDate: new Date('2024-05-06'),
@@ -177,7 +180,8 @@ export async function autoSeedDatabase(prisma: PrismaClient) {
       {
         slug: 'hollow-knight-silksong',
         title: 'Hollow Knight: Silksong',
-        description: 'Play as Hornet, princess-protector of Hallownest, and adventure through a whole new kingdom ruled by silk and song!',
+        description:
+          'Play as Hornet, princess-protector of Hallownest, and adventure through a whole new kingdom ruled by silk and song!',
         coverUrl: 'https://images.igdb.com/igdb/image/upload/t_cover_big/co1r7h.webp',
         bannerUrl: 'https://images.igdb.com/igdb/image/upload/t_screenshot_big/sc9f1u.webp',
         releaseDate: new Date('2026-06-01'),
@@ -192,7 +196,8 @@ export async function autoSeedDatabase(prisma: PrismaClient) {
       {
         slug: 'black-myth-wukong',
         title: 'Black Myth: Wukong',
-        description: 'Black Myth: Wukong is an action RPG rooted in Chinese mythology. You shall set out as the Destined One to venture into the challenges and marvels ahead.',
+        description:
+          'Black Myth: Wukong is an action RPG rooted in Chinese mythology. You shall set out as the Destined One to venture into the challenges and marvels ahead.',
         coverUrl: 'https://images.igdb.com/igdb/image/upload/t_cover_big/co5vmg.webp',
         bannerUrl: 'https://images.igdb.com/igdb/image/upload/t_screenshot_big/scv3p9.webp',
         releaseDate: new Date('2024-08-20'),
@@ -243,7 +248,8 @@ export async function autoSeedDatabase(prisma: PrismaClient) {
     await prisma.rating.create({ data: { userId: alexUser.id, gameId: eldenRing.id, score: 10 } })
     await prisma.review.create({
       data: {
-        userId: alexUser.id, gameId: eldenRing.id,
+        userId: alexUser.id,
+        gameId: eldenRing.id,
         title: 'Masterpiece of modern game design',
         body: 'FromSoftware has done it again. The level of detail and sheer scale of the world is staggering.',
       },
@@ -252,16 +258,20 @@ export async function autoSeedDatabase(prisma: PrismaClient) {
     await prisma.rating.create({ data: { userId: sarahUser.id, gameId: eldenRing.id, score: 9 } })
     await prisma.review.create({
       data: {
-        userId: sarahUser.id, gameId: eldenRing.id,
+        userId: sarahUser.id,
+        gameId: eldenRing.id,
         title: 'Incredible but punishing',
         body: 'A truly breathtaking open world with unmatched art direction.',
       },
     })
 
-    await prisma.rating.create({ data: { userId: alexUser.id, gameId: baldursGate3.id, score: 10 } })
+    await prisma.rating.create({
+      data: { userId: alexUser.id, gameId: baldursGate3.id, score: 10 },
+    })
     await prisma.review.create({
       data: {
-        userId: alexUser.id, gameId: baldursGate3.id,
+        userId: alexUser.id,
+        gameId: baldursGate3.id,
         title: 'The best CRPG of all time',
         body: 'I have never played a game with this much player agency.',
       },
@@ -269,16 +279,46 @@ export async function autoSeedDatabase(prisma: PrismaClient) {
 
     // Lists
     const alexBacklog = await prisma.list.create({
-      data: { userId: alexUser.id, slug: 'backlog', title: 'My Game Backlog', description: 'Games I need to play soon!', visibility: 'PUBLIC' },
+      data: {
+        userId: alexUser.id,
+        slug: 'backlog',
+        title: 'My Game Backlog',
+        description: 'Games I need to play soon!',
+        visibility: 'PUBLIC',
+      },
     })
-    await prisma.listItem.create({ data: { listId: alexBacklog.id, gameId: hadesIi.id, position: 1, note: 'Need to get to the early access build.' } })
-    await prisma.listItem.create({ data: { listId: alexBacklog.id, gameId: blackMythWukong.id, position: 2, note: 'Gorgeous. Combat is excellent.' } })
+    await prisma.listItem.create({
+      data: {
+        listId: alexBacklog.id,
+        gameId: hadesIi.id,
+        position: 1,
+        note: 'Need to get to the early access build.',
+      },
+    })
+    await prisma.listItem.create({
+      data: {
+        listId: alexBacklog.id,
+        gameId: blackMythWukong.id,
+        position: 2,
+        note: 'Gorgeous. Combat is excellent.',
+      },
+    })
 
     const adminFavs = await prisma.list.create({
-      data: { userId: adminUser.id, slug: 'favorites', title: 'All-Time Favorites', description: 'The greatest games ever made.', visibility: 'PUBLIC' },
+      data: {
+        userId: adminUser.id,
+        slug: 'favorites',
+        title: 'All-Time Favorites',
+        description: 'The greatest games ever made.',
+        visibility: 'PUBLIC',
+      },
     })
-    await prisma.listItem.create({ data: { listId: adminFavs.id, gameId: eldenRing.id, position: 1 } })
-    await prisma.listItem.create({ data: { listId: adminFavs.id, gameId: baldursGate3.id, position: 2 } })
+    await prisma.listItem.create({
+      data: { listId: adminFavs.id, gameId: eldenRing.id, position: 1 },
+    })
+    await prisma.listItem.create({
+      data: { listId: adminFavs.id, gameId: baldursGate3.id, position: 2 },
+    })
 
     console.log('✅ Auto-seeding completed successfully!')
   } catch (err) {

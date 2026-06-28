@@ -90,7 +90,11 @@ export function ReviewList({ gameId, onReviewStateChanged }: ReviewListProps) {
 
       {loading ? (
         <div className="reviews-section__loading">
-          <Loader2 size={24} className="reviews-section__spinner search-spin" style={{ animation: 'search-spin 0.8s linear infinite' }} />
+          <Loader2
+            size={24}
+            className="reviews-section__spinner search-spin"
+            style={{ animation: 'search-spin 0.8s linear infinite' }}
+          />
           <span>Fetching reviews...</span>
         </div>
       ) : reviews.length === 0 ? (

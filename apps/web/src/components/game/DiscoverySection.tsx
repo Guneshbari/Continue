@@ -38,10 +38,7 @@ export function DiscoverySection({
     <section className={cn('discovery-section', className)} aria-labelledby={sectionId}>
       {/* Header */}
       <div className="discovery-section__header">
-        <h2
-          className="discovery-section__title"
-          id={sectionId}
-        >
+        <h2 className="discovery-section__title" id={sectionId}>
           {title}
         </h2>
         {viewAllHref && (

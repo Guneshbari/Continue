@@ -5,11 +5,7 @@ import { discoveryApi } from './discovery-api'
 import type { SearchResponse } from './search-api'
 import type { GameFiltersResponse } from './discovery-api'
 import type { GameShelf } from './shelves-api'
-import type { 
-  GameDetail, 
-  GamesListResponse, 
-  GameSummary 
-} from '@/types/api'
+import type { GameDetail, GamesListResponse, GameSummary } from '@/types/api'
 
 // ─── Static Compiler-Enforced Contract Tests ─────────────────────────────────
 // These declarations will cause type-checking to fail if any backend/frontend DTO contracts drift.
@@ -25,7 +21,7 @@ export function verifyApiContracts() {
     cursor: 'abc',
     limit: 10,
   })
-  
+
   const getPromise: Promise<GameDetail> = gamesApi.get('elden-ring')
 
   // Validate Search API contracts
@@ -42,7 +38,7 @@ export function verifyApiContracts() {
     topRated: GameSummary[]
     upcoming: GameSummary[]
   }> = discoveryApi.discoverDashboard(6)
-  
+
   const metadataPromise: Promise<GameFiltersResponse> = discoveryApi.metadata()
 
   return {

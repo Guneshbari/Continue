@@ -28,10 +28,7 @@ export default async function UserListsPage({ params }: PageProps) {
   let lists
 
   try {
-    const [, listsRes] = await Promise.all([
-      usersApi.profile(username),
-      listsApi.byUser(username),
-    ])
+    const [, listsRes] = await Promise.all([usersApi.profile(username), listsApi.byUser(username)])
     lists = listsRes
   } catch {
     notFound()

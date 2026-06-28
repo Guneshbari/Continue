@@ -22,18 +22,18 @@ function getBucket(dateStr?: string | null): 'today' | 'yesterday' | 'this_week'
   if (!dateStr) return 'this_week'
   const date = new Date(dateStr)
   if (isNaN(date.getTime())) return 'this_week'
-  
+
   const now = new Date()
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
-  
+
   const yesterday = new Date(today)
   yesterday.setDate(yesterday.getDate() - 1)
-  
+
   const oneWeekAgo = new Date(today)
   oneWeekAgo.setDate(oneWeekAgo.getDate() - 7)
-  
+
   const compareDate = new Date(date.getFullYear(), date.getMonth(), date.getDate())
-  
+
   if (compareDate.getTime() === today.getTime()) return 'today'
   if (compareDate.getTime() === yesterday.getTime()) return 'yesterday'
   if (compareDate.getTime() >= oneWeekAgo.getTime()) return 'this_week'
@@ -59,10 +59,10 @@ export function CommunityPulse({ reviews, collections }: CommunityPulseProps) {
 
   // Bucketing reviews
   const bucketedReviews = {
-    today: pulseReviews.filter(r => getBucket(r.createdAt) === 'today'),
-    yesterday: pulseReviews.filter(r => getBucket(r.createdAt) === 'yesterday'),
-    this_week: pulseReviews.filter(r => getBucket(r.createdAt) === 'this_week'),
-    older: pulseReviews.filter(r => getBucket(r.createdAt) === 'older'),
+    today: pulseReviews.filter((r) => getBucket(r.createdAt) === 'today'),
+    yesterday: pulseReviews.filter((r) => getBucket(r.createdAt) === 'yesterday'),
+    this_week: pulseReviews.filter((r) => getBucket(r.createdAt) === 'this_week'),
+    older: pulseReviews.filter((r) => getBucket(r.createdAt) === 'older'),
   }
 
   const renderReviewItem = (review: PulseReview) => (
@@ -80,7 +80,10 @@ export function CommunityPulse({ reviews, collections }: CommunityPulseProps) {
         <div className="pulse-activity-item__meta">
           <span className="pulse-activity-item__user">{review.user.displayName}</span>
           <span className="pulse-activity-item__action">
-            reviewed <Link href={`/games/${review.game.slug}`} className="pulse-activity-item__game-link">{review.game.title}</Link>
+            reviewed{' '}
+            <Link href={`/games/${review.game.slug}`} className="pulse-activity-item__game-link">
+              {review.game.title}
+            </Link>
           </span>
         </div>
         {review.rating > 0 && (
@@ -92,7 +95,8 @@ export function CommunityPulse({ reviews, collections }: CommunityPulseProps) {
         )}
       </div>
       <p className="pulse-activity-item__body">
-        “{review.body.slice(0, 140)}{review.body.length > 140 ? '…' : ''}”
+        “{review.body.slice(0, 140)}
+        {review.body.length > 140 ? '…' : ''}”
       </p>
     </div>
   )

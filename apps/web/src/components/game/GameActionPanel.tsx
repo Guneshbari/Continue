@@ -104,11 +104,30 @@ export function GameActionPanel({
 
         {/* Non-intrusive Guest Banner Prompt */}
         {!user && (
-          <div className="action-panel__guest-prompt" style={{ borderTop: '1px solid var(--color-border-subtle)', paddingTop: '0.875rem', marginTop: '0.5rem', textAlign: 'center' }}>
-            <span style={{ fontSize: '0.78rem', color: 'var(--color-text-muted)', display: 'block', marginBottom: '0.5rem' }}>
+          <div
+            className="action-panel__guest-prompt"
+            style={{
+              borderTop: '1px solid var(--color-border-subtle)',
+              paddingTop: '0.875rem',
+              marginTop: '0.5rem',
+              textAlign: 'center',
+            }}
+          >
+            <span
+              style={{
+                fontSize: '0.78rem',
+                color: 'var(--color-text-muted)',
+                display: 'block',
+                marginBottom: '0.5rem',
+              }}
+            >
               Sign in to rate, review and build lists.
             </span>
-            <a href="/login" className="btn btn--secondary btn--full btn--small" style={{ fontSize: '0.78rem', padding: '0.35rem' }}>
+            <a
+              href="/login"
+              className="btn btn--secondary btn--full btn--small"
+              style={{ fontSize: '0.78rem', padding: '0.35rem' }}
+            >
               Sign In / Register
             </a>
           </div>

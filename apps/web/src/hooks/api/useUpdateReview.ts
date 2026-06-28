@@ -7,7 +7,13 @@ export function useUpdateReview(gameId: string, token: string | undefined) {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({ reviewId, payload }: { reviewId: string; payload: Partial<CreateReviewPayload> }) => {
+    mutationFn: async ({
+      reviewId,
+      payload,
+    }: {
+      reviewId: string
+      payload: Partial<CreateReviewPayload>
+    }) => {
       if (!token) throw new Error('Not authenticated')
       return reviewsApi.update(gameId, reviewId, payload, token)
     },

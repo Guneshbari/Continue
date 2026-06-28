@@ -14,18 +14,37 @@ export function GlobalErrorState({
   onRetry,
 }: GlobalErrorStateProps) {
   return (
-    <div className="games-grid-empty" style={{ borderColor: 'var(--color-error)' }} role="alert" aria-live="assertive">
-      <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.25rem', color: 'var(--color-error)' }}>
+    <div
+      className="games-grid-empty"
+      style={{ borderColor: 'var(--color-error)' }}
+      role="alert"
+      aria-live="assertive"
+    >
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          marginBottom: '1.25rem',
+          color: 'var(--color-error)',
+        }}
+      >
         <AlertOctagon size={32} aria-hidden="true" />
       </div>
-      <h3 className="games-grid-empty__title" style={{ fontSize: '1.25rem', color: 'var(--color-text-primary)' }}>
+      <h3
+        className="games-grid-empty__title"
+        style={{ fontSize: '1.25rem', color: 'var(--color-text-primary)' }}
+      >
         {title}
       </h3>
       <p className="games-grid-empty__sub" style={{ margin: '0.5rem 0 1.5rem' }}>
         {message}
       </p>
       {onRetry && (
-        <button onClick={onRetry} className="pagination-loader-btn" aria-label="Retry loading content">
+        <button
+          onClick={onRetry}
+          className="pagination-loader-btn"
+          aria-label="Retry loading content"
+        >
           Try Again
         </button>
       )}

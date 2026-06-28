@@ -15,10 +15,7 @@ export function ResponsiveContainer({
   as: Component = 'div',
 }: ResponsiveContainerProps) {
   return (
-    <Component
-      className={cn('site-container', className)}
-      style={style}
-    >
+    <Component className={cn('site-container', className)} style={style}>
       {children}
     </Component>
   )

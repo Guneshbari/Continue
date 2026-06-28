@@ -59,10 +59,7 @@ export function GameDetailInteractive({
 
       {/* Reviews feed at the bottom fold */}
       <div className="game-detail__interactive-content">
-        <ReviewList
-          gameId={gameId}
-          onReviewStateChanged={handleReviewStateChanged}
-        />
+        <ReviewList gameId={gameId} onReviewStateChanged={handleReviewStateChanged} />
       </div>
 
       {/* Shared review modal */}

@@ -1,7 +1,12 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { listsApi } from '@/lib/api/lists'
 
-export function useReorderListItems(listId: string, slug: string, username: string | undefined, token: string | undefined) {
+export function useReorderListItems(
+  listId: string,
+  slug: string,
+  username: string | undefined,
+  token: string | undefined,
+) {
   const queryClient = useQueryClient()
 
   return useMutation({

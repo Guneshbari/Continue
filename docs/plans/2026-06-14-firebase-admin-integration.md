@@ -13,6 +13,7 @@
 ### Task 1: Add dependency and update environment configuration
 
 **Files:**
+
 - Modify: `apps/api/package.json`
 - Modify: `apps/api/src/common/config/env.validation.ts`
 - Modify: `.env`
@@ -26,6 +27,7 @@ Expected: `firebase-admin` successfully added to `@continue/api`.
 
 **Step 2: Add validation to envSchema**
 In `apps/api/src/common/config/env.validation.ts`, add:
+
 ```typescript
     FIREBASE_PROJECT_ID: z.string().min(1),
     FIREBASE_CLIENT_EMAIL: z.string().email(),
@@ -34,6 +36,7 @@ In `apps/api/src/common/config/env.validation.ts`, add:
 
 **Step 3: Update env files with mock credentials**
 Add the following to all `.env` and `.env.example` files:
+
 ```ini
 # Firebase Admin Configuration
 FIREBASE_PROJECT_ID="mock-project-id"
@@ -46,6 +49,7 @@ Run: `pnpm run type-check && pnpm test`
 Expected: Compile successful and all 54 tests pass.
 
 **Step 5: Commit**
+
 ```bash
 git add apps/api/package.json apps/api/src/common/config/env.validation.ts .env .env.example apps/api/.env apps/api/.env.example
 git commit -m "chore: add firebase-admin dependency and env configuration validation"
@@ -56,12 +60,14 @@ git commit -m "chore: add firebase-admin dependency and env configuration valida
 ### Task 2: Create FirebaseAdminService and FirebaseAdminModule
 
 **Files:**
+
 - Create: `apps/api/src/common/firebase/firebase-admin.service.ts`
 - Create: `apps/api/src/common/firebase/firebase-admin.module.ts`
 - Modify: `apps/api/src/app.module.ts`
 
 **Step 1: Create FirebaseAdminService**
 Create `apps/api/src/common/firebase/firebase-admin.service.ts`:
+
 ```typescript
 import * as admin from 'firebase-admin'
 import { Injectable, OnModuleInit, Logger } from '@nestjs/common'
@@ -124,6 +130,7 @@ export class FirebaseAdminService implements OnModuleInit {
 
 **Step 2: Create FirebaseAdminModule**
 Create `apps/api/src/common/firebase/firebase-admin.module.ts`:
+
 ```typescript
 import { Global, Module } from '@nestjs/common'
 import { FirebaseAdminService } from './firebase-admin.service'
@@ -140,6 +147,7 @@ export class FirebaseAdminModule {}
 Import `FirebaseAdminModule` and add it to the `imports` array in `apps/api/src/app.module.ts`.
 
 **Step 4: Commit**
+
 ```bash
 git add apps/api/src/common/firebase/ apps/api/src/app.module.ts
 git commit -m "feat: create FirebaseAdminService and FirebaseAdminModule"
@@ -150,10 +158,12 @@ git commit -m "feat: create FirebaseAdminService and FirebaseAdminModule"
 ### Task 3: Add Authentication Test Suite and verify
 
 **Files:**
+
 - Create: `apps/api/src/common/firebase/firebase-admin.service.spec.ts`
 
 **Step 1: Write unit tests**
 Create `apps/api/src/common/firebase/firebase-admin.service.spec.ts`:
+
 ```typescript
 import { Test, TestingModule } from '@nestjs/testing'
 import { ConfigService } from '@nestjs/config'
@@ -190,10 +200,7 @@ describe('FirebaseAdminService', () => {
   beforeEach(async () => {
     jest.clearAllMocks()
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        FirebaseAdminService,
-        { provide: ConfigService, useValue: mockConfig },
-      ],
+      providers: [FirebaseAdminService, { provide: ConfigService, useValue: mockConfig }],
     }).compile()
 
     service = module.get<FirebaseAdminService>(FirebaseAdminService)
@@ -293,6 +300,7 @@ Run: `pnpm run type-check && pnpm test`
 Expected: Everything compiles and passes.
 
 **Step 4: Commit**
+
 ```bash
 git add apps/api/src/common/firebase/firebase-admin.service.spec.ts
 git commit -m "test: add FirebaseAdminService unit tests"
